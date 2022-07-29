@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   CRow,
   CCol,
@@ -12,8 +12,23 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
+import { useSelector, useDispatch } from 'react-redux'
+import { createVendor, updateVendor } from './../../store/features/vendor/vendorSlice';
+import { getProducts } from './../../store/features/product/productSlice';
+
 
 const WidgetsDropdown = () => {
+
+  const dispatch = useDispatch();
+  const { isSuccess, vendors, message } = useSelector((state) => ({...state.vendor,}));
+  const products = useSelector((state) => (state.product.data));
+
+  useEffect(() => {
+      dispatch(getProducts());
+  },[])
+
+  //console.log(products.length)
+
   return (
     <CRow>
       <CCol sm={6} lg={3}>
@@ -22,13 +37,10 @@ const WidgetsDropdown = () => {
           color="primary-gradient"
           value={
             <>
-              26K{' '}
-              <span className="fs-6 fw-normal">
-                (-12.4% <CIcon icon={cilArrowBottom} />)
-              </span>
+              {products.length} {' '}
             </>
           }
-          title="Users"
+          title="Products"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">
@@ -115,7 +127,7 @@ const WidgetsDropdown = () => {
               </span>
             </>
           }
-          title="Income"
+          title="Profit"
           action={
             <CDropdown alignment="end">
               <CDropdownToggle color="transparent" caret={false} className="p-0">
