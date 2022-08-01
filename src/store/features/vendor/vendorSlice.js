@@ -45,9 +45,9 @@ export const updateVendor = createAsyncThunk(
 
 export const getVendorsByCompanyId = createAsyncThunk(
   "vendor/getVendorsByCompanyId",
-  async (id, { rejectWithValue }) => {
+  async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`items/vendor/${id}`);
+      const response = await axiosInstance.get(`items/vendor/${id}`, updatedData);
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err.response.request._response);
@@ -87,8 +87,6 @@ export const getVendorById = createAsyncThunk(
       .catch((error)=>console.log(error.response.request._response))
   }
 );
-
-
 
 const vendorSlice = createSlice({
   name: 'vendor',
@@ -158,6 +156,7 @@ const vendorSlice = createSlice({
     },
   }
 })
+
 
 export default vendorSlice.reducer;
 

@@ -17,7 +17,7 @@ const store = configureStore({
     product: productSlice,
     user: userSlice,
     auth: authSlice,
-  }
+  },
 })
 
 export default store;

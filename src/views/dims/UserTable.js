@@ -10,7 +10,7 @@ const UserTable = () => {
   const data = useSelector((state) => state.user.data)
   useEffect(() => {
     dispatch(getUsers())
-  }, [])
+  }, [dispatch])
 
   console.log(data);
 
