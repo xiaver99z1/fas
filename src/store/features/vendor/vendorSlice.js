@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import { axiosInstance } from 'src/store/middleware/directus';
 
+
 //Methods for Entities
 const vendorAdapter = createEntityAdapter();
 
@@ -17,63 +18,45 @@ const initialState = {
 
 export const createVendor = createAsyncThunk(
   "vendor/createVendor", 
-  async ({ updatedData, navigate }, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post("items/vendor/", updatedData);
-      //toast.success("Added Successfully");
-      navigate("/vendor");
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.request._response);
-    }
+  async ({ updatedData, navigate }) => {
+    return await axiosInstance
+      .post(`items/vendor/`, updatedData)
+      .then((res) =>  res.data.data)
+      .then(navigate('/vendors'))
+      .catch((error) => error.response.request._response)
   }
 );
 
 export const updateVendor = createAsyncThunk(
   "vendor/updateVendor", 
-  async ({ id, updatedData, navigate }, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.patch(`items/vendor/${id}`, updatedData);
-      //toast.success("Tour Updated Successfully");
-      navigate("/dashboard");
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.request._response);
-    }
-  }
-);
-
-export const getVendorsByCompanyId = createAsyncThunk(
-  "vendor/getVendorsByCompanyId",
-  async ({ id, updatedData }, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(`items/vendor/${id}`, updatedData);
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.request._response);
-    }
+  async ({ id, updatedData, navigate }) => {
+    return await axiosInstance
+      .patch(`items/vendor/${id}`, updatedData)
+      .then((res) =>  res.data.data)
+      .then(navigate('/vendors'))
+      .catch((error) => error.response.request._response)
   }
 );
 
 export const deleteVendor = createAsyncThunk(
   "vendor/deleteVendor",
-  async ({ id, toast }, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(`items/vendor/${id}`);
-      //toast.success("Vendor Deleted Successfully");
-      return response.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.request._response);
-    }
+  async ({ id }) => {
+    return await axiosInstance
+    .delete(`items/vendor/${id}`, updatedData)
+    .then((res) =>  res.data.data)
+    .then(navigate('/vendors'))
+    .catch((error) => error.response.request._response)
   }
 );
 
+
 export const getVendors = createAsyncThunk(
   'vendor/getVendors', 
-  async () => {
-    return await axiosInstance.get('/items/vendor/')
-    .then((res) => res.data.data)
-    .catch((error) => error.message)
+  async (_, {updatedData}) => {
+    return await axiosInstance
+      .get(`/items/vendor/`, { updatedData })
+      .then((res) => res.data.data)
+      .catch((error) => error.response.request._response)
   }
 );
 
@@ -97,7 +80,7 @@ const vendorSlice = createSlice({
       state.isLoading = true;
     },
     [createVendor.fulfilled]: (state, payload) => {
-      state.data = [payload];
+      state.data = payload;
       state.isSuccess = true;
     },
     [createVendor.rejected]: (state, payload) => {
@@ -126,14 +109,14 @@ const vendorSlice = createSlice({
       state.isLoading = false;
       state.message = payload;
     },
-    [getVendorsByCompanyId.pending]: (state) => {
+    [getVendors.pending]: (state) => {
       state.isLoading = true;
     },
-    [getVendorsByCompanyId.fulfilled]: (state, payload) => {
+    [getVendors.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
-      state.vendorsByCompanyId = [payload];
+      state.data = payload;
     },
-    [getVendorsByCompanyId.rejected]: (state, payload) => {
+    [getVendors.rejected]: (state, payload) => {
       state.isLoading = false;
       state.message = payload;
     },
@@ -146,7 +129,7 @@ const vendorSlice = createSlice({
         arg: { id },
       } = action.meta;
       if (id) {
-        state.vendorsByCompanyId = state.vendorsByCompanyId.filter((item) => item._id !== id);
+       // state.vendorsByCompanyId = state.vendorsByCompanyId.filter((item) => item._id !== id);
         state.data = state.data.filter((item) => item._id !== id);
       }
     },

@@ -17,15 +17,17 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createVendor, updateVendor } from './vendorSlice';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getVendors } from 'src/store/features/vendor/vendorSlice';
 
 
 const VendorUpdate = () => {
 
     //Get initial data
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
-    const { isSuccess, vendorsByCompanyId, message } = useSelector((state) => ({...state.vendor,}));
+    const data = useSelector((state) => state.vendor.data);
 
     //Get All Data
     const initialState = { 
@@ -63,9 +65,13 @@ const VendorUpdate = () => {
     /* Only look for vendors of logged company (user) */
     useEffect(() => {
       if(id) {
-         const singleRecord = find((s) => s.vendor_id === id);
-         console.log({singleRecord});
-         setRecord({ ...singleRecord });
+         //const singleRecord = data.find((s) => s._id === id);
+         dispatch(getVendors({vendor_id: id},{record}));
+
+         //const sel = singleRecord.find((s) => s.vendor_id === id);
+
+         //console.log({singleRecord});
+         //setRecord({ ...sel });
       }
     }, [id]);
     
@@ -107,7 +113,7 @@ const VendorUpdate = () => {
 
 
 
-    console.log({ vendorsByCompanyId, record, id, isSuccess,  message });
+    console.log({ data, record, id });
 
     /* Submit Form
     const handleSubmit = (e) => {
@@ -180,7 +186,10 @@ const VendorUpdate = () => {
       });
     };
 
+
     return (
+
+
       <CRow>
         <CCol xs={12}>
             <CCard className="mb-4">
@@ -195,6 +204,16 @@ const VendorUpdate = () => {
                   onSubmit={handleSubmit}
               >
                   <CCol md={2}>
+                  <CFormInput
+                    label="Vendor Id" 
+                    type="text"
+                    id="company_id"
+                    name="company_id"
+                    feedbackValid="Looks good!"
+                    value={id || ""}
+                    onChange={onInputChange}
+                    disabled
+                  />
                   <CFormInput
                     label="Company Id" 
                     type="text"
@@ -480,6 +499,7 @@ const VendorUpdate = () => {
             </CCard>
         </CCol>
       </CRow>
+
     )
 
 };

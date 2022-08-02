@@ -3,10 +3,11 @@ import { axiosInstance } from 'src/store/middleware/directus';
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ formValue, navigate, toast, dispatch, getState }, { rejectWithValue }) => {
+  async ({ formValue, navigate, toast }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/users/", formValue);
-      toast.success("Login Successfully");
+      //toast.success("Login Successfully");
+      alert('Login Success')
       navigate("/dashboard");
       return response.data.data;
     } catch (err) {
@@ -21,8 +22,9 @@ export const register = createAsyncThunk(
   async ({ formValue, navigate, toast }, { rejectWithValue }) => {
     try {
       const response = await  axiosInstance.post("/users/", formValue);
-      toast.success("Register Successfully");
-      navigate("/");
+      //toast.success("Register Successfully");
+      alert('Register Success')
+      navigate("/dashboard");
       return response.data;
     } catch (err) {
       return rejectWithValue(error.response.request._response);
@@ -39,7 +41,7 @@ const authSlice = createSlice({
   },
   
   extraReducers: {
-    [login.pending]: (state, action) => {
+    [login.pending]: (state) => {
       state.loading = true;
     },
     [login.fulfilled]: (state, action) => {
@@ -49,9 +51,9 @@ const authSlice = createSlice({
     },
     [login.rejected]: (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.payload;
     },
-    [register.pending]: (state, action) => {
+    [register.pending]: (state) => {
       state.loading = true;
     },
     [register.fulfilled]: (state, action) => {

@@ -1,15 +1,6 @@
 import React, { Component, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './scss/style.scss';
-import { login, register } from './store/common/authSlice'
-
-const dispatch = useDispatch();
-const data = useSelector((state) => state.auth.data)
-useEffect(() => {
-  dispatch(getUsers())
-}, [dispatch])
-
-
 
 const loading = (
   <div className="pt-3 text-center">

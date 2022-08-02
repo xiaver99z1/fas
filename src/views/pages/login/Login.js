@@ -18,7 +18,7 @@ import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login } from './../../../store/common/authSlice';
+import { login, register } from './../../../store/common/authSlice';
 
 const Login = () => {
 
@@ -35,13 +35,13 @@ const Login = () => {
 
   useEffect(() => {
     console.log(error);
-    error && toast.error(error);
+    error && CToast.error(error);
   }, [error]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password) {
-      dispatch(login({ formValue,navigate,toast }));
+      dispatch(login({ formValue,navigate,CToast }));
     }
   };
   
@@ -112,7 +112,7 @@ const Login = () => {
                       tempor incididunt ut labore et dolore magna aliqua.
                     </p>
                     <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
+                      <CButton color="primary" className="mt-3" active tabIndex={-1} onClick={() => navigate('/register')}>
                         Register Now!
                       </CButton>
                     </Link>
