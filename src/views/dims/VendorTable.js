@@ -70,7 +70,7 @@ const VendorTable = () => {
           </CCardHeader>
           <CCardBody>
             <CSmartTable
-            activePage={3}
+            activePage={1}
             cleaner
             clickableRows
             columns={columns}

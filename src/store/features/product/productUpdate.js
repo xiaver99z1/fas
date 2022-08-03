@@ -87,7 +87,7 @@ console.log(JSON.stringify(productid))
         dispatch(createProduct(
           { 
               product_name: product_name,
-              company_id: company_id,
+              company_id: setCompanyId(data.company_id),
               upc: upc,
               upc_barcode: upc_barcode,
               sku: sku,
@@ -186,7 +186,7 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="company_id"
                  feedbackValid="Looks good!"
-                 value={data.companyid}
+                 value={data.company_id}
                  onChange={(e) => setCompanyId(e.target.value)}
                  disabled
                />
