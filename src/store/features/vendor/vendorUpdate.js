@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createVendor, updateVendor } from './vendorSlice';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getVendors } from 'src/store/features/vendor/vendorSlice';
+import { getVendorById } from 'src/store/features/vendor/vendorSlice';
 
 
 const VendorUpdate = () => {
@@ -27,11 +27,12 @@ const VendorUpdate = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
-    const data = useSelector((state) => state.vendor.data);
+    const { data } = useSelector((state) => state.vendor);
 
     //Get All Data
     const initialState = { 
         company_id: "",
+        vendor_id: "",
         vendor_name: "",
         vendor_type: "",
         email: "",
@@ -64,27 +65,28 @@ const VendorUpdate = () => {
 
     /* Only look for vendors of logged company (user) */
     useEffect(() => {
-      if(id) {
+      //if(id) {
          //const singleRecord = data.find((s) => s._id === id);
-         dispatch(getVendors({vendor_id: id},{record}));
+         dispatch(getVendorById({id}));
 
          //const sel = singleRecord.find((s) => s.vendor_id === id);
 
          //console.log({singleRecord});
          //setRecord({ ...sel });
-      }
+      //}
     }, [id]);
-    
+
     //Form Validation 
     const [validated, setValidated] = useState(false);
 
     //Set Fields
-    const [record, setRecord] = useState(initialState);
+    const [record, setRecord] = useState(data);
+    
     const { company_id,
+            vendor_id,      
             vendor_name,
             vendor_type,
             email,
-            customer_type,
             phone_number,
             mobile_number,
             address1,
@@ -110,10 +112,10 @@ const VendorUpdate = () => {
             date_created,
             date_updated
           } = record;
+    
 
 
-
-    console.log({ data, record, id });
+    console.log({ record, id });
 
     /* Submit Form
     const handleSubmit = (e) => {
@@ -134,8 +136,9 @@ const VendorUpdate = () => {
         e.stopPropagation();
       }
 
-      if (vendor_name && email && vendor_type) {
-        const updatedVendorData = { ...record, vendor_name: vendor_name?.result?.vendor_name };
+      /*
+      if (vendor_name && email && vendor_id) {
+        const updatedVendorData = { ...record, vendor_id: vendor_id?.result?.vendor_id };
 
         if (!id) {
           dispatch(createVendor({ updatedVendorData, navigate }));
@@ -146,11 +149,20 @@ const VendorUpdate = () => {
         }
         handleClear();
       }
+      */
     };
 
     const onInputChange = (e) => {
-      const { name, value } = e.target;
+      const { name, value, defaultValue } = e.target;
       setRecord({ ...record, [name]: value });
+    };
+
+    const onHandleClick = () => {
+      if (vendor_name && email && vendor_id) {
+          const updatedVendorData = { ...record, vendor_id: id?.result?.vendor_id };
+
+          console.log({updatedVendorData});
+      }
     };
 
     const handleClear = () => {
@@ -158,7 +170,6 @@ const VendorUpdate = () => {
                   vendor_name: "",
                   vendor_type: "",
                   email: "",
-                  customer_type: "",
                   phone_number: "",
                   mobile_number:  "",
                   address1: "",
@@ -188,8 +199,78 @@ const VendorUpdate = () => {
 
 
     return (
-
-
+      <CRow>
+        <CCol xs={12}>
+            <CCard className="mb-4">
+            <CCardHeader>
+              <strong>Update Vendor</strong> <small></small>
+            </CCardHeader>
+            <CCardBody>
+              
+              <CForm 
+                className="row g-3 needs-validation" 
+                noValidate
+                validated={validated}
+                onSubmit={handleSubmit}
+              >
+                  <CCol md={2}>
+                  <CFormInput
+                    label="Vendor Id" 
+                    type="text"
+                    id="vendor_id"
+                    name="vendor_id"
+                    feedbackValid="Looks good!"
+                    key={vendor_id}
+                    defaultValue={data.vendor_id}
+                    onChange={onInputChange}
+                    disabled
+                  />
+                  </CCol>
+                  <CCol md={6}>
+                  <CFormInput
+                    label="Vendor Name" 
+                    type="text"
+                    id="vendor_name"
+                    name="vendor_name"
+                    feedbackValid="Looks good!"
+                    key={vendor_name}
+                    defaultValue={data.vendor_name}
+                    onChange={onInputChange}
+                    readOnly={false}
+                    required
+                  />
+                  </CCol>
+                  <CCol md={3}>
+                  <CFormInput
+                    label="Email" 
+                    type="text"
+                    id="email"
+                    name="email"
+                    feedbackValid="Looks good!"                 
+                    key={email}
+                    defaultValue={data.email}
+                    onChange={onInputChange}
+                    required
+                  />
+                  </CCol>
+                  <CCol xs={2}>
+                    <CButton color="primary" type="button" onClick={() => alert({id})}>
+                    Test Form
+                    </CButton>
+                  </CCol>
+                  <CCol xs={2}>
+                    <CButton color="primary" type="submit">
+                    Submit Form
+                    </CButton>
+                  </CCol>
+              </CForm>
+              
+            </CCardBody>
+            </CCard>
+        </CCol>
+      </CRow>
+          
+      /*
       <CRow>
         <CCol xs={12}>
             <CCard className="mb-4">
@@ -207,20 +288,11 @@ const VendorUpdate = () => {
                   <CFormInput
                     label="Vendor Id" 
                     type="text"
-                    id="company_id"
-                    name="company_id"
+                    id="vendor_id"
+                    name="vendor_id"
                     feedbackValid="Looks good!"
-                    value={id || ""}
-                    onChange={onInputChange}
-                    disabled
-                  />
-                  <CFormInput
-                    label="Company Id" 
-                    type="text"
-                    id="company_id"
-                    name="company_id"
-                    feedbackValid="Looks good!"
-                    value={company_id || ""}
+                    key={vendor_id}
+                    defaultValue={data.vendor_id}
                     onChange={onInputChange}
                     disabled
                   />
@@ -232,7 +304,8 @@ const VendorUpdate = () => {
                     id="vendor_name"
                     name="vendor_name"
                     feedbackValid="Looks good!"
-                    value={vendor_name || ""}
+                    key={vendor_name}
+                    defaultValue={data.vendor_name}
                     onChange={onInputChange}
                     readOnly={false}
                     required
@@ -242,6 +315,7 @@ const VendorUpdate = () => {
                   <CFormSelect 
                     id="vendor_type" 
                     name="vendor_type" 
+                    key={vendor_type}
                     label="Vendor Type"
                   >
                     <option>AS</option>
@@ -254,7 +328,8 @@ const VendorUpdate = () => {
                     id="email"
                     name="email"
                     feedbackValid="Looks good!"                 
-                    value={email || ""}
+                    key={email}
+                    defaultValue={email || ""}
                     onChange={onInputChange}
                     required
                   />
@@ -268,7 +343,8 @@ const VendorUpdate = () => {
                         id="phone_number"
                         name="phone_number"
                         feedbackValid="Looks good!"
-                        value={phone_number || null}
+                        key={phone_number}
+                        defaultValue={data.phone_number || phone_number}
                         onChange={onInputChange}
                     />
                   </CInputGroup>
@@ -282,7 +358,8 @@ const VendorUpdate = () => {
                         id="mobile_number"
                         name="mobile_number"
                         feedbackValid="Looks good!"
-                        value={mobile_number || null}
+                        key={mobile_number}
+                        value={mobile_number}
                         onChange={onInputChange}
                     />
                   </CInputGroup>
@@ -294,7 +371,8 @@ const VendorUpdate = () => {
                     id="address1"
                     name="address1"
                     feedbackValid="Looks good!"
-                    value={address1 || null}
+                    key={address1}
+                    defaultValue={data.address1 || address1}
                     onChange={onInputChange}
                     required
                   />
@@ -306,7 +384,8 @@ const VendorUpdate = () => {
                     id="address2"
                     name="address2"
                     feedbackValid="Looks good!"
-                    value={address2 || null}
+                    key={address2}
+                    defaultValue={data.address2 || address2}
                     onChange={onInputChange}
                   />
                   </CCol>
@@ -316,6 +395,7 @@ const VendorUpdate = () => {
                     label="City"
                     name="city"
                     feedbackValid="Looks good!"
+                    key={city}
                     onChange={onInputChange}
                     required>
                     <option selected>PH</option>
@@ -329,6 +409,7 @@ const VendorUpdate = () => {
                     label="Province" 
                     name="province"
                     feedbackValid="Looks good!"
+                    key={province}
                     onChange={onInputChange}
                     required
                   >
@@ -343,6 +424,7 @@ const VendorUpdate = () => {
                     label="Country" 
                     name="country"
                     feedbackValid="Looks good!"
+                    key={province}
                     onChange={onInputChange}
                     required
                   >
@@ -358,6 +440,8 @@ const VendorUpdate = () => {
                     id="post_code"
                     name="post_code"
                     feedbackValid="Looks good!"
+                    key={post_code}
+                    defaultValue={data.post_code || post_code}
                     onChange={onInputChange}
                     required
                   />
@@ -370,7 +454,8 @@ const VendorUpdate = () => {
                         aria-label="First name" 
                         type="text" 
                         placeholder="First Name" 
-                        value={contact_person_first_name}
+                        key={contact_person_first_name}
+                        defaultValue={data.contact_person_first_name || contact_person_first_name}
                         name="contact_person_first_name"
                         feedbackValid="Looks good!"
                         onChange={onInputChange}
@@ -380,7 +465,8 @@ const VendorUpdate = () => {
                         aria-label="Last name" 
                         type="text" 
                         placeholder="Last Name" 
-                        value={contact_person_last_name}
+                        key={contact_person_last_name}
+                        defaultValue={data.contact_person_last_name || contact_person_last_name}
                         name="contact_person_last_name"
                         feedbackValid="Looks good!"
                         onChange={onInputChange}
@@ -396,7 +482,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="bank_name"
                     name="bank_name"
-                    value={bank_name}
+                    key={bank_name}
+                    defaultValue={data.bank_name || bank_name}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                   />
@@ -407,7 +494,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="bank_account_number"
                     name="bank_account_number"
-                    value={bank_account_number}
+                    key={bank_account_number}
+                    defaultValue={data.bank_account_number || bank_account_number}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                   />
@@ -417,6 +505,7 @@ const VendorUpdate = () => {
                     id="currency_code" 
                     label="Currency Code" 
                     name="currency_code"
+                    key={currency_code}
                     onChange={onInputChange}>
                     <option>USD</option>
                     <option>SGD</option>
@@ -428,6 +517,7 @@ const VendorUpdate = () => {
                   <CFormSelect 
                     id="payment_terms" 
                     name="payment_terms"
+                    key={payment_terms}
                     onChange={onInputChange}
                     >
                     <option>50 PCT DP Required</option>
@@ -440,6 +530,7 @@ const VendorUpdate = () => {
                     id="payment_mode" 
                     label="Payment Mode" 
                     name="payment_mode"
+                    key={payment_mode}
                     onChange={onInputChange}
                     >
                     <option>Bank Transfer</option>
@@ -454,6 +545,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="business_posting_group"
                     name="business_posting_group"
+                    key={business_posting_group}
+                    defaultValue={data.business_posting_group || business_posting_group}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                     />
@@ -464,6 +557,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="vat_posting_group"
                     name="vat_posting_group"
+                    key={vat_posting_group}
+                    defaultValue={data.vat_posting_group || vat_posting_group}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                   />
@@ -474,6 +569,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="vendor_posting_group"
                     name="vendor_posting_group"
+                    key={vendor_posting_group}
+                    defaultValue={data.vendor_posting_group || vendor_posting_group}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                   />
@@ -484,6 +581,8 @@ const VendorUpdate = () => {
                     type="text"
                     id="website"
                     name="website"
+                    key={website}
+                    defaultValue={data.website || website}
                     feedbackValid="Looks good!"
                     onChange={onInputChange}
                   />
@@ -499,7 +598,7 @@ const VendorUpdate = () => {
             </CCard>
         </CCol>
       </CRow>
-
+      */
     )
 
 };

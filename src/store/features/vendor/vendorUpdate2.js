@@ -135,7 +135,6 @@ const VendorUpdate = ({id}) => {
         console.error('Failed to save the post', err)
       } finally {
         setAddRequestStatus(false)
-        
       }
     }
   }

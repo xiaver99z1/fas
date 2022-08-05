@@ -49,12 +49,11 @@ export const deleteVendor = createAsyncThunk(
   }
 );
 
-
 export const getVendors = createAsyncThunk(
   'vendor/getVendors', 
-  async (_, {updatedData}) => {
+  async () => {
     return await axiosInstance
-      .get(`/items/vendor/`, { updatedData })
+      .get(`/items/vendor/`)
       .then((res) => res.data.data)
       .catch((error) => error.response.request._response)
   }
@@ -62,7 +61,7 @@ export const getVendors = createAsyncThunk(
 
 export const getVendorById = createAsyncThunk(
   "vendor/getVendorById", 
-  async (id) => {
+  async ({id}) => {
     //Fetch vendor by ID
     return await axiosInstance
       .get(`/items/vendor/${id}`)
@@ -91,17 +90,14 @@ const vendorSlice = createSlice({
     [updateVendor.pending]: (state, payload) => {
       state.loading = true;
     },
-    [updateVendor.fulfilled]: (state, payload) => {
+    [updateVendor.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       const {
         arg: { id },
       } = action.meta;
       if (id) {
-        state.userTours = state.userTours.map((item) =>
-          item._id === id ? action.payload : item
-        );
-        state.tours = state.tours.map((item) =>
-          item._id === id ? action.payload : item
+        state.data = state.data.map((item) =>
+          item.vendor_id === id ? payload : item
         );
       }
     },
@@ -117,6 +113,17 @@ const vendorSlice = createSlice({
       state.data = payload;
     },
     [getVendors.rejected]: (state, payload) => {
+      state.isLoading = false;
+      state.message = payload;
+    },
+    [getVendorById.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getVendorById.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.data = payload;
+    },
+    [getVendorById.rejected]: (state, payload) => {
       state.isLoading = false;
       state.message = payload;
     },
