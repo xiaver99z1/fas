@@ -21,6 +21,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const EmailApp = React.lazy(() => import('./views/apps/email/EmailApp'))
 
 class App extends Component {
+  
   render() {
     return (
       <BrowserRouter>

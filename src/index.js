@@ -1,21 +1,22 @@
-import 'react-app-polyfill/stable'
-import 'core-js'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import * as ReactDOMClient from 'react-dom/client'
-import App from './App'
-import reportWebVitals from './reportWebVitals'
-import { Provider } from 'react-redux'
-import store from './store'
+import React from 'react';
+import * as ReactDOMClient from 'react-dom/client';
+import 'react-app-polyfill/stable';
+import 'core-js';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import store from './store';
+import { getUsers } from './store/features/userSlice';
+import { getVendors } from './store/features/vendorSlice';
+import { getFasReference, getCountries, getPaymentMode, getCurrency } from './store/features/fasrefereceSlice';
 
-/*
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root'),
-)
-*/
+store.dispatch(getUsers());
+store.dispatch(getVendors());
+store.dispatch(getFasReference());
+store.dispatch(getCountries());
+store.dispatch(getCurrency());
+store.dispatch(getPaymentMode());
+
 const container = document.getElementById('root');
 
 // Create a root.

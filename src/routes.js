@@ -9,26 +9,26 @@ const Typography = React.lazy(() => import('./views/theme/typography/Typography'
 const Invoice = React.lazy(() => import('./views/apps/invoicing/Invoice'))
 
 //Forms - FAS
-const CustomerList = React.lazy(() => import('./views/dims/CustomerTable'))
-const CustomerAddForm = React.lazy(() => import('./store/features/customer/customerAdd'))
-const CustomerUpdateForm = React.lazy(() => import('./store/features/customer/customerUpdate'))
-const VendorList = React.lazy(() => import('./views/dims/VendorTable'))
-const VendorAddForm = React.lazy(() => import('./store/features/vendor/vendorAdd'))
-const VendorUpdateForm = React.lazy(() => import('./store/features/vendor/vendorUpdate'))
-const ProductList = React.lazy(() => import('./views/dims/ProductTable'))
-const ProductAddForm = React.lazy(() => import('./store/features/product/productAdd'))
-const ProductUpdateForm = React.lazy(() => import('./store/features/product/productUpdate'))
-const CompanyList = React.lazy(() => import('./views/dims/CompanyTable'))
+const CustomerList = React.lazy(() => import('./views/pages/dims/customer/CustomerTable'))
+const CustomerAddForm = React.lazy(() => import('./views/pages/dims/customer/CustomerAdd'))
+const CustomerUpdateForm = React.lazy(() => import('./views/pages/dims/customer/CustomerUpdate'))
+const VendorList = React.lazy(() => import('./views/pages/dims/vendor/VendorTable'))
+const VendorAddForm = React.lazy(() => import('./views/pages/dims/vendor/VendorAdd'))
+const VendorUpdateForm = React.lazy(() => import('./views/pages/dims/vendor/VendorUpdate'))
+const ProductList = React.lazy(() => import('./views/pages/dims/product/ProductTable'))
+const ProductAddForm = React.lazy(() => import('./views/pages/dims/product/ProductAdd'))
+const ProductUpdateForm = React.lazy(() => import('./views/pages/dims/product/ProductUpdate'))
+const CompanyList = React.lazy(() => import('./views/pages/dims/company/CompanyTable'))
 const CompanyListTest = React.lazy(() => import('./store/features/company/companyList'))
-const CompanyAddForm = React.lazy(() => import('./store/features/company/companyAdd'))
-const CompanyUpdateForm = React.lazy(() => import('./store/features/company/companyUpdate'))
-const UserList = React.lazy(() => import('./views/dims/UserTable'))
-const UserAddForm = React.lazy(() => import('./store/features/user/userAdd'))
-const UserUpdateForm = React.lazy(() => import('./store/features/user/userUpdate'))
+const CompanyAddForm = React.lazy(() => import('./views/pages/dims/company/CompanyAdd'))
+const CompanyUpdateForm = React.lazy(() => import('./views/pages/dims/company/CompanyUpdate'))
+const UserList = React.lazy(() => import('./views/pages/dims/user/UserTable'))
+const UserAddForm = React.lazy(() => import('./views/pages/dims/user/UserAdd'))
+const UserUpdateForm = React.lazy(() => import('./views/pages/dims/user/UserUpdate'))
 
 
 //Tables - FAS
-const PurchaseOrderList = React.lazy(() => import('./views/dims/PurchaseOrderTable'))
+const PurchaseOrderList = React.lazy(() => import('./views/pages/dims/purchaseorder/PurchaseOrderTable'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },

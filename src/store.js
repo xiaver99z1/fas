@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-
 import changeState from "./store/coreuistate/changeState";
-import customerSlice from "./store/features/customer/customerSlice";
-import vendorSlice from "./store/features/vendor/vendorSlice";
-import productSlice from "./store/features/product/productSlice";
-import companySlice from "./store/features/company/companySlice";
-import userSlice from "./store/features/user/userSlice";
-import authSlice from "./store/common/authSlice";
+import customerSlice from "./store/features/customerSlice";
+import vendorSlice from "./store/features/vendorSlice";
+import productSlice from "./store/features/productSlice";
+import companySlice from "./store/features/companySlice";
+import userSlice from "./store/features/userSlice";
+import fasreferenceSlice from "./store/features/fasrefereceSlice"
+import authSlice from "./store/features/authSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +16,7 @@ const store = configureStore({
     vendor: vendorSlice,
     product: productSlice,
     user: userSlice,
+    fasreference: fasreferenceSlice,
     auth: authSlice,
   },
 })

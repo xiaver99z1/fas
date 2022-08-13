@@ -18,7 +18,7 @@ import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login, register } from './../../../store/common/authSlice';
+import { login, register } from '../../../store/features/authSlice';
 
 const Login = () => {
 
