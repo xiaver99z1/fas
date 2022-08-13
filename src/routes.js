@@ -19,7 +19,6 @@ const ProductList = React.lazy(() => import('./views/pages/dims/product/ProductT
 const ProductAddForm = React.lazy(() => import('./views/pages/dims/product/ProductAdd'))
 const ProductUpdateForm = React.lazy(() => import('./views/pages/dims/product/ProductUpdate'))
 const CompanyList = React.lazy(() => import('./views/pages/dims/company/CompanyTable'))
-const CompanyListTest = React.lazy(() => import('./store/features/company/companyList'))
 const CompanyAddForm = React.lazy(() => import('./views/pages/dims/company/CompanyAdd'))
 const CompanyUpdateForm = React.lazy(() => import('./views/pages/dims/company/CompanyUpdate'))
 const UserList = React.lazy(() => import('./views/pages/dims/user/UserTable'))
