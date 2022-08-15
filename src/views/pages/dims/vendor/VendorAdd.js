@@ -24,11 +24,10 @@ const VendorAdd = () => {
   //Get initial data
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isSuccess = useSelector((state) => state.vendor.isSuccess)
-  const vendorData = useSelector((state) => state.vendor.data)
-  const [addRequestStatus, setAddRequestStatus] = useState(isSuccess)
+  const vendors = useSelector((state)=>state.vendor.vendors);
+  const [addRequestStatus, setAddRequestStatus] = useState('idle');
 
-  console.log({ addRequestStatus, vendorData })
+  console.log({ addRequestStatus, vendors })
 
   //console.log({ isSuccess, customerData })
 
@@ -61,12 +60,12 @@ const VendorAdd = () => {
   //Form Validation 
   const [validated, setValidated] = useState(false)
   
-  const canSave = [vendor_name, email].every(Boolean) && addRequestStatus === true;
+  const canSave = [vendor_name, email].every(Boolean) && addRequestStatus === 'idle';
   
   const onSavePostClicked = () => {  
     if (canSave) {
       try {
-        setAddRequestStatus(true)
+        setAddRequestStatus('pending')
         dispatch(createVendor(
           { 
               company_id: company_id,
@@ -122,11 +121,13 @@ const VendorAdd = () => {
               setVatPostingGroup('')
               setVendorPostingGroup('')
               setWebsite('')
+
+              navigate(`/vendor/${count}`)
       
       } catch (err) {
         console.error('Failed to save the post', err)
       } finally {
-        setAddRequestStatus(false)
+        setAddRequestStatus('idle')
         
       }
     }
@@ -140,7 +141,6 @@ const VendorAdd = () => {
       event.stopPropagation();
     }
     setValidated(true);
-    navigate(`/vendors`)
   }
 
   return (

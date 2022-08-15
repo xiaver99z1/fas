@@ -11,19 +11,7 @@ const VendorTable = () => {
   const status = useSelector(vendorStatus);
   const error = useSelector(vendorError);
   
-  const vendors = useSelector((state) => state.vendor.vendors);
-
-  const [showData, setShowData] = useState(false);
-
-  useEffect(() => {
-    dispatch(getVendors('',{}));
-    setShowData(true);
-
-    if(!showData) {
-      setShowData(false);
-    }
-  },[])
-  
+  const vendors = useSelector(selectAllVendors);
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {

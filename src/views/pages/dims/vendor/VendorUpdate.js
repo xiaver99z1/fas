@@ -15,8 +15,8 @@ import {
   CFormFeedback,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import {getVendors, selectAllVendors, selectVendorById, updateVendor } from '../../../../store/features/vendorSlice';
-//import { getCurrency, getCountries } from '../../common/fasrefereceSlice';
+import { getVendors, selectAllVendors, selectVendorById, updateVendor, updatePost } from '../../../../store/features/vendorSlice';
+import { selectAllFasRef, selectAllCountries, selectAllCurrency, selectAllPaymentMode } from './../../../../store/features/fasrefereceSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 
 
@@ -29,24 +29,18 @@ const VendorUpdate = () => {
 
   const { id } = useParams();
   const data = useSelector((state) => selectVendorById(state, Number(id)));
+  
 
   //Set Fields
+  const [vendorId, setVendorId] = useState(id);
   const [vendorName, setVendorName] = useState('');
   const [vendorType, setVendorType] = useState('');
   const [emailAddress, setEmail] = useState('');
   const [vendorStatus, setVendorStatus] = useState('');
-  const [record, setRecord] = useState(data);
+  const [record, setRecord] = useState({});
   const [requestStatus, setRequestStatus] = useState('idle');
-  
-  useEffect(() => {
-    dispatch(getVendors(''))
-  },[])
 
-  console.log(data.find((v) => { v.vendor_id, v.vendor_name, v.vendor_type } ));
-
-  //console.log({vendorData}, vendorData.find(post => post.vendor_id === id));
-
-  /*
+  /*  
   if (Array.isArray(data)) {
     const r3 = data.find(element => element.vendor_id === id);
     console.log(r3);
@@ -54,7 +48,9 @@ const VendorUpdate = () => {
     console.log('arr is not an array', data);
   }
   */
-  
+
+  console.log({record});
+
 
   //Form Validation 
   const [validated, setValidated] = useState(false)
@@ -65,22 +61,20 @@ const VendorUpdate = () => {
     if (canSave) {
       try {
         setRequestStatus('pending');
-        console.log({vendorName,vendorType,emailAddress,vendorStatus})
-        /*
-        dispatch(updateVendor(id, { 
-              vendor_id: id,
-              vendor_name: vendorName,
-              vendor_type: vendorType,
-              email: emailAddress,
-              status: vendorStatus,
-              date_updated: formatYmd(new Date()),})).unwrap()
+        
+        dispatch(updateVendor({vendor_id: data.vendor_id, 
+          vendor_name: vendorName, 
+          vendor_type: vendorType, 
+          email: emailAddress, 
+          status: vendorStatus})).unwrap()
               
-              setVendorName('')
-              setVendorType('')
-              setEmail('')
+        setVendorName('')
+        setVendorType('')
+        setEmail('')
+        setVendorStatus('')
 
-              navigate(`/vendor/${id}?updated`);
-        */    
+        navigate(`/vendor/${id}?updated`);
+        
       } catch (err) {
         console.error('Failed to save the post', err)
       } finally {
@@ -98,7 +92,7 @@ const VendorUpdate = () => {
     }
     setValidated(true);
   }
-  
+
   return (
 
    <CRow>
@@ -128,7 +122,7 @@ const VendorUpdate = () => {
                  type="text"
                  id="vendor_name"
                  feedbackValid="Looks good!"
-                 defaultValue={vendorName}
+                 defaultValue={data.vendor_name}
                  onChange={(e) => setVendorName(e.target.value)}
                  readOnly={false}
                  required
@@ -139,7 +133,7 @@ const VendorUpdate = () => {
                 id="vendor_type" 
                 label="Vendor Type" 
                 onChange={(e) => setVendorType(e.target.value)}
-                defaultValue={vendorType}>
+                defaultValue={data.vendor_type}>
                  <option>AS</option>
                </CFormSelect>
              </CCol>
@@ -148,7 +142,7 @@ const VendorUpdate = () => {
                  label="Email" 
                  type="text"
                  id="email"
-                 defaultValue={emailAddress}
+                 defaultValue={data.email}
                  feedbackValid="Looks good!"
                  onChange={(e) => setEmail(e.target.value)}
                  required
@@ -158,7 +152,7 @@ const VendorUpdate = () => {
                <CFormSelect 
                 id="vendorStatus"
                 label="Status" 
-                defaultValue={vendorStatus} 
+                defaultValue={data.status} 
                 onChange={(e) => setVendorStatus(e.target.value)} 
                 required>
                   <option>active</option>
@@ -171,7 +165,6 @@ const VendorUpdate = () => {
                   color="primary" 
                   type="button"
                   onClick={onSavePostClicked}
-                  disabled={!canSave}
                 >
                   Submit Form
                 </CButton>
@@ -181,6 +174,7 @@ const VendorUpdate = () => {
        </CCard>
      </CCol>
    </CRow>
+  
 
  )
 }

@@ -106,3 +106,9 @@ const fasreferenceSlice = createSlice({
 })
 
 export default fasreferenceSlice.reducer;
+
+
+export const selectAllFasRef = (state) => state.vendor.fasref;
+export const selectAllCurrency = (state) => state.vendor.currency;
+export const selectAllCountries = (state) => state.vendor.countries;
+export const selectAllPaymentMode = (state) => state.vendor.paymentmode;

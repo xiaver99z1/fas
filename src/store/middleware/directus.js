@@ -7,9 +7,9 @@ export const axiosInstance = axios.create({
    headers: {
      'Authorization': `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
      'Content-Type' : 'application/json',
-     //'X-Http-Method-Override': 'PATCH',
-     //'Access-Control-Allow-Headers': '*',
-     //'Access-Control-Allow-Origin' : '*',
-     //'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH',
+     'Access-Control-Allow-Origin' : '*',
+     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH',
+     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+     'Access-Control-Allow-Credentials' : 'true'
    }
  });
