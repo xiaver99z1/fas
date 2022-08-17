@@ -34,6 +34,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // testing
     console.log(error);
     error && CToast.error(error);
   }, [error]);
