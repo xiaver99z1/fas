@@ -17,6 +17,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createVendor } from '../../../../store/features/vendorSlice';
 import { useNavigate } from 'react-router-dom'
+import { getCurrencies } from '../../../../store/features/references/currencySlice';
+import { getCountries } from '../../../../store/features/references/countrySlice';
 
 
 const VendorAdd = () => {

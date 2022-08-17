@@ -6,7 +6,7 @@ export const getFasReference = createAsyncThunk(
    "fasreference/getFasReference", 
    async () => {
      return await axiosInstance
-       .get(`/items/fas_reference`)
+       .get(`/items/fas_reference/`)
        .then((res) => res.data.data)
        .catch((error) => error.message)
    }
@@ -27,7 +27,7 @@ export const getPaymentMode = createAsyncThunk(
    async ({ id }) => {
      //Fetch by ID
      return await axiosInstance
-       .get(`/items/payment_mode/`)
+       .get(`items/payment_mode/`)
        .then((res) => res.data.data)
        .catch((error) => error.message)
    }
@@ -38,18 +38,30 @@ export const getCurrency = createAsyncThunk(
    async ({ id }) => {
      //Fetch customers by ID
      return await axiosInstance
-       .get(`/items/currency/`)
+       .get(`items/currency/`)
        .then((res) => res.data.data)
        .catch((error) => error.message)
    }
 );
+
+export const getPostingGroup = createAsyncThunk(
+  "fasreference/getPostingGroup", 
+  async () => {
+    return await axiosInstance
+      .get(`items/posting_group/`)
+      .then((res) => res.data.data)
+      .catch((error) => error.message)
+  }
+); 
+
 
 const initialState = {
   fasref: [],
   currency: [],
   countries: [],
   paymentmode: [],
-  status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
+  postinggroup: [],
+  status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: "",
 }
 
@@ -62,8 +74,8 @@ const fasreferenceSlice = createSlice({
       state.status = 'loading';
     },
     [getFasReference.fulfilled]: (state, action) => {
-      state.status = 'succeeded';
-      state.fasref = action.payload;
+      state.status = 'success';
+      state.fasref = [action.payload];
     },
     [getFasReference.rejected]: (state, action) => {
       state.status = 'failed';
@@ -73,8 +85,8 @@ const fasreferenceSlice = createSlice({
       state.status = 'loading';
     },
     [getCurrency.fulfilled]: (state, action) => {
-      state.status = 'succeeded';
-      state.currency = action.payload;
+      state.status = 'success';
+      state.currency = [action.payload];
     },
     [getCurrency.rejected]: (state, action) => {
       state.status = 'failed';
@@ -84,8 +96,8 @@ const fasreferenceSlice = createSlice({
       state.status = 'loading';
     },
     [getCountries.fulfilled]: (state, action) => {
-      state.status = 'succeeded';
-      state.countries = action.payload;
+      state.status = 'success';
+      state.countries = [action.payload];
     },
     [getCountries.rejected]: (state, action) => {
       state.status = 'failed';
@@ -95,10 +107,21 @@ const fasreferenceSlice = createSlice({
       state.status = 'loading';
     },
     [getPaymentMode.fulfilled]: (state, action) => {
-      state.status = 'succeeded';
-      state.paymentmode = action.payload;
+      state.status = 'success';
+      state.paymentmode = [action.payload];
     },
     [getPaymentMode.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    },
+    [getPostingGroup.pending]: (state) => {
+      state.status = 'loading';
+    },
+    [getPostingGroup.fulfilled]: (state, action) => {
+      state.status = 'success';
+      state.postinggroup = [action.payload];
+    },
+    [getPostingGroup.rejected]: (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     },
@@ -108,7 +131,8 @@ const fasreferenceSlice = createSlice({
 export default fasreferenceSlice.reducer;
 
 
-export const selectAllFasRef = (state) => state.vendor.fasref;
-export const selectAllCurrency = (state) => state.vendor.currency;
-export const selectAllCountries = (state) => state.vendor.countries;
-export const selectAllPaymentMode = (state) => state.vendor.paymentmode;
+export const selectAllFasRef = (state) => state.fasreference.fasref;
+export const selectAllCurrency = (state) => state.fasreference.currency;
+export const selectAllCountries = (state) => state.fasreference.countries;
+export const selectAllPaymentMode = (state) => state.fasreference.paymentmode;
+export const selectAllPostingGroup = (state) => state.fasreference.postinggroup;

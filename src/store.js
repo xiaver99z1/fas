@@ -5,7 +5,11 @@ import vendorSlice from "./store/features/vendorSlice";
 import productSlice from "./store/features/productSlice";
 import companySlice from "./store/features/companySlice";
 import userSlice from "./store/features/userSlice";
-import fasreferenceSlice from "./store/features/fasrefereceSlice"
+import fasreferenceSlice from "./store/features/references/fasrefereceSlice";
+import currencySlice from "./store/features/references/currencySlice";
+import countrySlice from "./store/features/references/countrySlice";
+import paymenttermSlice from "./store/features/references/paymenttermSlice";
+import postinggroupSlice from "./store/features/references/postinggroupSlice";
 import authSlice from "./store/features/authSlice";
 
 const store = configureStore({
@@ -17,6 +21,10 @@ const store = configureStore({
     product: productSlice,
     user: userSlice,
     fasreference: fasreferenceSlice,
+    currency: currencySlice,
+    country: countrySlice,
+    paymentterm: paymenttermSlice,
+    ppostinggroup: postinggroupSlice,
     auth: authSlice,
   },
 })

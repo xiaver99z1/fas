@@ -6,16 +6,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store';
-import { getUsers } from './store/features/userSlice';
+import { getProducts } from './store/features/productSlice';
 import { getVendors } from './store/features/vendorSlice';
-import { getFasReference, getCountries, getPaymentMode, getCurrency } from './store/features/fasrefereceSlice';
 
-store.dispatch(getUsers());
-store.dispatch(getVendors());
-store.dispatch(getFasReference());
-store.dispatch(getCountries());
-store.dispatch(getCurrency());
-store.dispatch(getPaymentMode());
 
 const container = document.getElementById('root');
 
@@ -28,6 +21,9 @@ root.render(
       <App />
     </Provider>
 );
+
+store.dispatch(getProducts());
+store.dispatch(getVendors());
 
 
 // If you want to start measuring performance in your app, pass a function

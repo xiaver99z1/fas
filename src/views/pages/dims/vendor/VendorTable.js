@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllVendors, vendorStatus, vendorError, getVendors } from 'src/store/features/vendorSlice';
+import { selectAllVendors } from 'src/store/features/vendorSlice';
 
 
 const VendorTable = () => {
 
   const dispatch = useDispatch();
-  
-  const status = useSelector(vendorStatus);
-  const error = useSelector(vendorError);
   
   const vendors = useSelector(selectAllVendors);
 
@@ -19,19 +16,13 @@ const VendorTable = () => {
     }
   };
 
-  console.log(vendors);
-
   const [details, setDetails] = useState([])
   const columns = [
     { key: 'vendor_id', _style: { width: '15%' }},
     { key: 'vendor_name', _style: { width: '35%' }},
-    { key: 'email', sorter: false, _style: { width: '25%' }},
+    { key: 'date_updated', sorter: false, _style: { width: '25%' }},
     { key: 'status', _style: { width: '20%' }},
-    {
-      key: 'show_details',
-      label: 'Action',
-      _style: { width: '1%' }
-    },
+    { key: 'show_details', label: 'Action',  _style: { width: '1%' } },
   ]
 
   const getBadge = (status) => {
@@ -66,7 +57,6 @@ const VendorTable = () => {
         <CCard className="mb-4">
           <CCardHeader>
             <strong>Vendor</strong> <small>All Records</small>
-            
           </CCardHeader>
           <CCardBody>
             <CSmartTable
@@ -79,7 +69,7 @@ const VendorTable = () => {
             footer
             items={vendors}
             itemsPerPageSelect
-            itemsPerPage={5}
+            itemsPerPage={20}
             pagination
             scopedColumns={{
               status: (item) => (

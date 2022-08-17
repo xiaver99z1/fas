@@ -8,7 +8,6 @@ import DocsCallout from './DocsCallout'
 import DocsLink from './DocsLink'
 import DocsExample from './DocsExample'
 import ProBadge from './ProBadge'
-import DatabaseAPI from './DatabaseAPI'
 
 export {
   AppAside,
@@ -20,6 +19,5 @@ export {
   DocsCallout,
   DocsLink,
   DocsExample,
-  ProBadge,
-  DatabaseAPI
+  ProBadge
 }

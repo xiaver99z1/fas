@@ -1,39 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance } from 'src/store/middleware/directus';
 
-/*
-export const getVendors = createAsyncThunk(
-  'vendor/getVendors', 
-  async () => {
-    return await axiosInstance
-      .get(`/items/vendor/`)
-      .then((res) => res.data.data)
-      .catch((error) => error.response.request._response)
-  }
-);
-
-export const createVendor = createAsyncThunk(
-  "vendor/createVendor", 
-  async ({ updatedData, navigate }) => {
-    return await axiosInstance
-      .post(`/items/vendor/`, updatedData)
-      .then((res) =>  res.data.data)
-      .then(navigate('/vendors'))
-      .catch((error) => error.response.request._response)
-  }
-);
-
-export const updateVendor = createAsyncThunk(
-  "vendor/updateVendor", 
-  async (id, updatedData) => {
-    return await axiosInstance
-      .patch(`/items/vendor/${id}`, updatedData)
-      .then((res) =>res.data.data)
-      .catch((error) => error.response.request._response)
-  }
-);
-*/
-
 export const getVendors = createAsyncThunk('vendor/getVendors', async () => {
   try {
       const response = await axiosInstance.get(`items/vendor/`)
@@ -65,9 +32,6 @@ export const updateVendor = createAsyncThunk('vendor/updateVendor', async (initi
       console.log(response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
-
-      
-        
   } catch (err) {
       //return err.response.data;
       console.error("Error response:");
@@ -79,7 +43,7 @@ export const updateVendor = createAsyncThunk('vendor/updateVendor', async (initi
 });
 
 
-export const deletePost = createAsyncThunk('vendor/deleteVendor', async (initialPost) => {
+export const deleteVendor = createAsyncThunk('vendor/deleteVendor', async (initialPost) => {
   const { id } = initialPost;
   try {
       const response = await axiosInstance.delete(`/items/vendor//${id}`)
@@ -90,45 +54,24 @@ export const deletePost = createAsyncThunk('vendor/deleteVendor', async (initial
   }
 })
 
-export const deleteVendor = createAsyncThunk(
-  "vendor/deleteVendor",
-  async ({ id }) => {
-    return await axiosInstance
-    .delete(`/items/vendor/${id}`, updatedData)
-    .then((res) =>  res.data.data)
-    .then(navigate('/vendors'))
-    .catch((error) => error.response.request._response)
-  }
-);
-
 //Initial State
 const initialState = {
   vendors: [],
-  status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
 const vendorSlice = createSlice({
   name: 'vendor',
   initialState,
-  reducers: {
-    updateRecord: (state, action) => {
-      state.vendors.map((vendor, index) => {
-        if (vendor.vendor_id === action.payload.index) {
-          vendor.vendor_name = action.payload.vendor_name;
-          state.vendors
-        }
-      })
-    }
-
-  },
+  reducers: {},
   extraReducers: {
     [createVendor.pending]: (state) => {
       state.status = 'loading';
     },
     [createVendor.fulfilled]: (state, action) => {
-      state.vendors = [action.payload];
       state.status = 'success';
+      state.vendors = [action.payload];
     },
     [createVendor.rejected]: (state, payload) => {
       state.status = 'failed';
@@ -139,13 +82,13 @@ const vendorSlice = createSlice({
     },
     [updateVendor.fulfilled]: (state, action) => {
       state.status = 'success';
-      if (!action.payload?.id) {
+      if (!action.payload?.vendor_id) {
         console.log('Update could not complete')
         console.log(action.payload)
         return;
       }
       const { id } = action.payload;
-      action.payload.date = new Date().toISOString();
+      action.payload.date_updated = new Date().toISOString();
       const vendors = state.vendors.filter(post => post.vendor_id !== id);
       state.vendors = [...vendors, action.payload];
       
