@@ -20,7 +20,6 @@ import { selectVendorById, updateVendor } from '../../../../store/features/vendo
 import { getCurrencies } from '../../../../store/features/references/currencySlice';
 import { getCountries } from '../../../../store/features/references/countrySlice';
 import { getPaymentTerms } from '../../../../store/features/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/features/references/postinggroupsSlice';
 
 
 const VendorUpdate = () => {
