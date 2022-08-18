@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance } from 'src/store/middleware/directus';
 
-export const getPostingGroups = createAsyncThunk('postinggroup/getPostingGroups', async () => {
+export const getPaymentModes = createAsyncThunk('paymentmode/getPaymentModes', async () => {
   try {
-      const response = await axiosInstance.get(`items/posting_group/`)
+      const response = await axiosInstance.get(`items/payment_mode/`)
       return response.data.data
   } catch (err) {
       //err.response.data;
@@ -13,9 +13,9 @@ export const getPostingGroups = createAsyncThunk('postinggroup/getPostingGroups'
   }
 })
 
-export const createPostingGroup = createAsyncThunk('postinggroup/createPostingGroup', async (initialPost) => {
+export const createPaymentMode = createAsyncThunk('paymentmode/createPaymentMode', async (initialPost) => {
   try {
-      const response = await axiosInstance.post(`items/posting_group/`, initialPost)
+      const response = await axiosInstance.post(`items/payment_mode/`, initialPost)
       return response.data.data
   } catch (err) {
       //err.response.data;
@@ -25,10 +25,10 @@ export const createPostingGroup = createAsyncThunk('postinggroup/createPostingGr
   }
 });
 
-export const updatePostingGroup = createAsyncThunk('postinggroup/updatePostingGroup', async (initialPost) => {
-  const { posting_group_type } = initialPost;
+export const updatePaymentMode = createAsyncThunk('paymentmode/updatePaymentMode', async (initialPost) => {
+  const { payment_mode } = initialPost;
   try {
-      const response = await axiosInstance.patch(`items/posting_group/${posting_group_type}`, initialPost)
+      const response = await axiosInstance.patch(`/items/paymentmode/${payment_mode}`, initialPost)
       console.log(response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
@@ -43,10 +43,10 @@ export const updatePostingGroup = createAsyncThunk('postinggroup/updatePostingGr
 });
 
 
-export const deletePostingGroup = createAsyncThunk('postinggroup/deletePostingGroup', async (initialPost) => {
+export const deletePaymentMode = createAsyncThunk('paymentmode/deletePaymentMode', async (initialPost) => {
   const { id } = initialPost;
   try {
-      const response = await axiosInstance.delete(`items/postinggroup//${id}`)
+      const response = await axiosInstance.delete(`items/paymentmode//${id}`)
       if (response?.status === 200) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -56,31 +56,31 @@ export const deletePostingGroup = createAsyncThunk('postinggroup/deletePostingGr
 
 //Initial State
 const initialState = {
-  postinggroups: [],
+  paymentmodes: [],
   status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
-const postinggroupSlice = createSlice({
-  name: 'postinggroup',
+const paymentmodeSlice = createSlice({
+  name: 'paymentmode',
   initialState,
   reducers: {},
   extraReducers: {
-    [createPostingGroup.pending]: (state) => {
+    [createPaymentMode.pending]: (state) => {
       state.status = 'loading';
     },
-    [createPostingGroup.fulfilled]: (state, action) => {
+    [createPaymentMode.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.postinggroups = [action.payload];
+      state.paymentmodes = [action.payload];
     },
-    [createPostingGroup.rejected]: (state, payload) => {
+    [createPaymentMode.rejected]: (state, payload) => {
       state.status = 'failed';
       state.error = payload;
     },
-    [updatePostingGroup.pending]: (state) => {
+    [updatePaymentMode.pending]: (state) => {
       state.status = 'loading';
     },
-    [updatePostingGroup.fulfilled]: (state, action) => {
+    [updatePaymentMode.fulfilled]: (state, action) => {
       state.status = 'success';
       if (!action.payload?.posting_group_type) {
         console.log('Update could not complete')
@@ -89,47 +89,47 @@ const postinggroupSlice = createSlice({
       }
       const { id } = action.payload;
       action.payload.date_updated = new Date().toISOString();
-      const postinggroups = state.postinggroups.filter(post => post.posting_group_type !== id);
-      state.postinggroups = [...postinggroups, action.payload];
+      const paymentmodes = state.paymentmodes.filter(post => post.payment_mode !== id);
+      state.paymentmodes = [...paymentmodes, action.payload];
       
     },
-    [updatePostingGroup.rejected]: (state, payload) => {
+    [updatePaymentMode.rejected]: (state, payload) => {
       state.status = 'failed';
       state.error = payload;
     },
-    [getPostingGroups.pending]: (state) => {
+    [getPaymentModes.pending]: (state) => {
       state.status = 'loading';
     },
-    [getPostingGroups.fulfilled]: (state, action) => {
+    [getPaymentModes.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.postinggroups = action.payload;
+      state.paymentmodes = action.payload;
     },
-    [getPostingGroups.rejected]: (state, payload) => {
+    [getPaymentModes.rejected]: (state, payload) => {
       state.status = 'failed';
       state.error = payload;
     },
-    [deletePostingGroup.pending]: (state) => {
+    [deletePaymentMode.pending]: (state) => {
       state.status = 'loading';
     },
-    [deletePostingGroup.fulfilled]: (state, action) => {
+    [deletePaymentMode.fulfilled]: (state, action) => {
       state.status = 'success';
-      if (!action.payload?.posting_group_type) {
+      if (!action.payload?.payment_mode) {
         console.log('Delete could not complete')
         console.log(action.payload)
         return;
       }
       const { id } = action.payload;
-      const postinggroups = state.postinggroups.filter(post => post.posting_group_type !== id);
-      state.postinggroups = postinggroups;
+      const paymentmode = state.posts.filter(post => post.payment_mode !== id);
+      state.paymentmodes = paymentmode;
     },
-    [deletePostingGroup.rejected]: (state, payload) => {
+    [deletePaymentMode.rejected]: (state, payload) => {
       state.status = 'failed';
       state.error = payload;
     },
   }
 })
 
-export default postinggroupSlice.reducer;
+export default paymentmodeSlice.reducer;
 
-export const selectAllPostingGroup = (state) => state.postinggroup.postinggroups;
-export const selectPostingGroupType = (state, code) => state.postinggroup.postinggroups.find(post => post.posting_group_type === code);
+export const selectAllPaymentMode = (state) => state.paymentmode.paymentmodes;
+export const selectPaymentMode = (state, code) => state.paymentmode.paymentmodes.find(post => post.payment_mode === code);
