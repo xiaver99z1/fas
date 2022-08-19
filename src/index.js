@@ -1,29 +1,30 @@
 import React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import 'react-app-polyfill/stable';
 import 'core-js';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import store from './store';
-import { getProducts } from './store/features/productSlice';
-import { getVendors } from './store/features/vendorSlice';
 
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import AppStore from './store';
+import reportWebVitals from './reportWebVitals';
+// import { getProducts } from './store/features/productSlice';
+// import { getVendors } from './store/features/vendorSlice';
+
+const { store, persistor } = AppStore;
 
 const container = document.getElementById('root');
-
-// Create a root.
-const root = ReactDOMClient.createRoot(container);
-
-// Initial render: Render an element to the root.
+const root = createRoot(container);
 root.render(
     <Provider store={store}>
-      <App />
+      <PersistGate persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
 );
 
-store.dispatch(getProducts());
-store.dispatch(getVendors());
+// store.dispatch(getProducts());
+// store.dispatch(getVendors());
 
 
 // If you want to start measuring performance in your app, pass a function
