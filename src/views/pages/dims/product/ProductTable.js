@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProducts } from 'src/store/features/productSlice';
+import { getProducts } from 'src/store/reducers/productSlice';
 
 
 const ProductTable = () => {

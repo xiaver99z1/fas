@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllVendors } from 'src/store/features/vendorSlice';
+import { getVendors, selectVendor } from './../../../../store/reducers/vendorSlice';
 
 
 const VendorTable = () => {
 
   const dispatch = useDispatch();
   
-  const vendors = useSelector(selectAllVendors);
+  const { vendors } = useSelector((state) => state.vendor);
+
+  useEffect(() => {
+      dispatch(getVendors());
+  },[dispatch]);
+
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {

@@ -1,19 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
 import changeState from "./store/coreuistate/changeState";
-import customerSlice from "./store/features/customerSlice";
-import vendorSlice from "./store/features/vendorSlice";
-import productSlice from "./store/features/productSlice";
-import companySlice from "./store/features/companySlice";
-import userSlice from "./store/features/userSlice";
-import fasreferenceSlice from "./store/features/references/fasrefereceSlice";
-import currencySlice from "./store/features/references/currencySlice";
-import countrySlice from "./store/features/references/countrySlice";
-import paymenttermSlice from "./store/features/references/paymenttermSlice";
-import postinggroupSlice from "./store/features/references/postinggroupSlice";
-import paymentmodeSlice from "./store/features/references/paymentmodeSlice";
-import authSlice from "./store/features/authSlice";
+import customerSlice from "./store/reducers/customerSlice";
+import vendorSlice from "./store/reducers/vendorSlice";
+import productSlice from "./store/reducers/productSlice";
+import companySlice from "./store/reducers/companySlice";
+import userSlice from "./store/reducers/userSlice";
+import fasreferenceSlice from "./store/reducers/references/fasrefereceSlice";
+import currencySlice from "./store/reducers/references/currencySlice";
+import countrySlice from "./store/reducers/references/countrySlice";
+import paymenttermSlice from "./store/reducers/references/paymenttermSlice";
+import postinggroupSlice from "./store/reducers/references/postinggroupSlice";
+import paymentmodeSlice from "./store/reducers/references/paymentmodeSlice";
+import authSlice from "./store/reducers/authSlice";
 
-const store = configureStore({
+const store1 = configureStore({
   reducer: {
     coreuistate: changeState,
     company: companySlice,
@@ -31,4 +31,4 @@ const store = configureStore({
   },
 })
 
-export default store;
+export default store1;

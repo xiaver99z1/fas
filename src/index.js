@@ -8,8 +8,6 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppStore from './store';
 import reportWebVitals from './reportWebVitals';
-// import { getProducts } from './store/features/productSlice';
-// import { getVendors } from './store/features/vendorSlice';
 
 const { store, persistor } = AppStore;
 

@@ -14,7 +14,7 @@ import {
   CFormLabel,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct } from '../../../../store/features/productSlice';
+import { createProduct } from '../../../../store/reducers/productSlice';
 import { useNavigate } from 'react-router-dom'
 
 

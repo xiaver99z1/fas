@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCompanies, selectAllCompanies } from 'src/store/features/companySlice';
+import { getCompanies, selectAllCompanies } from 'src/store/reducers/companySlice';
 
 
 const CompanyTable = () => {

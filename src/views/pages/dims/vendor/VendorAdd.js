@@ -15,13 +15,13 @@ import {
   CFormFeedback,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { createVendor } from '../../../../store/features/vendorSlice';
+import { createVendor } from '../../../../store/reducers/vendorSlice';
 import { useNavigate } from 'react-router-dom'
-import { getCurrencies } from '../../../../store/features/references/currencySlice';
-import { getCountries } from '../../../../store/features/references/countrySlice';
-import { getPaymentTerms } from '../../../../store/features/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/features/references/postinggroupSlice';
-import { getPaymentModes } from '../../../../store/features/references/paymentmodeSlice';
+import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { getCountries } from '../../../../store/reducers/references/countrySlice';
+import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
+import { getPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 const VendorAdd = () => {
   

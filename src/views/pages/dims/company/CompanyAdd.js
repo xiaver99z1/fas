@@ -17,7 +17,7 @@ import {
   CHeaderText,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { createCompany } from '../../../../store/features/companySlice'
+import { createCompany } from '../../../../store/reducers/companySlice'
 import { useNavigate } from 'react-router-dom'
 
 const CompanyAdd = () => {

@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import { axiosInstance } from 'src/store/middleware/directus';
 
-//Methods for Entities
-const userAdapter = createEntityAdapter();
 
 //Initial State
 const initialState = {

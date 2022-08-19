@@ -16,12 +16,12 @@ import {
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { selectVendorById, updateVendor } from '../../../../store/features/vendorSlice';
-import { getCurrencies } from '../../../../store/features/references/currencySlice';
-import { getCountries } from '../../../../store/features/references/countrySlice';
-import { getPaymentTerms } from '../../../../store/features/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/features/references/postinggroupSlice';
-import { getPaymentModes } from '../../../../store/features/references/paymentmodeSlice';
+import { getVendors, selectVendorById, updateVendor } from './../../../../store/reducers/vendorSlice';
+import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { getCountries } from '../../../../store/reducers/references/countrySlice';
+import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
+import { getPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 
 const VendorUpdate = () => {
@@ -31,19 +31,20 @@ const VendorUpdate = () => {
   //const formatYmd = date => date.toISOString().slice(0, 10);
 
   const { id } = useParams();
+  
+  //Load data
+  useEffect(() => {
+    dispatch(getVendors());
+  },[dispatch]);
+
 
   //Get references - initial data
-  const data = useSelector((state) => selectVendorById(state, Number(id)));
-  const showCurrencies = useSelector(state => state.currency.currencies);
-  const showCountries = useSelector(state => state.country.countries);
-  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
-  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
-  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
-
-  const apiStatus = useSelector((state) => state.vendor.status);
+  const { status, vendors } = useSelector((state) => state.vendor);
+  //const data = useSelector((state) => selectVendorById(state, Number(id)));
+  //const data = useSelector((state) => state.vendor.data);
 
   useEffect(() => {
-    if(apiStatus === 'success') {
+    if(status === 'success') {
       dispatch(getCurrencies());
       dispatch(getCountries());
       dispatch(getPaymentTerms());
@@ -51,6 +52,13 @@ const VendorUpdate = () => {
       dispatch(getPaymentModes());
     }
   },[dispatch])
+
+  const showCurrencies = useSelector(state => state.currency.currencies);
+  const showCountries = useSelector(state => state.country.countries);
+  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
+  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
+  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
+
 
   //Form data
   const [vendorId, setVendorId] = useState(id);
@@ -85,7 +93,11 @@ const VendorUpdate = () => {
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
+
   const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle' && updated === false;
+
+
+  console.log(vendors, status);
 
   const onSavePostClicked = () => {  
     if (canSave) {

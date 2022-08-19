@@ -10,7 +10,7 @@ import {
   CRow,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser } from '../../../../store/features/userSlice';
+import { createUser } from '../../../../store/reducers/userSlice';
 import { useNavigate } from 'react-router-dom'
 
 const UserAdd = () => {

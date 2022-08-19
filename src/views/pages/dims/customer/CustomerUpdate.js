@@ -19,7 +19,7 @@ import {
   CHeaderText,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { getCustomerById } from 'src/store/features/customerSlice';
+import { getCustomerById } from 'src/store/reducers/customerSlice';
 import { useParams } from 'react-router-dom';
 
 

@@ -119,7 +119,7 @@ const vendorSlice = createSlice({
         return;
       }
       const { id } = action.payload;
-      const vendors = state.posts.filter(post => post.id !== id);
+      const vendors = state.posts.filter(post => post.vendor_id !== id);
       state.vendors = vendors;
     },
     [deleteVendor.rejected]: (state, payload) => {
@@ -130,22 +130,7 @@ const vendorSlice = createSlice({
 })
 
 
-export const {updateRecord} = vendorSlice.actions;
-
 export default vendorSlice.reducer;
 
-
-export const selectAllVendors = (state) => state.vendor.vendors;
-export const vendorStatus = (state) => state.vendor.status;
-export const vendorError = (state) => state.vendor.error;
+export const selectVendor = (state) => state.vendor;
 export const selectVendorById = (state, id) => state.vendor.vendors.find(post => post.vendor_id === id);
-
-/*export const selectVendorById = (state, id) => {
-  if (Array.isArray(state.vendor.vendors)) {
-    const r3 = state.vendor.vendors.find(post => post.vendor_id === id);
-    console.log(r3);
-    return r3;
-  } else {
-    console.log('arr is not an array', state.vendor.vendors);
-  }
-}*/

@@ -20,7 +20,7 @@ import {
   CDatePicker,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductById, selectAllProducts, getProductStatus, getProductError } from 'src/store/features/productSlice';
+import { getProductById, selectAllProducts, getProductStatus, getProductError } from 'src/store/reducers/productSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 
 

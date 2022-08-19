@@ -13,8 +13,8 @@ import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
 import { useSelector, useDispatch } from 'react-redux'
-import { createVendor, updateVendor } from '../../store/features/vendorSlice';
-import { getProducts } from '../../store/features/productSlice';
+import { createVendor, updateVendor } from '../../store/reducers/vendorSlice';
+import { getProducts } from '../../store/reducers/productSlice';
 
 
 const WidgetsDropdown = () => {

@@ -17,7 +17,7 @@ import {
   CHeaderText,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { getCompanyById, selectAllCompanies } from 'src/store/features/companySlice';
+import { getCompanyById, selectAllCompanies } from 'src/store/reducers/companySlice';
 import { useParams, useNavigate } from 'react-router-dom'
 
 const CompanyUpdate = () => {
