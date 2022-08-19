@@ -28,7 +28,7 @@ const VendorUpdate = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const formatYmd = date => date.toISOString().slice(0, 10);
+  //const formatYmd = date => date.toISOString().slice(0, 10);
 
   const { id } = useParams();
 
@@ -50,23 +50,7 @@ const VendorUpdate = () => {
       dispatch(getPostingGroups());
       dispatch(getPaymentModes());
     }
-  },[])
-
-  console.log({apiStatus, showCountries});
-  
-  /*
-  if (Array.isArray(showFasRef)) {
-    //const r3 = data.find(element => element.vendor_id === id);
-    showFasRef && showFasRef.map((ref, index) => { 
-      ref.ref_type_code;
-      console.log({index});
-    });
-    
-  } else {
-    console.log('arr is not an array', showFasRef);
-  }
-  */
-  
+  },[dispatch])
 
   //Form data
   const [vendorId, setVendorId] = useState(id);
@@ -97,49 +81,16 @@ const VendorUpdate = () => {
   const [updated_by, setUpdatedBy] = useState(data?.updated_by);
   const [date_created, setDateCreated] = useState(data?.date_created);
   
-
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
-  const canSave = [vendorName, emailAddress, city, province, contact_person_first_name, contact_person_last_name, vendorStatus].every(Boolean) && requestStatus === 'idle' && updated === false;
-
+  const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle' && updated === false;
 
   const onSavePostClicked = () => {  
     if (canSave) {
       try {
         setRequestStatus('pending');
-        
-        console.log({vendor_id: vendorId, 
-          vendor_name: vendorName, 
-          vendor_type: vendorType, 
-          email: emailAddress, 
-          phone_number: phoneNumber,
-          mobile_number: mobileNumber,
-          address1,
-          address2,
-          city,
-          province,
-          post_code,
-          country_abbr,
-          payment_terms,
-          payment_mode,
-          contact_person_first_name,
-          contact_person_last_name,
-          bank_name,
-          bank_account_number,
-          currency_code,
-          business_posting_group,
-          vat_posting_group,
-          vendor_posting_group,
-          website,
-          status: vendorStatus,
-          created_by,
-          updated_by,
-          date_created,
-          date_updated: new Date().toISOString()
-        });
-
         dispatch(updateVendor({vendor_id: vendorId, 
           vendor_name: vendorName, 
           vendor_type: vendorType, 
@@ -215,6 +166,10 @@ const VendorUpdate = () => {
       onSavePostClicked();
     }
     setValidated(true);
+  }
+
+  const handleBack = () => {
+    return navigate('/vendors');
   }
 
   return (
@@ -535,6 +490,15 @@ const VendorUpdate = () => {
                 <CButton 
                   color="primary" 
                   type="button"
+                  onClick={handleBack}
+                >
+                  Back
+                </CButton>
+              </CCol>
+              <CCol xs={2}>
+                <CButton 
+                  color="primary" 
+                  type="button"
                   onClick={onSavePostClicked}
                   disabled={!canSave}
                 >
@@ -547,7 +511,6 @@ const VendorUpdate = () => {
        </CCard>
      </CCol>
    </CRow>
-  
 
  )
 }
