@@ -10,6 +10,7 @@ import currencySlice from "./store/features/references/currencySlice";
 import countrySlice from "./store/features/references/countrySlice";
 import paymenttermSlice from "./store/features/references/paymenttermSlice";
 import postinggroupSlice from "./store/features/references/postinggroupSlice";
+import paymentmodeSlice from "./store/features/references/paymentmodeSlice";
 import authSlice from "./store/features/authSlice";
 
 const store = configureStore({
@@ -24,7 +25,8 @@ const store = configureStore({
     currency: currencySlice,
     country: countrySlice,
     paymentterm: paymenttermSlice,
-    ppostinggroup: postinggroupSlice,
+    paymentmode: paymentmodeSlice,
+    postinggroup: postinggroupSlice,
     auth: authSlice,
   },
 })

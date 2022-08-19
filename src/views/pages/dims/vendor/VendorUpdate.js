@@ -20,6 +20,8 @@ import { selectVendorById, updateVendor } from '../../../../store/features/vendo
 import { getCurrencies } from '../../../../store/features/references/currencySlice';
 import { getCountries } from '../../../../store/features/references/countrySlice';
 import { getPaymentTerms } from '../../../../store/features/references/paymenttermSlice';
+import { getPostingGroups } from '../../../../store/features/references/postinggroupSlice';
+import { getPaymentModes } from '../../../../store/features/references/paymentmodeSlice';
 
 
 const VendorUpdate = () => {
@@ -35,6 +37,7 @@ const VendorUpdate = () => {
   const showCurrencies = useSelector(state => state.currency.currencies);
   const showCountries = useSelector(state => state.country.countries);
   const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
+  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
   const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
 
   const apiStatus = useSelector((state) => state.vendor.status);
@@ -44,8 +47,8 @@ const VendorUpdate = () => {
       dispatch(getCurrencies());
       dispatch(getCountries());
       dispatch(getPaymentTerms());
-      dispatch(getPostingGroup());
-      dispatch(getPaymentMode());
+      dispatch(getPostingGroups());
+      dispatch(getPaymentModes());
     }
   },[])
 
@@ -448,11 +451,9 @@ const VendorUpdate = () => {
                   name="payment_mode"
                   onChange={(e) => setPaymentMode(e.target.value)}
                   label="Payment Mode"
-                >
-                  <option>Bank Transfer</option>
-                  <option>COD</option>
-                  <option>Mobile Payment</option>
-                </CFormSelect>
+                  defaultValue={payment_mode}
+                  options={showPaymentModes && showPaymentModes.map((post) => post.payment_mode)}
+                />
               </CCol>
             </CRow>
             <CRow xs={{ gutterY: 5 }}>
@@ -465,6 +466,7 @@ const VendorUpdate = () => {
                   defaultValue={business_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setBusinessPostingGroup(e.target.value)}
+                  options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
                 />
               </CCol>
               <CCol md={4}>
