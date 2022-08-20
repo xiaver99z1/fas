@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { SignUp, ClearSignUp } from '../../../store/reducers/users';
+import { 
+  SignUp, 
+  ClearSignUp 
+} from '../../../store/reducers/users';
 import { Link } from "react-router-dom";
-import bcrypt from 'bcryptjs'
 
 import {
   CButton,
@@ -26,14 +28,15 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 const Register = () => {
   const dispatch = useDispatch();
 
-  // SALT should be created ONE TIME upon sign up
-  const salt = bcrypt.genSaltSync(10)
-
   useEffect(() => {
     dispatch(ClearSignUp())
   }, [dispatch])
 
-  const { signing_up, errors_sign_up, success_sign_up } = useSelector((state) => state.user);
+  const { 
+    signing_up, 
+    errors_sign_up, 
+    success_sign_up 
+  } = useSelector((state) => state.user);
 
   const [validated, setValidated] = useState(false)
 
@@ -47,21 +50,17 @@ const Register = () => {
     event.preventDefault()
     event.stopPropagation()
 
-    const hashedPassword = bcrypt.hashSync(password,salt)
-
     const payload = {
       first_name,
       last_name,
       email,
-      password:hashedPassword,
+      password,
       role: COMPANY_ROLE,
       status: 'active',
-      provider: ''
+      provider: 'default'
     }
 
-    dispatch(SignUp(payload)).then(()=>{
-      setValidated(true)
-    })
+    dispatch(SignUp(payload))
   }
 
   const renderRegisterPage = () => {

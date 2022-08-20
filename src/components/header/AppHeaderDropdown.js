@@ -16,21 +16,26 @@ import {
   cilEnvelopeOpen,
   cilFile,
   cilLockLocked,
+  cilAccountLogout,
   cilSettings,
   cilTask,
   cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
+
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
-const AppHeaderDropdown = () => {
+function AppHeaderDropdown (props) {
+  const { onLogout } = props
+
   return (
+    <>
     <CDropdown variant="nav-item" alignment="end">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
         <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
-      <CDropdownMenu className="pt-0">
+      <CDropdownMenu className="pt-0" container="body">
         <CDropdownHeader className="bg-light dark:bg-white dark:bg-opacity-10 fw-semibold py-2">
           Account
         </CDropdownHeader>
@@ -57,8 +62,13 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilLockLocked} className="me-2" />
           Lock Account
         </CDropdownItem>
+        <CDropdownItem onClick={onLogout} >
+          <CIcon icon={cilAccountLogout} className="me-2" />
+          Logout
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
+    </>
   )
 }
 
