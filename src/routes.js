@@ -40,7 +40,7 @@ const routes = [
   { path: '/vendor/:id', name: 'Update Vendor', element: VendorUpdateForm },
   { path: '/products', name: 'All Products', element: ProductList },
   { path: '/product/add', name: 'Add New Product', element: ProductAddForm },
-  { path: '/product/:productid', exact: true, name: 'Update Product', element: ProductUpdateForm },
+  { path: '/product/:id', exact: true, name: 'Update Product', element: ProductUpdateForm },
   { path: '/companies', name: 'All Companies', element: CompanyList },
   { path: '/company/add', name: 'Add New Company', element: CompanyAddForm },
   { path: '/company/:companyid', exact: true, name: 'Update Company', element: CompanyUpdateForm },
