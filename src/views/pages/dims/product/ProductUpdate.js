@@ -20,36 +20,37 @@ import {
   CDatePicker,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductById, selectAllProducts, getProductStatus, getProductError } from 'src/store/reducers/productSlice';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getProducts, getProductId, updateProduct, selectProduct, selectProductId } from './../../../../store/reducers/productSlice';
+import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
 
 
 const ProductUpdate = () => {
   
   //Get router params
-  const { productid } = useParams();
+  const { id } = useParams();
 
   //Get initial data
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isSuccess = useSelector(getProductStatus);
-  const data = useSelector(selectAllProducts);
-  const error = useSelector(getProductError);
-  const [addRequestStatus, setAddRequestStatus] = useState(isSuccess)
-
-  console.log({ addRequestStatus, data, error, isSuccess })
+  const [record, setRecord] = useState(data);
 
   //Get Product 
   useEffect(() => {
-    dispatch(getProductById({ id: productid }));
-  },[isSuccess]);
+    //dispatch(getProducts());
+    dispatch(getProductId(id));
 
-console.log(data)
-console.log(JSON.stringify(productid))
+    dispatch(getPostingGroups());
+  },[dispatch]);
+
+  const data = useSelector(state => selectProductId(state, Number(id)));
+  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
+
 
   //Set Fields
-  const [product_name, setProductName] = useState('');
-  const [company_id, setCompanyId] = useState(''); //options on company dim
+
+  const [company_id, setCompanyId] = useState('1'); //options on company dim
+  const [productName, setProductName] = useState('');
   const [upc, setUpc] = useState('');
   const [upc_barcode, setUpcBarcode] = useState(''); //connect this to FAS Reference Dim
   const [sku, setSku] = useState('');
@@ -74,51 +75,58 @@ console.log(JSON.stringify(productid))
   const [gen_posting_group, setGenPostingGroup] = useState('');
   const [input_vat_posting_group, setInputVatPostingGroup] = useState('');
   const [output_vat_posting_group, setOutputVatPostingGroup] = useState('');
+  const [productStatus, setProductStatus] = useState('');
 
-  //Form Validation 
-  const [validated, setValidated] = useState(false)
+  //Form validation 
+  const [validated, setValidated] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [requestStatus, setRequestStatus] = useState('idle');
   
-  const canSave = [product_name, category, sku].every(Boolean) && addRequestStatus === true;
+  const canSave = [company_id, category, sku, productStatus].every(Boolean) && requestStatus === 'idle';
   
+  console.log({data, record, canSave, company_id, productName, category, productStatus})
+
   const onSavePostClicked = () => {  
     if (canSave) {
       try {
-        setAddRequestStatus(true)
-        dispatch(createProduct(
-          { 
-              product_name: product_name,
-              company_id: setCompanyId(data.company_id),
-              upc: upc,
-              upc_barcode: upc_barcode,
-              sku: sku,
-              sku_barcode: sku_barcode,
-              category: category,
-              sub_category: sub_category,
-              uom: uom,
-              size: size,
-              packaging_length: packaging_length,
-              packaging_width: packaging_width,
-              packaging_height: packaging_height,
-              net_weight: net_weight,
-              gross_weight: gross_weight,
-              ingredients: ingredients,
-              nutrition_facts: nutrition_facts,
-              unit_type: unit_type,
-              qty_per_unit: qty_per_unit,
-              eff_start_date: new Date(),
-              eff_end_date: new Date(),
-              cs_product_id: cs_product_id,
-              inventory_posting_group: inventory_posting_group,
-              gen_posting_group: gen_posting_group,
-              input_vat_posting_group: input_vat_posting_group,
-              output_vat_posting_group: output_vat_posting_group,
-              status: 'active',
-              created_by: 'test',
-              updated_by: 'test',
-              date_created: new Date(),
-              date_updated: new Date(),
-            
+        setRequestStatus('pending');
+        console.log({productName, upc, sku, size})
+
+        dispatch(updateProduct({   
+            product_id: id, 
+            product_name: productName,
+            company_id,
+            upc,
+            upc_barcode,
+            sku,
+            sku_barcode,
+            category,
+            sub_category,
+            uom,
+            size,
+            packaging_length,
+            packaging_width,
+            packaging_height,ht,
+            net_weight,
+            gross_weight,
+            ingredients,
+            nutrition_facts,
+            unit_type,
+            qty_per_unit,
+            eff_start_date,
+            eff_end_date,
+            cs_product_id,
+            inventory_posting_group,
+            gen_posting_group,
+            input_vat_posting_group,
+            output_vat_posting_group,
+            status: productStatus,
+            created_by: 'test',
+            updated_by: 'test',
+            date_created: new Date().toISOString(),
+            date_updated: new Date().toISOString(),
           })).unwrap()
+
             setProductName('')
             setCompanyId('')
             setUpc('')
@@ -145,34 +153,38 @@ console.log(JSON.stringify(productid))
             setGenPostingGroup('')
             setInputVatPostingGroup('')
             setOutputVatPostingGroup('')
+            setProductStatus('')
+
+            navigate(`/product/${id}`)
       
       } catch (err) {
         console.error('Failed to save the post', err)
       } finally {
-        setAddRequestStatus(false)
-        
+        setRequestStatus('idle');
       }
     }
   }
 
   //Submit Form
-  const handleSubmit = (event) => {
-    const form = event.currentTarget
+  const handleSubmit = (e) => {
+    const form = e.currentTarget
     if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+      e.preventDefault();
+      eveent.stopPropagation();
     }
     setValidated(true);
-    navigate(`/products`)
   }
 
+  const handleBack = () => {
+    return navigate('/products');
+  }
 
   return (
     <CRow>
      <CCol xs={12}>
        <CCard className="mb-4">
          <CCardHeader>
-           <strong>PRODUCT DETAILS</strong> <small></small>
+          <CHeaderText className="header-brand mb-0 h1">Product ID: {id}</CHeaderText>
          </CCardHeader>
          <CCardBody>
            <CForm className="row g-3 needs-validation"
@@ -180,36 +192,15 @@ console.log(JSON.stringify(productid))
              validated={validated}
              onSubmit={handleSubmit}
            >
-             <CCol md={2}>
-              <CFormInput
-                 label="Company Id" 
-                 type="text"
-                 id="company_id"
-                 feedbackValid="Looks good!"
-                 value={data.company_id}
-                 onChange={(e) => setCompanyId(e.target.value)}
-                 disabled
-               />
-             </CCol>
-             <CCol md={6}>
+            <CRow xs={{ gutterY: 2 }}>
+             <CCol md={7}>
               <CFormInput
                  label="Product Name" 
                  type="text"
                  id="product_name"
                  feedbackValid="Looks good!"
-                 value={data.product_name}
+                 defaultValue={productName}
                  onChange={(e) => setProductName(e.target.value)}
-                 required
-               />
-             </CCol>
-             <CCol md={2}>
-              <CFormInput
-                 label="UOM" 
-                 type="text"
-                 id="uom"
-                 feedbackValid="Looks good!"
-                 value={data.uom}
-                 onChange={(e) => setUom(e.target.value)}
                  required
                />
              </CCol>
@@ -219,34 +210,68 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="cs_Product_id"
                  feedbackValid="Looks good!"
-                 value={data.cs_product_id}
+                 defaultValue={cs_product_id}
                  onChange={(e) => setCsProductId(e.target.value)}
                  required
                />
              </CCol>
-             <CCol md={12}></CCol>
              <CCol md={3}>
+               <CFormSelect 
+                id="productStatus"
+                label="Status" 
+                defaultValue={productStatus} 
+                onChange={(e) => setProductStatus(e.target.value)} 
+                required>
+                  <option>active</option>
+                  <option>deleted</option>
+                  <option>pending</option>
+               </CFormSelect>
+             </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 1 }}>
+             <CCol md={4}>
+              <CFormSelect 
+                aria-label="Select Category"
+                label="Category" 
+                id="category"
+                feedbackValid="Looks good!"
+                defaultValue={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                <option>Select Category</option>
+                <option>{category}</option>
+              </CFormSelect>
+             </CCol>
+             <CCol md={4}>
+              <CFormSelect 
+                aria-label="Select Sub-Category"
+                label="Category" 
+                id="sub_category"
+                feedbackValid="Looks good!"
+                defaultValue={sub_category}
+                onChange={(e) => setSubCategory(e.target.value)}
+                required
+              >
+                <option>Select Sub-category</option>
+                <option>{sub_category}</option>
+              </CFormSelect>
+             </CCol>
+             <CCol md={4}>
               <CFormInput
-                 label="Category" 
+                 label="UOM" 
                  type="text"
-                 id="category"
+                 id="uom"
                  feedbackValid="Looks good!"
-                 value={data.category}
-                 onChange={(e) => setCategory(e.target.value)}
+                 defaultValue={uom}
+                 onChange={(e) => setUom(e.target.value)}
                  required
                />
              </CCol>
-             <CCol md={3}>
-              <CFormInput
-                 label="Sub Category" 
-                 type="text"
-                 id="sub_category"
-                 feedbackValid="Looks good!"
-                 value={data.sub_category}
-                 onChange={(e) => setSubCategory(e.target.value)}
-               />
-             </CCol>
-             <CCol md={12}></CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 2 }}>
              <CCol md={3}>
               <CFormInput
                  label="UPC" 
@@ -266,13 +291,16 @@ console.log(JSON.stringify(productid))
                  onChange={(e) => setUpcBarcode(e.target.value)}
                />
              </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 2 }}>
              <CCol md={3}>
               <CFormInput
                  label="SKU" 
                  type="text"
                  id="sku"
                  feedbackValid="Looks good!"
-                 value={data.sku}
+                 defaultValue={sku}
                  onChange={(e) => setSku(e.target.value)}
                  required
                />
@@ -283,21 +311,16 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="sku_barcode"
                  feedbackValid="Looks good!"
-                 value={data.sku_barcode}
+                 defaultValue={sku_barcode}
                  onChange={(e) => setSkuBarcode(e.target.value)}
                  required
                />
              </CCol>
-             <CCol md={12}></CCol>
-             <CCol md={3}>
-              <CFormInput
-                 label="Size" 
-                 type="text"
-                 id="size"
-                 feedbackValid="Looks good!"
-                 value={data.size}
-                 onChange={(e) => setSize(e.target.value)}
-               />
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }}>
+             <CCol md={12} className="bg-light p-3">
+              <CHeaderText className="header-brand mb-0 h3">Packaging Details</CHeaderText>
              </CCol>
              <CCol md={3}>
               <CFormInput
@@ -305,7 +328,7 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="packaging_length"
                  feedbackValid="Looks good!"
-                 value={data.packaging_length}
+                 defaultValue={packaging_length}
                  onChange={(e) => setPackagingLength(e.target.value)}
                />
              </CCol>
@@ -315,7 +338,7 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="packaging_width"
                  feedbackValid="Looks good!"
-                 value={data.packaging_width}
+                 defaultValue={packaging_width}
                  onChange={(e) => setPackagingWidth(e.target.value)}
                />
              </CCol>
@@ -325,18 +348,30 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="packaging_height"
                  feedbackValid="Looks good!"
-                 value={data.packaging_height}
+                 defaultValue={packaging_height}
                  onChange={(e) => setPackagingHeight(e.target.value)}
                />
              </CCol>
-             <CCol md={12}></CCol>
+             <CCol md={3}>
+              <CFormInput
+                 label="Size" 
+                 type="text"
+                 id="size"
+                 feedbackValid="Looks good!"
+                 defaultValue={size}
+                 onChange={(e) => setSize(e.target.value)}
+               />
+             </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 1 }}>
              <CCol md={3}>
               <CFormInput
                  label="Net Weight" 
                  type="text"
                  id="net_weight"
                  feedbackValid="Looks good!"
-                 value={data.net_weight}
+                 defaultValue={net_weight}
                  onChange={(e) => setNetWeight(e.target.value)}
                />
              </CCol>
@@ -346,7 +381,7 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="gross_weight"
                  feedbackValid="Looks good!"
-                 value={data.gross_weight}
+                 defaultValue={gross_weight}
                  onChange={(e) => setGrossWeight(e.target.value)}
                />
              </CCol>
@@ -356,7 +391,7 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="unit_type"
                  feedbackValid="Looks good!"
-                 value={data.unit_type}
+                 defaultValue={unit_type}
                  onChange={(e) => setUnitType(e.target.value)}
                />
              </CCol>
@@ -366,11 +401,16 @@ console.log(JSON.stringify(productid))
                  type="text"
                  id="qty_per_unit"
                  feedbackValid="Looks good!"
-                 value={data.qty_per_unit}
+                 defaultValue={qty_per_unit}
                  onChange={(e) => setQtyPerUnit(e.target.value)}
                />
              </CCol>
-             <CCol md={12}></CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }}>
+             <CCol md={12} className="bg-light p-3">
+              <CHeaderText className="header-brand mb-0 h3">Oother Details</CHeaderText>
+             </CCol>
              <CCol md={6}>
               <CFormTextarea
                   id="ingredients"
@@ -378,7 +418,7 @@ console.log(JSON.stringify(productid))
                   rows="5"
                   text="One ingredient per line"
                   onChange={(e) => setIngredients(e.target.value)}
-                  value={data.ingredients}
+                  defaultValue={ingredients}
                 ></CFormTextarea>
              </CCol>
              <CCol md={6}>
@@ -388,58 +428,72 @@ console.log(JSON.stringify(productid))
                   rows="5"
                   text="One nutrition fact per line"
                   onChange={(e) => setNutritionFacts(e.target.value)}
-                  value={data.nutrition_facts}
+                  defaultValue={nutrition_facts}
                 ></CFormTextarea>
              </CCol>
-             <CCol md={12}></CCol>
-             <CCol md={3}>
-               <CFormInput
-                 label="Inventory Posting Group" 
-                 type="text"
-                 id="inventory_posting_group"
-                 feedbackValid="Looks good!"
-                 value={data.inventory_posting_group}
-                 onChange={(e) => setInventoryPostingGroup(e.target.value)}
-               />
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }}>
+             <CCol md={12} className="bg-light p-3">
+              <span className="header-brand mb-0 h1">Posting Group</span>
              </CCol>
              <CCol md={3}>
-               <CFormInput
-                 label="Gen Posting Group" 
-                 type="text"
-                 id="gen_posting_group"
-                 feedbackValid="Looks good!"
-                 value={data.gen_posting_group}
-                 onChange={(e) => setGenPostingGroup(e.target.value)}
-               />
+              <CFormSelect
+                label="Inventory Posting Group"
+                type="text"
+                id="inventory_posting_group"
+                feedbackValid="Looks good!"
+                defaultValue={inventory_posting_group}
+                onChange={(e) => setInventoryPostingGroup(e.target.value)}
+                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+              />
              </CCol>
              <CCol md={3}>
-               <CFormInput
-                 label="Input VAT Posting Group" 
-                 type="text"
-                 id="input_vat_posting_group"
-                 feedbackValid="Looks good!"
-                 value={data.input_vat_posting_group}
-                 onChange={(e) => setInputVatPostingGroup(e.target.value)}
-               />
+              <CFormSelect
+                label="Gen Posting Group" 
+                type="text"
+                id="gen_posting_group"
+                feedbackValid="Looks good!"
+                defaultValue={gen_posting_group}
+                onChange={(e) => setGenPostingGroup(e.target.value)}
+                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+              />
              </CCol>
              <CCol md={3}>
-               <CFormInput
-                 label="Output VAT Posting Group" 
-                 type="text"
-                 id="outputt_vat_posting_group"
-                 feedbackValid="Looks good!"
-                 value={data.output_vat_posting_group}
-                 onChange={(e) => setOutputVatPostingGroup(e.target.value)}
-               />
+              <CFormSelect
+                label="Input VAT Posting Group" 
+                type="text"
+                id="input_vat_posting_group"
+                defaultValue={input_vat_posting_group}
+                feedbackValid="Looks good!"
+                onChange={(e) => setInputVatPostingGroup(e.target.value)}
+                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+              />
              </CCol>
-             <CCol md={12}></CCol>
+             <CCol md={3}>
+              <CFormSelect
+                label="Output VAT Posting Group" 
+                type="text"
+                id="outputt_vat_posting_group"
+                defaultValue={output_vat_posting_group}
+                feedbackValid="Looks good!"
+                onChange={(e) => setOutputVatPostingGroup(e.target.value)}
+                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+              />
+             </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }}>
+             <CCol md={12} className="bg-light p-3">
+              <CHeaderText className="header-brand mb-0 h3">Effectivity Date</CHeaderText>
+             </CCol>
              <CCol md={4}>
               <CFormLabel htmlFor="eff_start_date">Eff Start Date</CFormLabel>
               <CDatePicker 
                 id="eff_start_date"
                 locale="en-US" 
                 footer
-                value={data.eff_start_date}
+                defaultValue={eff_start_date}
                 onChange={(e) => setEffStartDate(e.target.value)}
               />
              </CCol>
@@ -449,19 +503,33 @@ console.log(JSON.stringify(productid))
                 id="eff_end_date"
                 locale="en-US" 
                 footer
-                value={data.eff_end_date}
+                defaultValue={eff_end_date}
                 onChange={(e) => setEffEndDate(e.target.value)}
               />
              </CCol>
-             <CCol xs={12}>
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }} className="justify-content-end">
+              <CCol xs={2}>
                 <CButton 
                   color="primary" 
-                  type="submit"
-                  onClick={onSavePostClicked}
+                  type="button"
+                  onClick={handleBack}
                 >
-                  Update
+                  Back
                 </CButton>
               </CCol>
+              <CCol xs={2}>
+                <CButton 
+                  color="primary" 
+                  type="button"
+                  onClick={onSavePostClicked}
+                  disabled={!canSave}
+                >
+                  Update Record
+                </CButton>
+              </CCol>
+            </CRow>
            </CForm>
          </CCardBody>
        </CCard>

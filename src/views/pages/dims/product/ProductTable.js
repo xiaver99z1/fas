@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProducts } from 'src/store/reducers/productSlice';
+import { getProducts, selectProducts } from './../../../../store/reducers/productSlice';
 
 
 const ProductTable = () => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.product.data)
-  useEffect(() => {
-    dispatch(getProducts())
-  }, [])
+  const data = useSelector(selectProducts);
 
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch])
+  
   console.log(data);
 
   const [details, setDetails] = useState([])
@@ -72,7 +73,7 @@ const ProductTable = () => {
             footer
             items={data}
             itemsPerPageSelect
-            itemsPerPage={5}
+            itemsPerPage={20}
             pagination
             scopedColumns={{
               status: (item) => (

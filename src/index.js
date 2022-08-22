@@ -9,6 +9,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppStore from './store';
 import reportWebVitals from './reportWebVitals';
 
+//import getProducts from './store/reducers/productSlice';
+//import getVendors from './store/reducers/vendorSlice';
+
 const { store, persistor } = AppStore;
 
 const container = document.getElementById('root');
@@ -21,9 +24,8 @@ root.render(
     </Provider>
 );
 
-// store.dispatch(getProducts());
-// store.dispatch(getVendors());
-
+//store.dispatch(getVendors());
+//store.dispatch(getProducts());
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

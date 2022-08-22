@@ -36,15 +36,14 @@ const VendorUpdate = () => {
   useEffect(() => {
     dispatch(getVendors());
   },[dispatch]);
-
+  
 
   //Get references - initial data
-  const { status, vendors } = useSelector((state) => state.vendor);
-  //const data = useSelector((state) => selectVendorById(state, Number(id)));
-  //const data = useSelector((state) => state.vendor.data);
+  const { apistatus } = useSelector((state) => state.vendor);
+  const vendors = useSelector((state) => selectVendorById(state, Number(id)));
 
   useEffect(() => {
-    if(status === 'success') {
+    if(apistatus === 'success') {
       dispatch(getCurrencies());
       dispatch(getCountries());
       dispatch(getPaymentTerms());
@@ -60,7 +59,7 @@ const VendorUpdate = () => {
   const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
 
 
-  //Form data
+  /*Form data
   const [vendorId, setVendorId] = useState(id);
   const [vendorName, setVendorName] = useState(data?.vendor_name);
   const [vendorType, setVendorType] = useState(data?.vendor_type);
@@ -88,7 +87,37 @@ const VendorUpdate = () => {
   const [created_by, setCreatedBy] = useState(data?.created_by);
   const [updated_by, setUpdatedBy] = useState(data?.updated_by);
   const [date_created, setDateCreated] = useState(data?.date_created);
-  
+  */
+
+  const [vendorId, setVendorId] = useState(id);
+  const [vendorName, setVendorName] = useState('');
+  const [vendorType, setVendorType] = useState('');
+  const [emailAddress, setEmail] = useState('');
+  const [vendorStatus, setVendorStatus] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [city, setCity] = useState('');
+  const [province, setProvince] = useState('');
+  const [post_code, setPostCode] = useState('');
+  const [country_abbr, setCountry] = useState('');
+  const [payment_terms, setPaymentTerms] = useState('');
+  const [payment_mode, setPaymentMode] = useState('');
+  const [contact_person_first_name, setContactFirstName] = useState('');
+  const [contact_person_last_name, setContactLastName] = useState('');
+  const [bank_name, setBankName] = useState('');
+  const [bank_account_number, setBankAccountNumber] = useState('');
+  const [currency_code, setCurrencyCode] = useState('');
+  const [business_posting_group, setBusinessPostingGroup] = useState('');
+  const [vat_posting_group, setVatPostingGroup] = useState('');
+  const [vendor_posting_group, setVendorPostingGroup] = useState('');
+  const [website, setWebsite] = useState('');
+  const [created_by, setCreatedBy] = useState('');
+  const [updated_by, setUpdatedBy] = useState('');
+  const [date_created, setDateCreated] = useState('');
+
+
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
@@ -96,14 +125,21 @@ const VendorUpdate = () => {
 
   const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle' && updated === false;
 
-
-  console.log(vendors, status);
+  console.log(id, vendors);
+  /*
+  vendors.filter((post) => {
+    if(post.vendor_id === id) {
+      console.log(post.vendor_name);
+    }
+  })*/
+    
 
   const onSavePostClicked = () => {  
     if (canSave) {
       try {
         setRequestStatus('pending');
-        dispatch(updateVendor({vendor_id: vendorId, 
+        dispatch(updateVendor({
+          vendor_id: vendorId, 
           vendor_name: vendorName, 
           vendor_type: vendorType, 
           email: emailAddress, 
@@ -425,9 +461,8 @@ const VendorUpdate = () => {
             </CRow>
             <CRow xs={{ gutterY: 5 }}>
               <CCol md={4}>
-                <CFormInput
+                <CFormSelect
                   label="Business Posting Group" 
-                  type="text"
                   id="business_posting_group"
                   name="business_posting_group"
                   defaultValue={business_posting_group}
@@ -437,9 +472,8 @@ const VendorUpdate = () => {
                 />
               </CCol>
               <CCol md={4}>
-                <CFormInput
+                <CFormSelect
                   label="VAT Posting Group" 
-                  type="text"
                   id="vat_posting_group"
                   name="vat_posting_group"
                   defaultValue={vat_posting_group}
