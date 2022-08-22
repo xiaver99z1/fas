@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
 import {
   CButtonGroup,
   CFormCheck,
@@ -27,9 +28,24 @@ import {
 
 import { logo } from 'src/assets/brand/logo'
 
+import { SignOut } from '../store/reducers/users';
 
 const AppHeader = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
+
+  const { user, token } = useSelector((state) => state.user);
+
+  const handleLogout = () => {
+    const payload = {
+      refresh_token:user.refresh_token
+    }
+    dispatch(SignOut(payload)).then(()=>{
+        setTimeout(()=>{
+          navigate("/login");
+        },2000)
+    })
+  }
 
   const theme = useSelector((state) => state.coreuistate.theme)
 
@@ -41,6 +57,7 @@ const AppHeader = () => {
   //sconst asideShow = useSelector((state) => state.coreuistate.asideShow)
 
   return (
+    <>
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
         <CHeaderToggler
@@ -93,7 +110,7 @@ const AppHeader = () => {
           <AppHeaderDropdownNotif />
         </CHeaderNav>
         <CHeaderNav className="ms-3 me-4">
-          <AppHeaderDropdown />
+          <AppHeaderDropdown onLogout={handleLogout} />
         </CHeaderNav>
       </CContainer>
       <CHeaderDivider />
@@ -101,6 +118,7 @@ const AppHeader = () => {
         <AppBreadcrumb />
       </CContainer>
     </CHeader>
+    </>
   )
 }
 

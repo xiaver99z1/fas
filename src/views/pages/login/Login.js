@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import bcrypt from 'bcryptjs'
 
 import {
   CButton,
@@ -23,20 +22,21 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 
-// import { login, register } from '../../../store/features/authSlice';
 import { SignIn, ClearSignIn } from '../../../store/reducers/users';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // SALT should be created ONE TIME upon sign up
-  const salt = bcrypt.genSaltSync(10)
+
+  const { token, signing_in, errors_sign_in, success_sign_in } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(ClearSignIn())
-  }, [dispatch])
-
-  const { signing_in, errors_sign_in, success_sign_in } = useSelector((state) => state.user);
+    if (token) {
+      navigate("/dashboard");
+    } else {
+      dispatch(ClearSignIn())
+    }
+  }, [token, dispatch, navigate])
 
   const [validated, setValidated] = useState(false)
   const [email, setEmail] = useState('');
@@ -46,11 +46,9 @@ const Login = () => {
     event.preventDefault()
     event.stopPropagation()
 
-    const hashedPassword = bcrypt.hashSync(password, salt)
-
     const payload = {
       email,
-      password:hashedPassword,
+      password,
     }
 
     dispatch(SignIn(payload)).then(()=>{
@@ -58,7 +56,6 @@ const Login = () => {
     })
   }
   
-
   const renderLoginForm = () => {
       return (
         <CForm    
@@ -69,7 +66,9 @@ const Login = () => {
           disabled={signing_in}
         >
           <h1>Login</h1>
-          <p className="text-medium-emphasis">Sign In to your account</p>
+          <p className="text-medium-emphasis">
+            {errors_sign_in ? errors_sign_in : 'Sign In to your account' }
+          </p>
           <CInputGroup className="mb-3">
             <CInputGroupText>
               <CIcon icon={cilUser} />
