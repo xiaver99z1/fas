@@ -34,9 +34,10 @@ export const SignIn = createAsyncThunk(
     'user/sign_in',
     async (payload, { rejectWithValue, _ }) => {
         const { email:emailParams } = payload
+        const emailURI = encodeURIComponent(emailParams)
         try {
             const responseAuth = await api.post('/auth/login', payload)
-            const responseMe = await api.get(`/users?filter[email][_eq]=${emailParams}`)
+            const responseMe = await api.get(`/users?filter[email][_eq]=${emailURI}`)
             const { id, first_name, last_name, email, role, status, last_access, email_notifications } = responseMe.data.data[0];
             const { access_token, refresh_token } = responseAuth.data.data;
             const res = {
@@ -139,6 +140,7 @@ export const users = createSlice({
         state.signing_in = true
       })
       builder.addCase(SignIn.fulfilled, (state, action) => {
+          console.log('~~',action.payload);
           state.signing_in = false
           state.errors_sign_in = undefined
           state.success_sign_in = true
@@ -147,10 +149,11 @@ export const users = createSlice({
           localStorage.setItem('token', action.payload.access_token)
       })
       builder.addCase(SignIn.rejected, (state, action) => {
+          console.log('^^ error');
           state.token = null
           state.signing_in = false
           state.success_sign_in = false
-          state.errors_sign_in = 'Signin failed!, Something went wrong.'
+          state.errors_sign_in = action.payload
       })
 
        /* SIGN-OUT */
