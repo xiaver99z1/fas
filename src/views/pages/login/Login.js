@@ -38,42 +38,57 @@ const Login = () => {
     }
   }, [token, dispatch, navigate])
 
-  const [validated, setValidated] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [msg, setMsg] = useState(null);
+  const [errorFname, setErrorFname] = useState(false);
+  const [errorLname, setErrorLname] = useState(false);
+
+  useEffect(()=>{
+      if(typeof errors_sign_in === "object"){
+        setErrorFname(true)
+        setErrorLname(true)
+        setMsg(
+            <CCardText style={{color:'red'}}>
+                Error: {errors_sign_in.errors[0].message}
+            </CCardText>
+        )
+        setTimeout(() => {
+            setMsg(null);
+        },3000);
+    }
+},[errors_sign_in])
 
   const handleSubmit = (event) => {
     event.preventDefault()
     event.stopPropagation()
-
     const payload = {
       email,
       password,
     }
 
-    dispatch(SignIn(payload)).then(()=>{
-      setValidated(true)
-    })
+    dispatch(SignIn(payload))
   }
   
+
   const renderLoginForm = () => {
       return (
         <CForm    
-          noValidate
-          validated={validated}
+        noValidate
           onSubmit={handleSubmit}
-          className="form-horizontal"
+          className="form-horizontal needs-validation"
           disabled={signing_in}
         >
           <h1>Login</h1>
           <p className="text-medium-emphasis">
-            {errors_sign_in ? errors_sign_in : 'Sign In to your account' }
+            {msg ? msg : 'Sign In to your account' }
           </p>
           <CInputGroup className="mb-3">
             <CInputGroupText>
               <CIcon icon={cilUser} />
             </CInputGroupText>
             <CFormInput 
+              className={errorFname ? "form-control is-invalid" :  ""}
               id="email"
               type="email"
               placeholder="Email"
@@ -81,9 +96,9 @@ const Login = () => {
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
-              feedbackValid=""
-              feedbackInvalid="Please enter your email."
-              autoComplete="email" 
+              onBlur={(e) => {
+                setErrorFname(false)
+              }}
               required
             />
           </CInputGroup>
@@ -92,6 +107,7 @@ const Login = () => {
               <CIcon icon={cilLockLocked} />
             </CInputGroupText>
             <CFormInput
+              className={errorLname ? "form-control is-invalid" :  ""}
               id="password"
               type="password"
               placeholder="Password"
@@ -99,9 +115,9 @@ const Login = () => {
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-              feedbackValid=""
-              feedbackInvalid="Please enter your password."
-              autoComplete="password" 
+              onBlur={(e) => {
+                setErrorLname(false)
+              }}
               required
             />
           </CInputGroup>
