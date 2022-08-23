@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProducts, selectProducts } from './../../../../store/reducers/productSlice';
+import { useNavigate } from 'react-router-dom';
+import { selectProducts, updateProduct } from './../../../../store/reducers/productSlice';
 
 
 const ProductTable = () => {
 
   const dispatch = useDispatch();
-  const data = useSelector(selectProducts);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch])
-  
-  console.log(data);
+  const { data, status, error } = useSelector(selectProducts);
 
   const [details, setDetails] = useState([])
   const columns = [
@@ -21,11 +18,7 @@ const ProductTable = () => {
     { key: 'category', sorter: false },
     { key: 'sub_category', sorter: false },
     { key: 'status', _style: { width: '20%' }},
-    {
-      key: 'show_details',
-      label: 'Action',
-      _style: { width: '1%' }
-    },
+    { key: 'show_details', label: 'Action', _style: { width: '1%' }},
   ]
 
   const getBadge = (status) => {
@@ -53,6 +46,11 @@ const ProductTable = () => {
     }
     setDetails(newDetails)
   }
+
+  const handleDelete = (id) => {
+    dispatch((updateProduct({ product_id: id, status: 'deleted'})));
+    console.log(id, 'deleted');
+  };
  
   return (
     <CRow>
@@ -104,10 +102,10 @@ const ProductTable = () => {
                     <CCardBody>
                       <h5>{item.product_name}</h5>
                       <p className="text-muted">Date Updated: {item.date_updated}</p>
-                      <CButton size="sm" color="info" href={`/product/${item.product_id}`}>
+                      <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.product_id}`)}>
                         View / Update
                       </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" href={`/product/delete/${item.product_id}`}>
+                      <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.product_id}`)}>
                         Delete
                       </CButton>
                     </CCardBody>
@@ -116,7 +114,7 @@ const ProductTable = () => {
               },
             }}
             selectable
-            sorterValue={{ column: 'prooduct_name', state: 'asc' }}
+            sorterValue={{ column: 'product_name', state: 'asc' }}
             tableFilter
             tableHeadProps={{
               color: 'danger',

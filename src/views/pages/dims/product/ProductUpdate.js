@@ -21,114 +21,122 @@ import {
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProducts, getProductId, updateProduct, selectProduct, selectProductId } from './../../../../store/reducers/productSlice';
+import { getProducts, getProductId, updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
+import { selectUser } from '../../../../store/reducers/users'
 import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
 
 
 const ProductUpdate = () => {
   
-  //Get router params
-  const { id } = useParams();
-
   //Get initial data
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [record, setRecord] = useState(data);
 
-  //Get Product 
-  useEffect(() => {
-    //dispatch(getProducts());
-    dispatch(getProductId(id));
-
-    dispatch(getPostingGroups());
-  },[dispatch]);
-
-  const data = useSelector(state => selectProductId(state, Number(id)));
+  //Get router params
+  const {id} = useParams();
+  
+  const { user } = useSelector(selectUser);
+  const { status, error } = useSelector((state) => state.product);
+  const data = useSelector((state) => selectProductId(state, Number(id)));
+  
   const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
-
-
-  //Set Fields
-
-  const [company_id, setCompanyId] = useState('1'); //options on company dim
-  const [productName, setProductName] = useState('');
-  const [upc, setUpc] = useState('');
-  const [upc_barcode, setUpcBarcode] = useState(''); //connect this to FAS Reference Dim
-  const [sku, setSku] = useState('');
-  const [sku_barcode, setSkuBarcode] = useState('');
-  const [category, setCategory] = useState('');
-  const [sub_category, setSubCategory] = useState('');
-  const [uom, setUom] = useState('');
-  const [size, setSize] = useState('');
-  const [packaging_length, setPackagingLength] = useState('');
-  const [packaging_width, setPackagingWidth] = useState('');
-  const [packaging_height, setPackagingHeight] = useState('');
-  const [net_weight, setNetWeight] = useState('');
-  const [gross_weight, setGrossWeight] = useState('');
-  const [ingredients, setIngredients] = useState('');
-  const [nutrition_facts, setNutritionFacts] = useState('');
-  const [unit_type, setUnitType] = useState('');
-  const [qty_per_unit, setQtyPerUnit] = useState('');
-  const [eff_start_date, setEffStartDate] = useState('');
-  const [eff_end_date, setEffEndDate] = useState('');
-  const [cs_product_id, setCsProductId] = useState('');
-  const [inventory_posting_group, setInventoryPostingGroup] = useState('');
-  const [gen_posting_group, setGenPostingGroup] = useState('');
-  const [input_vat_posting_group, setInputVatPostingGroup] = useState('');
-  const [output_vat_posting_group, setOutputVatPostingGroup] = useState('');
-  const [productStatus, setProductStatus] = useState('');
 
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
+  const [dataRecord, setDataRecord] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
   
-  const canSave = [company_id, category, sku, productStatus].every(Boolean) && requestStatus === 'idle';
+
+  /* Load Data */
+  useEffect(() => {
+    if(status === 'success') {
+      dispatch(getPostingGroups());
+    }
+
+    return (() => {
+      setUpdated(true);
+    });
+    
+  },[dispatch, id]);
+
+  //Set Fields
+  const [company_id, setCompanyId] = useState('1'); //options on company dim
+  const [cs_product_id, setCsProductId] = useState(data?.cs_product_id);
+  const [product_name, setProductName] = useState(data?.product_name);
+  const [product_type, setProductType] = useState(data?.product_type);
+  const [upc, setUpc] = useState(data?.upc);
+  const [upc_barcode, setUpcBarcode] = useState(data?.upc_barcode);
+  const [sku, setSku] = useState(data?.sku_barcode);
+  const [sku_barcode, setSkuBarcode] = useState(data?.sku_barcode);
+  const [category, setCategory] = useState(data?.category);
+  const [sub_category, setSubCategory] = useState(data?.category);
+  const [uom, setUom] = useState(data?.uom);
+  const [size, setSize] = useState(data?.size);
+  const [packaging_length, setPackagingLength] = useState(data?.packaging_length);
+  const [packaging_width, setPackagingWidth] = useState(data?.packaging_width);
+  const [packaging_height, setPackagingHeight] = useState(data?.packaging_height);
+  const [net_weight, setNetWeight] = useState(data?.net_weight);
+  const [gross_weight, setGrossWeight] = useState(data?.gross_weight);
+  const [ingredients, setIngredients] = useState(data?.ingredients);
+  const [nutrition_facts, setNutritionFacts] = useState(data?.nutrition_facts);
+  const [unit_type, setUnitType] = useState(data?.unit_type);
+  const [qty_per_unit, setQtyPerUnit] = useState(data?.qty_per_unit);
+  const [eff_start_date, setEffStartDate] = useState(data?.eff_start_date);
+  const [eff_end_date, setEffEndDate] = useState(data?.eff_end_date);
+  const [inventory_posting_group, setInventoryPostingGroup] = useState(data?.inventory_posting_group);
+  const [gen_posting_group, setGenPostingGroup] = useState(data?.gen_posting_group);
+  const [input_vat_posting_group, setInputVatPostingGroup] = useState(data?.input_vat_posting_group);
+  const [output_vat_posting_group, setOutputVatPostingGroup] = useState(data?.output_vat_posting_group);
+  const [productStatus, setProductStatus] = useState(data?.status);
+  const [updated_by, setUpdatedBy] = useState(user.first_name);
   
-  console.log({data, record, canSave, company_id, productName, category, productStatus})
+
+  const canSave = [company_id, product_name, sku, productStatus].every(Boolean) && requestStatus === 'idle';
 
   const onSavePostClicked = () => {  
     if (canSave) {
       try {
         setRequestStatus('pending');
-        console.log({productName, upc, sku, size})
-
+        console.log({updated_by, product_name, upc, sku, size})
         dispatch(updateProduct({   
-            product_id: id, 
-            product_name: productName,
-            company_id,
-            upc,
-            upc_barcode,
-            sku,
-            sku_barcode,
-            category,
-            sub_category,
-            uom,
-            size,
-            packaging_length,
-            packaging_width,
-            packaging_height,ht,
-            net_weight,
-            gross_weight,
-            ingredients,
-            nutrition_facts,
-            unit_type,
-            qty_per_unit,
-            eff_start_date,
-            eff_end_date,
-            cs_product_id,
-            inventory_posting_group,
-            gen_posting_group,
-            input_vat_posting_group,
-            output_vat_posting_group,
-            status: productStatus,
-            created_by: 'test',
-            updated_by: 'test',
-            date_created: new Date().toISOString(),
-            date_updated: new Date().toISOString(),
-          })).unwrap()
+              product_id: id, 
+              product_name,
+              company_id,
+              cs_product_id,
+              upc,
+              upc_barcode,
+              sku,
+              sku_barcode,
+              category,
+              sub_category,
+              uom,
+              size,
+              packaging_length,
+              packaging_width,
+              packaging_height,
+              net_weight,
+              gross_weight,
+              ingredients,
+              nutrition_facts,
+              unit_type,
+              qty_per_unit,
+              eff_start_date,
+              eff_end_date,
+              cs_product_id,
+              inventory_posting_group,
+              gen_posting_group,
+              input_vat_posting_group,
+              output_vat_posting_group,
+              status: productStatus,
+              updated_by,
+              date_updated: new Date().toISOString(),
+            })).unwrap()
 
             setProductName('')
+            setProductType('')
             setCompanyId('')
+            setCsProductId('')
             setUpc('')
             setUpcBarcode('')
             setSku('')
@@ -148,7 +156,6 @@ const ProductUpdate = () => {
             setQtyPerUnit('')
             setEffStartDate('')
             setEffEndDate('')
-            setCsProductId('')
             setInventoryPostingGroup('')
             setGenPostingGroup('')
             setInputVatPostingGroup('')
@@ -156,7 +163,7 @@ const ProductUpdate = () => {
             setProductStatus('')
 
             navigate(`/product/${id}`)
-      
+
       } catch (err) {
         console.error('Failed to save the post', err)
       } finally {
@@ -166,11 +173,11 @@ const ProductUpdate = () => {
   }
 
   //Submit Form
-  const handleSubmit = (e) => {
-    const form = e.currentTarget
+  const handleSubmit = (event) => {
+    const form = event.currentTarget
     if (form.checkValidity() === false) {
-      e.preventDefault();
-      eveent.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
     }
     setValidated(true);
   }
@@ -199,7 +206,7 @@ const ProductUpdate = () => {
                  type="text"
                  id="product_name"
                  feedbackValid="Looks good!"
-                 defaultValue={productName}
+                 defaultValue={product_name}
                  onChange={(e) => setProductName(e.target.value)}
                  required
                />
@@ -247,7 +254,7 @@ const ProductUpdate = () => {
              <CCol md={4}>
               <CFormSelect 
                 aria-label="Select Sub-Category"
-                label="Category" 
+                label="Sub-Category" 
                 id="sub_category"
                 feedbackValid="Looks good!"
                 defaultValue={sub_category}

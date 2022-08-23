@@ -13,6 +13,11 @@ import {
 } from 'redux-persist';
 import authMiddleware from './middleware/authMiddleware';
 
+import { getCompanies } from './reducers/companySlice'
+import { getCustomers } from './reducers/customerSlice'
+import { getVendors } from './reducers/vendorSlice'
+import { getProducts } from './reducers/productSlice'
+
 const store = configureStore({
     reducer: rootReducer,
     middleware:(getDefaultMiddleware) => getDefaultMiddleware({
@@ -28,6 +33,12 @@ if (NODE_ENV === 'development') {
       store.replaceReducer(newRootReducer);
     });
 }
+
+//store.dispatch(getCompanies());
+//store.dispatch(getCustomers());
+store.dispatch(getVendors());
+store.dispatch(getProducts());
+
 
 export const persistor = persistStore(store);
 

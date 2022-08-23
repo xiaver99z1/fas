@@ -1,35 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from 'src/store/middleware/directus';
+//import { axiosInstance } from 'src/store/middleware/directus';
+import api from '../../services/api';
 
 export const getProducts = createAsyncThunk(
   'product/getProducts', 
   async () => {
   try {
-      const response = await axiosInstance.get(`items/product/`)
-      return response.data.data
-  } catch (err) {
-      //err.response.data;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-  }
-});
-
-export const getProductId = createAsyncThunk(
-  'product/getProductId', 
-  async (initialPost, { rejectWithValue, _ }) => {
-  const { product_id } = initialPost;
-  try {
-      const response = await axiosInstance.get(`items/product/${product_id}`, initialPost)
-      return response.data.data
+      const response = await api.get(`/items/product/`)
+      return response.data.data;
   } catch (err) {
     if (!err.response) {
       throw err
     }
-    return rejectWithValue(err.response.data)
-      //console.error(err.response.data);
-      //console.error(err.response.status);
-      //console.error(err.response.headers);
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
   }
 });
 
@@ -37,13 +22,13 @@ export const createProduct = createAsyncThunk(
   'product/createProduct', 
   async (initialPost) => {
   try {
-      const response = await axiosInstance.post(`items/product/`, initialPost)
+      const response = await api.post(`/items/product/`, initialPost)
       return response.data.data
   } catch (err) {
-      //err.response.data;
       console.error(err.response.data);
       console.error(err.response.status);
       console.error(err.response.headers);
+      return err.response.data;
   }
 });
 
@@ -52,27 +37,26 @@ export const updateProduct = createAsyncThunk(
   async (initialPost) => {
   const { product_id } = initialPost;
   try {
-      const response = await axiosInstance.patch(`/items/product/${product_id}`, initialPost)
-      console.log(response.data.data)
+      const response = await api.patch(`/items/product/${product_id}`, initialPost)
+      console.log('upProd: ' + response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
-      //return err.response.data;
       console.error("Error response:");
-      console.error(err.response.data);    // ***
-      console.error(err.response.status);  // ***
-      console.error(err.response.headers); // ***
-      return initialPost; // only for testing Redux!
+      console.error(err.response.data); 
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      return err.response.data;
+      //return initialPost; // only for testing Redux!
   }
 });
-
 
 export const deleteProduct = createAsyncThunk(
   'product/deleteProduct', 
   async (initialPost) => {
   const { id } = initialPost;
   try {
-      const response = await axiosInstance.delete(`/items/vendor//${id}`)
+      const response = await api.delete(`/items/product/${id}`)
       if (response?.status === 200) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -80,75 +64,73 @@ export const deleteProduct = createAsyncThunk(
   }
 })
 
+
 //Initial State
 const initialState = {
-  products: [],
+  data: [],
   status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
-const productSlice = createSlice({
-  name: 'product',
+export const productSlice = createSlice({
+  name: "product",
   initialState,
   reducers: {},
-  extraReducers: {
-    [createProduct.pending]: (state) => {
+  extraReducers: (builder) => {
+    /* GET */
+    builder.addCase(getProducts.pending, (state) => {
       state.status = 'loading';
-    },
-    [createProduct.fulfilled]: (state, action) => {
-      state.status = 'success';
-      state.products = [action.payload];
-    },
-    [createProduct.rejected]: (state, payload) => {
+    });
+    builder.addCase(getProducts.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.data = action.payload;
+    });
+    builder.addCase(getProducts.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [updateProduct.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* CREATE */
+    builder.addCase(createProduct.pending, (state) => {
       state.status = 'loading';
-    },
-    [updateProduct.fulfilled]: (state, action) => {
-      state.status = 'success';
-      if (!action.payload?.product_id) {
-        console.log('Update could not complete')
-        console.log(action.payload)
-        return;
-      }
-      const { id } = action.payload;
-      action.payload.date_updated = new Date().toISOString();
-      const products = state.products.filter(post => post.product_id !== id);
-      state.products = [...products, action.payload];
-      
-    },
-    [updateProduct.rejected]: (state, payload) => {
+    });
+    builder.addCase(createProduct.fulfilled, (state, action) => {
+        if (action.payload == true) {
+          state.status = 'success';
+          state.data = action.payload;
+        }
+    });
+    builder.addCase(createProduct.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [getProductId.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* UPDATE */
+    builder.addCase(updateProduct.pending, (state) => {
       state.status = 'loading';
-    },
-    [getProductId.fulfilled]: (state, action) => {
-      state.status = 'success';
-      state.products = action.payload;
-    },
-    [getProductId.rejected]: (state, payload) => {
+    });
+    builder.addCase(updateProduct.fulfilled, (state, action) => {
+        state.status = 'success';
+        if (!action.payload?.product_id) {
+          console.log('Update could not complete')
+          console.log(action.payload)
+          return;
+        }
+        const { id } = action.payload;
+        action.payload.date_updated = new Date().toISOString();
+        const products = state.data.filter(post => post.product_id !== id);
+        state.data = [...products, action.payload];
+    });
+    builder.addCase(updateProduct.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [getProducts.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* DELETE */
+    builder.addCase(deleteProduct.pending, (state) => {
       state.status = 'loading';
-    },
-    [getProducts.fulfilled]: (state, action) => {
-      state.status = 'success';
-      state.products = action.payload;
-    },
-    [getProducts.rejected]: (state, payload) => {
-      state.status = 'failed';
-      state.error = payload;
-    },
-    [deleteProduct.pending]: (state) => {
-      state.status = 'loading';
-    },
-    [deleteProduct.fulfilled]: (state, action) => {
+    });
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {
       state.status = 'success';
       if (!action.payload?.product_id) {
         console.log('Delete could not complete')
@@ -156,18 +138,18 @@ const productSlice = createSlice({
         return;
       }
       const { id } = action.payload;
-      const products = state.posts.filter(post => post.product_id !== id);
-      state.products = products;
-    },
-    [deleteProduct.rejected]: (state, payload) => {
+      const products = state.posts.filter(post => post.vendor_id !== id);
+      state.data = products;
+    });
+    builder.addCase(deleteProduct.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-  }
-})
+      state.error = action.payload
+    });
+  },
+});
 
+
+export const selectProducts = (state) => state.product;
+export const selectProductId = (state, id) => state.product.data.find(post => post.product_id === id);
 
 export default productSlice.reducer;
-
-export const selectProducts = (state) => state.product.products;
-export const selectProductId = (state, id) => state.product.products.find(post => post.product_id === id);

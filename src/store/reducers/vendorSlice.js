@@ -3,7 +3,7 @@ import { axiosInstance } from 'src/store/middleware/directus';
 
 export const getVendors = createAsyncThunk('vendor/getVendors', async () => {
   try {
-      const response = await axiosInstance.get(`items/vendor/`)
+      const response = await axiosInstance.get(`/items/vendor/`)
       return response.data.data
   } catch (err) {
       //err.response.data;
@@ -15,7 +15,7 @@ export const getVendors = createAsyncThunk('vendor/getVendors', async () => {
 
 export const createVendor = createAsyncThunk('vendor/createVendor', async (initialPost) => {
   try {
-      const response = await axiosInstance.post(`items/vendor/`, initialPost)
+      const response = await axiosInstance.post(`/items/vendor/`, initialPost)
       return response.data.data
   } catch (err) {
       //err.response.data;
@@ -91,7 +91,6 @@ const vendorSlice = createSlice({
       action.payload.date_updated = new Date().toISOString();
       const vendors = state.vendors.filter(post => post.vendor_id !== id);
       state.vendors = [...vendors, action.payload];
-      
     },
     [updateVendor.rejected]: (state, payload) => {
       state.status = 'failed';
@@ -103,6 +102,7 @@ const vendorSlice = createSlice({
     [getVendors.fulfilled]: (state, action) => {
       state.status = 'success';
       state.vendors = action.payload;
+      //console.log(state.vendors);
     },
     [getVendors.rejected]: (state, payload) => {
       state.status = 'failed';

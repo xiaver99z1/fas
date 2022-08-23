@@ -11,12 +11,19 @@ class ApiService {
         if (enforcer !== singletonEnforcer) {
             throw new Error('Cannot construct singleton');
         }
-
+        console.log(REACT_APP_DIRECTUS_URL);
+        
         this.localStorage = axios.create({
             baseURL: REACT_APP_DIRECTUS_URL,
             headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${REACT_APP_DIRECTUS_TOKEN}`
+                //Accept: 'application/json',
+                //Authorization: `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
+                'Authorization': `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
+                'Content-Type' : 'application/json',
+                'Access-Control-Allow-Origin' : '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Credentials' : 'true'
             },
             withCredentials: true,
             params: {},

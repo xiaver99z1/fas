@@ -12,22 +12,9 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
-import { useSelector, useDispatch } from 'react-redux'
-import { createVendor, updateVendor } from '../../store/reducers/vendorSlice';
-import { getProducts } from '../../store/reducers/productSlice';
 
 
 const WidgetsDropdown = () => {
-
-  const dispatch = useDispatch();
-  const { isSuccess, vendors, message } = useSelector((state) => ({...state.vendor,}));
-  const products = useSelector((state) => (state.product.data));
-
-  useEffect(() => {
-      dispatch(getProducts());
-  },[])
-
-  //console.log(products.length)
 
   return (
     <CRow>
@@ -35,11 +22,7 @@ const WidgetsDropdown = () => {
         <CWidgetStatsA
           className="mb-4"
           color="primary-gradient"
-          value={
-            <>
-              {products.length} {' '}
-            </>
-          }
+          value=''
           title="Products"
           action={
             <CDropdown alignment="end">
