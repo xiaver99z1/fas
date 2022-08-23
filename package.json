@@ -1,5 +1,5 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
+  "name": "@coreui/fas",
   "version": "4.4.0",
   "description": "FAS Dashboard Template",
   "homepage": ".",
@@ -11,7 +11,7 @@
     "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
   },
   "license": "MIT",
-  "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
+  "author": "ConnectSys Team",
   "scripts": {
     "build": "react-scripts build",
     "changelog": "auto-changelog --starting-version 4.4.0 --commit-limit false --hide-credit",
