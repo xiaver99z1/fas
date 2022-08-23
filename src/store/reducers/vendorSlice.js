@@ -1,52 +1,61 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from 'src/store/middleware/directus';
+import api from '../../services/api';
 
-export const getVendors = createAsyncThunk('vendor/getVendors', async () => {
+export const getVendors = createAsyncThunk(
+  'vendor/getVendors', 
+  async () => {
   try {
-      const response = await axiosInstance.get(`/items/vendor/`)
-      return response.data.data
+      const response = await api.get(`/items/vendor/`)
+      return response.data.data;
   } catch (err) {
-      //err.response.data;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
-  }
-})
-
-export const createVendor = createAsyncThunk('vendor/createVendor', async (initialPost) => {
-  try {
-      const response = await axiosInstance.post(`/items/vendor/`, initialPost)
-      return response.data.data
-  } catch (err) {
-      //err.response.data;
-      console.error(err.response.data);
-      console.error(err.response.status);
-      console.error(err.response.headers);
+    if (!err.response) {
+      throw err
+    }
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
   }
 });
 
-export const updateVendor = createAsyncThunk('vendor/updateVendor', async (initialPost) => {
+export const createVendor = createAsyncThunk(
+  'vendor/createVendor', 
+  async (initialPost) => {
+  try {
+      const response = await api.post(`/items/vendor/`, initialPost)
+      return response.data.data
+  } catch (err) {
+      console.error(err.response.data);
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      return err.response.data;
+  }
+});
+
+export const updateVendor = createAsyncThunk(
+  'vendor/updateVendor', 
+  async (initialPost) => {
   const { vendor_id } = initialPost;
   try {
-      const response = await axiosInstance.patch(`/items/vendor/${vendor_id}`, initialPost)
-      console.log(response.data.data)
+      const response = await api.patch(`/items/vendor/${vendor_id}`, initialPost)
+      console.log('upProd: ' + response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
-      //return err.response.data;
       console.error("Error response:");
-      console.error(err.response.data);    // ***
-      console.error(err.response.status);  // ***
-      console.error(err.response.headers); // ***
-      return initialPost; // only for testing Redux!
+      console.error(err.response.data); 
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      return err.response.data;
+      //return initialPost; // only for testing Redux!
   }
 });
 
-
-export const deleteVendor = createAsyncThunk('vendor/deleteVendor', async (initialPost) => {
+export const deleteVendor = createAsyncThunk(
+  'vendor/deleteVendor', 
+  async (initialPost) => {
   const { id } = initialPost;
   try {
-      const response = await axiosInstance.delete(`/items/vendor//${id}`)
+      const response = await api.delete(`/items/vendor/${id}`)
       if (response?.status === 200) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -54,64 +63,73 @@ export const deleteVendor = createAsyncThunk('vendor/deleteVendor', async (initi
   }
 })
 
+
 //Initial State
 const initialState = {
-  vendors: [],
+  data: [],
   status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
-const vendorSlice = createSlice({
-  name: 'vendor',
+export const vendorSlice = createSlice({
+  name: "product",
   initialState,
   reducers: {},
-  extraReducers: {
-    [createVendor.pending]: (state) => {
+  extraReducers: (builder) => {
+    /* GET */
+    builder.addCase(getVendors.pending, (state) => {
       state.status = 'loading';
-    },
-    [createVendor.fulfilled]: (state, action) => {
-      state.status = 'success';
-      state.vendors = [action.payload];
-    },
-    [createVendor.rejected]: (state, payload) => {
+    });
+    builder.addCase(getVendors.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.data = action.payload;
+    });
+    builder.addCase(getVendors.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [updateVendor.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* CREATE */
+    builder.addCase(createVendor.pending, (state) => {
       state.status = 'loading';
-    },
-    [updateVendor.fulfilled]: (state, action) => {
-      state.status = 'success';
-      if (!action.payload?.vendor_id) {
-        console.log('Update could not complete')
-        console.log(action.payload)
-        return;
-      }
-      const { id } = action.payload;
-      action.payload.date_updated = new Date().toISOString();
-      const vendors = state.vendors.filter(post => post.vendor_id !== id);
-      state.vendors = [...vendors, action.payload];
-    },
-    [updateVendor.rejected]: (state, payload) => {
+    });
+    builder.addCase(createVendor.fulfilled, (state, action) => {
+        if (action.payload == true) {
+          state.status = 'success';
+          state.data = action.payload;
+        }
+    });
+    builder.addCase(createVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [getVendors.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* UPDATE */
+    builder.addCase(updateVendor.pending, (state) => {
       state.status = 'loading';
-    },
-    [getVendors.fulfilled]: (state, action) => {
-      state.status = 'success';
-      state.vendors = action.payload;
-      //console.log(state.vendors);
-    },
-    [getVendors.rejected]: (state, payload) => {
+    });
+    builder.addCase(updateVendor.fulfilled, (state, action) => {
+        state.status = 'success';
+        if (!action.payload?.vendor_id) {
+          console.log('Update could not complete')
+          console.log(action.payload)
+          return;
+        }
+        const { id } = action.payload;
+        action.payload.date_updated = new Date().toISOString();
+        const products = state.data.filter(post => post.vendor_id !== id);
+        state.data = [...products, action.payload];
+    });
+    builder.addCase(updateVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-    [deleteVendor.pending]: (state) => {
+      state.error = action.payload
+    });
+
+    /* DELETE */
+    builder.addCase(deleteVendor.pending, (state) => {
       state.status = 'loading';
-    },
-    [deleteVendor.fulfilled]: (state, action) => {
+    });
+    builder.addCase(deleteVendor.fulfilled, (state, action) => {
       state.status = 'success';
       if (!action.payload?.vendor_id) {
         console.log('Delete could not complete')
@@ -119,18 +137,18 @@ const vendorSlice = createSlice({
         return;
       }
       const { id } = action.payload;
-      const vendors = state.posts.filter(post => post.vendor_id !== id);
-      state.vendors = vendors;
-    },
-    [deleteVendor.rejected]: (state, payload) => {
+      const products = state.posts.filter(post => post.vendor_id !== id);
+      state.data = products;
+    });
+    builder.addCase(deleteVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = payload;
-    },
-  }
-})
+      state.error = action.payload
+    });
+  },
+});
 
+
+export const selectVendors = (state) => state.vendor;
+export const selectVendorId = (state, id) => state.vendor.data.find(post => post.vendor_id === id);
 
 export default vendorSlice.reducer;
-
-export const selectVendor = (state) => state.vendor;
-export const selectVendorById = (state, id) => state.vendor.vendors.find(post => post.vendor_id === id);

@@ -16,7 +16,8 @@ import {
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getVendors, selectVendorById, updateVendor } from './../../../../store/reducers/vendorSlice';
+import { selectVendors, selectVendorId, updateVendor } from './../../../../store/reducers/vendorSlice';
+import { selectUser } from './../../../../store/reducers/users';
 import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
 import { getCountries } from '../../../../store/reducers/references/countrySlice';
 import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
@@ -26,40 +27,39 @@ import { getPaymentModes } from '../../../../store/reducers/references/paymentmo
 
 const VendorUpdate = () => {
   
+  //Get initial data
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //const formatYmd = date => date.toISOString().slice(0, 10);
 
-  const { id } = useParams();
+  //Get router params
+  const {id} = useParams();
   
-  //Load data
-  useEffect(() => {
-    dispatch(getVendors());
-  },[dispatch]);
+  const { user } = useSelector(selectUser);
+  const { status, error } = useSelector(selectVendors);
+  const data = useSelector((state) => selectVendorId(state, Number(id)));
   
-
-  //Get references - initial data
-  const { apistatus } = useSelector((state) => state.vendor);
-  const vendors = useSelector((state) => selectVendorById(state, Number(id)));
-
+  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
+  const showCurrencies = useSelector(state => state.currency.currencies);
+  const showCountries = useSelector(state => state.country.countries);
+  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
+  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
+  
+  /* Load Data */
   useEffect(() => {
-    if(apistatus === 'success') {
+    if(status === 'success') {
       dispatch(getCurrencies());
       dispatch(getCountries());
       dispatch(getPaymentTerms());
       dispatch(getPostingGroups());
       dispatch(getPaymentModes());
     }
-  },[dispatch])
-
-  const showCurrencies = useSelector(state => state.currency.currencies);
-  const showCountries = useSelector(state => state.country.countries);
-  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
-  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
-  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
+    return (() => {
+      setUpdated(true);
+    });
+  },[dispatch, id]);
 
 
-  /*Form data
+  // Set Fields
   const [vendorId, setVendorId] = useState(id);
   const [vendorName, setVendorName] = useState(data?.vendor_name);
   const [vendorType, setVendorType] = useState(data?.vendor_type);
@@ -85,10 +85,10 @@ const VendorUpdate = () => {
   const [vendor_posting_group, setVendorPostingGroup] = useState(data?.vendor_posting_group);
   const [website, setWebsite] = useState(data?.website);
   const [created_by, setCreatedBy] = useState(data?.created_by);
-  const [updated_by, setUpdatedBy] = useState(data?.updated_by);
+  const [updated_by, setUpdatedBy] = useState(user.first_name);
   const [date_created, setDateCreated] = useState(data?.date_created);
-  */
 
+  /*
   const [vendorId, setVendorId] = useState(id);
   const [vendorName, setVendorName] = useState('');
   const [vendorType, setVendorType] = useState('');
@@ -116,110 +116,109 @@ const VendorUpdate = () => {
   const [created_by, setCreatedBy] = useState('');
   const [updated_by, setUpdatedBy] = useState('');
   const [date_created, setDateCreated] = useState('');
-
+  */
 
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
 
-  const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle' && updated === false;
-
-  console.log(id, vendors);
-  /*
-  vendors.filter((post) => {
-    if(post.vendor_id === id) {
-      console.log(post.vendor_name);
-    }
-  })*/
-    
-
-  const onSavePostClicked = () => {  
-    if (canSave) {
-      try {
-        setRequestStatus('pending');
-        dispatch(updateVendor({
-          vendor_id: vendorId, 
-          vendor_name: vendorName, 
-          vendor_type: vendorType, 
-          email: emailAddress, 
-          phone_number: phoneNumber,
-          mobile_number: mobileNumber,
-          address1,
-          address2,
-          city,
-          province,
-          post_code,
-          country_abbr,
-          payment_terms,
-          payment_mode,
-          contact_person_first_name,
-          contact_person_last_name,
-          bank_name,
-          bank_account_number,
-          currency_code,
-          business_posting_group,
-          vat_posting_group,
-          vendor_posting_group,
-          website,
-          status: vendorStatus,
-          created_by,
-          updated_by,
-          date_created,
-          date_updated: new Date().toISOString(),
-        })).unwrap()
-
-        setVendorId('')
-        setVendorName('')
-        setVendorType('')
-        setEmail('')
-        setPhoneNumber('')
-        setMobileNumber('')
-        setAddress1('')
-        setAddress2('')
-        setCity('')
-        setProvince('')
-        setPostCode('')
-        setCountry('')
-        setPaymentTerms('')
-        setPaymentMode('')
-        setContactFirstName('')
-        setContactLastName('')
-        setBankName('')
-        setBankAccountNumber('')
-        setCurrencyCode('')
-        setBusinessPostingGroup('')
-        setVatPostingGroup('')
-        setVendorPostingGroup('')
-        setWebsite('')
-        setVendorStatus('')
-        
-        navigate(`/vendor/${id}`);
-        
-      } catch (err) {
-        console.error('Failed to save the post', err);
-      } finally {
-        setRequestStatus('idle');
-        setUpdated(true);
-      }
-    }
-  }
+  const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle';
 
   //Submit Form
-  const handleSubmit = (e) => {
-    const form = e.currentTarget
+  const handleSubmit = (event) => {
+    const form = event.currentTarget
     if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-      onSavePostClicked();
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const onSavePostClicked = () => {  
+      if (canSave) {
+        try {
+          setRequestStatus('pending');
+          console.log({canSave, vendorName})
+          dispatch(updateVendor({
+              vendor_id: vendorId, 
+              vendor_name: vendorName, 
+              vendor_type: vendorType, 
+              email: emailAddress, 
+              phone_number: phoneNumber,
+              mobile_number: mobileNumber,
+              address1,
+              address2,
+              city,
+              province,
+              post_code,
+              country_abbr,
+              payment_terms,
+              payment_mode,
+              contact_person_first_name,
+              contact_person_last_name,
+              bank_name,
+              bank_account_number,
+              currency_code,
+              business_posting_group,
+              vat_posting_group,
+              vendor_posting_group,
+              website,
+              status: vendorStatus,
+              created_by,
+              updated_by,
+              date_created,
+              date_updated: new Date().toISOString(),
+            })).unwrap()
+    
+            setVendorId('')
+            setVendorName('')
+            setVendorType('')
+            setEmail('')
+            setPhoneNumber('')
+            setMobileNumber('')
+            setAddress1('')
+            setAddress2('')
+            setCity('')
+            setProvince('')
+            setPostCode('')
+            setCountry('')
+            setPaymentTerms('')
+            setPaymentMode('')
+            setContactFirstName('')
+            setContactLastName('')
+            setBankName('')
+            setBankAccountNumber('')
+            setCurrencyCode('')
+            setBusinessPostingGroup('')
+            setVatPostingGroup('')
+            setVendorPostingGroup('')
+            setWebsite('')
+            setVendorStatus('')
+            
+            setUpdated(true)
+
+            navigate(`/vendor/${id}`);
+          
+        } catch (err) {
+            console.error('Failed to save the post', err);
+        } finally {
+          setRequestStatus('idle');
+          setUpdated(true);
+        }
+      }
     }
     setValidated(true);
+    onSavePostClicked();
   }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      //Just change status to deleted
+      dispatch((updateVendor({ vendor_id: id, status: 'deleted'})));
+    }
+  };
 
   const handleBack = () => {
     return navigate('/vendors');
   }
-
   return (
 
    <CRow>
@@ -532,24 +531,30 @@ const VendorUpdate = () => {
               </CCol>
             </CRow> 
             <CRow xs={{ gutterY: 4 }}>
-              <CCol xs={2}>
-                <CButton 
-                  color="primary" 
-                  type="button"
-                  onClick={handleBack}
-                >
-                  Back
-                </CButton>
-              </CCol>
-              <CCol xs={2}>
-                <CButton 
-                  color="primary" 
-                  type="button"
-                  onClick={onSavePostClicked}
-                  disabled={!canSave}
-                >
-                  Update Record
-                </CButton>
+              <CCol xs={12}>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <CButton 
+                    color="secondary" 
+                    type="button"
+                    onClick={handleBack}
+                  >
+                    Back
+                  </CButton>
+                  <CButton 
+                    color="danger"
+                    type="button"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </CButton>
+                  <CButton 
+                    color="info" 
+                    type="submit"
+                    disabled={!canSave}
+                  >
+                    Update Record
+                  </CButton>
+                </div>
               </CCol>
             </CRow>
            </CForm>

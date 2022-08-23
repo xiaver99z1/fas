@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVendors, selectVendor } from './../../../../store/reducers/vendorSlice';
+import { useNavigate } from 'react-router-dom';
+import { selectVendors, updateVendor } from './../../../../store/reducers/vendorSlice';
 
 
 const VendorTable = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   
-  const { vendors } = useSelector((state) => state.vendor);
+  const { data, status, error } = useSelector(selectVendors);
 
-  useEffect(() => {
-      dispatch(getVendors());
-  },[dispatch]);
-
-
+  
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {
-      dispatch(deleteVendor(id));
+      dispatch(updateVendor({vendor_id: id, status: 'deleted'}));
     }
   };
 
@@ -72,7 +70,7 @@ const VendorTable = () => {
             columnFilter
             columnSorter
             footer
-            items={vendors}
+            items={data}
             itemsPerPageSelect
             itemsPerPage={20}
             pagination
@@ -105,12 +103,14 @@ const VendorTable = () => {
                     <CCardBody>
                       <h5>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h5>
                       <p className="text-muted">Date Updated: {item.date_updated}</p>
-                      <CButton size="sm" color="info" href={`/vendor/${item.vendor_id}`}>
-                        View / Update
-                      </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" href={`/vendor/delete/${item.vendor_id}`} onClick={() => handleDelete(item.vendor_id)}>
-                        Delete
-                      </CButton>
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.vendor_id}`)}>
+                          Delete
+                        </CButton>
+                        <CButton size="sm" color="info" onClick={() => navigate(`/vendor/${item.vendor_id}`)}>
+                          View / Update
+                        </CButton>
+                      </div>
                     </CCardBody>
                   </CCollapse>
                 )

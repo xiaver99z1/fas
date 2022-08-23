@@ -21,7 +21,7 @@ import {
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProducts, getProductId, updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
+import { updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
 import { selectUser } from '../../../../store/reducers/users'
 import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
 
@@ -36,24 +36,16 @@ const ProductUpdate = () => {
   const {id} = useParams();
   
   const { user } = useSelector(selectUser);
-  const { status, error } = useSelector((state) => state.product);
+  const { status, error } = useSelector(selectProducts);
   const data = useSelector((state) => selectProductId(state, Number(id)));
   
   const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
-
-  //Form validation 
-  const [validated, setValidated] = useState(false);
-  const [updated, setUpdated] = useState(false);
-  const [dataRecord, setDataRecord] = useState(false);
-  const [requestStatus, setRequestStatus] = useState('idle');
   
-
   /* Load Data */
   useEffect(() => {
     if(status === 'success') {
       dispatch(getPostingGroups());
     }
-
     return (() => {
       setUpdated(true);
     });
@@ -91,86 +83,12 @@ const ProductUpdate = () => {
   const [productStatus, setProductStatus] = useState(data?.status);
   const [updated_by, setUpdatedBy] = useState(user.first_name);
   
-
+  //Form validation 
+  const [validated, setValidated] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [dataRecord, setDataRecord] = useState(false);
+  const [requestStatus, setRequestStatus] = useState('idle');
   const canSave = [company_id, product_name, sku, productStatus].every(Boolean) && requestStatus === 'idle';
-
-  const onSavePostClicked = () => {  
-    if (canSave) {
-      try {
-        setRequestStatus('pending');
-        console.log({updated_by, product_name, upc, sku, size})
-        dispatch(updateProduct({   
-              product_id: id, 
-              product_name,
-              company_id,
-              cs_product_id,
-              upc,
-              upc_barcode,
-              sku,
-              sku_barcode,
-              category,
-              sub_category,
-              uom,
-              size,
-              packaging_length,
-              packaging_width,
-              packaging_height,
-              net_weight,
-              gross_weight,
-              ingredients,
-              nutrition_facts,
-              unit_type,
-              qty_per_unit,
-              eff_start_date,
-              eff_end_date,
-              cs_product_id,
-              inventory_posting_group,
-              gen_posting_group,
-              input_vat_posting_group,
-              output_vat_posting_group,
-              status: productStatus,
-              updated_by,
-              date_updated: new Date().toISOString(),
-            })).unwrap()
-
-            setProductName('')
-            setProductType('')
-            setCompanyId('')
-            setCsProductId('')
-            setUpc('')
-            setUpcBarcode('')
-            setSku('')
-            setSkuBarcode('')
-            setCategory('')
-            setSubCategory('')
-            setUom('')
-            setSize('')
-            setPackagingLength('')
-            setPackagingWidth('')
-            setPackagingHeight('')
-            setNetWeight('')
-            setGrossWeight('')
-            setIngredients('')
-            setNutritionFacts('')
-            setUnitType('')
-            setQtyPerUnit('')
-            setEffStartDate('')
-            setEffEndDate('')
-            setInventoryPostingGroup('')
-            setGenPostingGroup('')
-            setInputVatPostingGroup('')
-            setOutputVatPostingGroup('')
-            setProductStatus('')
-
-            navigate(`/product/${id}`)
-
-      } catch (err) {
-        console.error('Failed to save the post', err)
-      } finally {
-        setRequestStatus('idle');
-      }
-    }
-  }
 
   //Submit Form
   const handleSubmit = (event) => {
@@ -179,8 +97,95 @@ const ProductUpdate = () => {
       event.preventDefault();
       event.stopPropagation();
     }
+    const onSavePostClicked = () => {  
+      if (canSave) {
+        try {
+          setRequestStatus('pending');
+          console.log({updated_by, product_name, upc, sku, size})
+          dispatch(updateProduct({   
+                product_id: id, 
+                product_name,
+                company_id,
+                cs_product_id,
+                upc,
+                upc_barcode,
+                sku,
+                sku_barcode,
+                category,
+                sub_category,
+                uom,
+                size,
+                packaging_length,
+                packaging_width,
+                packaging_height,
+                net_weight,
+                gross_weight,
+                ingredients,
+                nutrition_facts,
+                unit_type,
+                qty_per_unit,
+                eff_start_date,
+                eff_end_date,
+                cs_product_id,
+                inventory_posting_group,
+                gen_posting_group,
+                input_vat_posting_group,
+                output_vat_posting_group,
+                status: productStatus,
+                updated_by,
+                date_updated: new Date().toISOString(),
+              })).unwrap()
+  
+              setProductName('')
+              setProductType('')
+              setCompanyId('')
+              setCsProductId('')
+              setUpc('')
+              setUpcBarcode('')
+              setSku('')
+              setSkuBarcode('')
+              setCategory('')
+              setSubCategory('')
+              setUom('')
+              setSize('')
+              setPackagingLength('')
+              setPackagingWidth('')
+              setPackagingHeight('')
+              setNetWeight('')
+              setGrossWeight('')
+              setIngredients('')
+              setNutritionFacts('')
+              setUnitType('')
+              setQtyPerUnit('')
+              setEffStartDate('')
+              setEffEndDate('')
+              setInventoryPostingGroup('')
+              setGenPostingGroup('')
+              setInputVatPostingGroup('')
+              setOutputVatPostingGroup('')
+              setProductStatus('')
+              
+              setUpdated(true)
+              
+              navigate(`/product/${id}`)
+  
+        } catch (err) {
+          console.error('Failed to save the post', err)
+        } finally {
+          setRequestStatus('idle');
+        }
+      }
+    }
     setValidated(true);
+    onSavePostClicked();
   }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      //Just change status to deleted
+      dispatch((updateProduct({ product_id: id, status: 'deleted'})));
+    }
+  };
 
   const handleBack = () => {
     return navigate('/products');
@@ -517,24 +522,30 @@ const ProductUpdate = () => {
             </CRow>
 
             <CRow xs={{ gutterY: 4 }} className="justify-content-end">
-              <CCol xs={2}>
-                <CButton 
-                  color="primary" 
-                  type="button"
-                  onClick={handleBack}
-                >
-                  Back
-                </CButton>
-              </CCol>
-              <CCol xs={2}>
-                <CButton 
-                  color="primary" 
-                  type="button"
-                  onClick={onSavePostClicked}
-                  disabled={!canSave}
-                >
-                  Update Record
-                </CButton>
+              <CCol xs={12}>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <CButton 
+                      color="secondary" 
+                      type="button"
+                      onClick={handleBack}
+                    >
+                      Back
+                    </CButton>
+                    <CButton 
+                      color="danger"
+                      type="button"
+                      onClick={handleDelete}
+                    >
+                      Delete
+                    </CButton>
+                    <CButton 
+                      color="info" 
+                      type="submit"
+                      disabled={!canSave}
+                    >
+                      Update Record
+                    </CButton>
+                </div>
               </CCol>
             </CRow>
            </CForm>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -48,8 +48,10 @@ const ProductTable = () => {
   }
 
   const handleDelete = (id) => {
-    dispatch((updateProduct({ product_id: id, status: 'deleted'})));
-    console.log(id, 'deleted');
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      //Just change status to deleted
+      dispatch((updateProduct({ product_id: id, status: 'deleted'})));
+    }
   };
  
   return (
@@ -102,12 +104,14 @@ const ProductTable = () => {
                     <CCardBody>
                       <h5>{item.product_name}</h5>
                       <p className="text-muted">Date Updated: {item.date_updated}</p>
-                      <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.product_id}`)}>
-                        View / Update
-                      </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.product_id}`)}>
-                        Delete
-                      </CButton>
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.product_id}`)}>
+                          Delete
+                        </CButton>
+                        <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.product_id}`)}>
+                          View / Update
+                        </CButton>
+                      </div>
                     </CCardBody>
                   </CCollapse>
                 )
