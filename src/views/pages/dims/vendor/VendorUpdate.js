@@ -341,11 +341,14 @@ const VendorUpdate = () => {
                 />
               </CCol>
               <CCol md={3}>
-                <CFormSelect id="city" name="city" label="City" onChange={(e) => setCity(e.target.value)} required>
-                  <option>PH</option>
-                  <option>SG</option>
-                  <option>AU</option>
-                </CFormSelect>
+                <CFormInput 
+                  label="City" 
+                  type="text"
+                  id="city"
+                  feedbackValid="Looks good!"
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                />
               </CCol>
               <CCol md={3}>
               <CFormInput 

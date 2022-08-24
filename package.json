@@ -1,6 +1,6 @@
 {
-  "name": "@coreui/fas",
-  "version": "4.4.0",
+  "name": "@fas/web",
+  "version": "1.0.0",
   "description": "FAS Dashboard Template",
   "homepage": ".",
   "bugs": {
@@ -12,6 +12,7 @@
   },
   "license": "MIT",
   "author": "ConnectSys Team",
+  "proxy": "https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
   "scripts": {
     "build": "react-scripts build",
     "changelog": "auto-changelog --starting-version 4.4.0 --commit-limit false --hide-credit",
@@ -62,7 +63,7 @@
     "web-vitals": "^2.1.4"
   },
   "engines": {
-    "node": ">=10",
+    "node": ">=18",
     "npm": ">=6"
   },
   "browserslist": {

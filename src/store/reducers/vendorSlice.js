@@ -94,14 +94,12 @@ export const vendorSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(createVendor.fulfilled, (state, action) => {
-        if (action.payload == true) {
-          state.status = 'success';
-          state.data = action.payload;
-        }
+      state.status = 'success';
+      state.data = action.payload;
     });
     builder.addCase(createVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload
+      state.error = action.payload;
     });
 
     /* UPDATE */
@@ -111,8 +109,8 @@ export const vendorSlice = createSlice({
     builder.addCase(updateVendor.fulfilled, (state, action) => {
         state.status = 'success';
         if (!action.payload?.vendor_id) {
-          console.log('Update could not complete')
-          console.log(action.payload)
+          console.log('Update could not complete');
+          console.log(action.payload);
           return;
         }
         const { id } = action.payload;
@@ -122,7 +120,7 @@ export const vendorSlice = createSlice({
     });
     builder.addCase(updateVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload
+      state.error = action.payload;
     });
 
     /* DELETE */
@@ -133,7 +131,7 @@ export const vendorSlice = createSlice({
       state.status = 'success';
       if (!action.payload?.vendor_id) {
         console.log('Delete could not complete')
-        console.log(action.payload)
+        console.log(action.payload);
         return;
       }
       const { id } = action.payload;
@@ -142,7 +140,7 @@ export const vendorSlice = createSlice({
     });
     builder.addCase(deleteVendor.rejected, (state, action) => {
       state.status = 'failed';
-      state.error = action.payload
+      state.error = action.payload;
     });
   },
 });

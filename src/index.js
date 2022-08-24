@@ -9,6 +9,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppStore from './store';
 import reportWebVitals from './reportWebVitals';
 
+
+// STORE
 const { store, persistor } = AppStore;
 
 const container = document.getElementById('root');

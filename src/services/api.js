@@ -11,7 +11,6 @@ class ApiService {
         if (enforcer !== singletonEnforcer) {
             throw new Error('Cannot construct singleton');
         }
-        console.log(REACT_APP_DIRECTUS_URL);
         
         this.localStorage = axios.create({
             baseURL: REACT_APP_DIRECTUS_URL,
