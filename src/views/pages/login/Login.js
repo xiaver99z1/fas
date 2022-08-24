@@ -34,20 +34,25 @@ const Login = () => {
     if (token) {
       navigate("/dashboard");
     } else {
-      dispatch(ClearSignIn())
+      dispatch(ClearSignIn()).then(()=>{
+        setMsg(null)
+        setErrorEmail(false)
+        setErrorPassword(false)
+      })
+      
     }
   }, [token, dispatch, navigate])
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState(null);
-  const [errorFname, setErrorFname] = useState(false);
-  const [errorLname, setErrorLname] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
 
   useEffect(()=>{
       if(typeof errors_sign_in === "object"){
-        setErrorFname(true)
-        setErrorLname(true)
+        setErrorEmail(true)
+        setErrorPassword(true)
         setMsg(
             <CCardText style={{color:'red'}}>
                 Error: {errors_sign_in.errors[0].message}
@@ -88,7 +93,7 @@ const Login = () => {
               <CIcon icon={cilUser} />
             </CInputGroupText>
             <CFormInput 
-              className={errorFname ? "form-control is-invalid" :  ""}
+            
               id="email"
               type="email"
               placeholder="Email"
@@ -97,7 +102,7 @@ const Login = () => {
                 setEmail(e.target.value);
               }}
               onBlur={(e) => {
-                setErrorFname(false)
+                setErrorEmail(false)
               }}
               required
             />
@@ -107,7 +112,6 @@ const Login = () => {
               <CIcon icon={cilLockLocked} />
             </CInputGroupText>
             <CFormInput
-              className={errorLname ? "form-control is-invalid" :  ""}
               id="password"
               type="password"
               placeholder="Password"
@@ -116,7 +120,7 @@ const Login = () => {
                 setPassword(e.target.value);
               }}
               onBlur={(e) => {
-                setErrorLname(false)
+                setErrorPassword(false)
               }}
               required
             />
@@ -141,7 +145,7 @@ const Login = () => {
     return (
       <CCard className="mx-4" style={{marginTop:-120}}>
         <CCardBody className="p-4">
-          <CCardTitle class="text-success">Authenticated!</CCardTitle>
+          <CCardTitle className="text-success">Authenticated!</CCardTitle>
           <CCardText>You will redirecting to the dashboard page.</CCardText>
         </CCardBody>
       </CCard>

@@ -17,10 +17,46 @@ const InitialState = {
 
 export const SignUp = createAsyncThunk(
     'user/sign_up',
+    async (values, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await api.post('/users', values)
+            const id = response.data.data.id
+            const { role, status } = values
+            const payload = {
+                userid:id,
+                company_id: "1",
+                department: "Operation",
+                app_module: "UAT",
+                task_description: "1",
+                user_role: null,
+                user_role_id: role,
+                status,
+                user_activity_id: "1",
+                created_by: "MW",
+                updated_by: "MW",
+                date_created: new Date().toISOString(),
+                date_updated: new Date().toISOString()
+            }
+            if(response.data.data){
+                dispatch(RegisterUserProfile(payload))
+            }
+            return response.data;
+        } catch (err) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
+export const RegisterUserProfile = createAsyncThunk(
+    'user/sign_up',
     async (payload, { rejectWithValue, _ }) => {
         try {
-            const response = await api.post('/users', payload)
+            const response = await api.post('/items/user_profile', payload)
             return response.data;
+          return true
         } catch (err) {
             if (!err.response) {
                 throw err
@@ -124,7 +160,6 @@ export const users = createSlice({
     })
     builder.addCase(SignUp.fulfilled, (state, action) => {
         state.signing_up = false
-        state.errors_sign_up = undefined
         if (action.payload) {
             state.success_sign_up = true
         }
@@ -132,7 +167,8 @@ export const users = createSlice({
     builder.addCase(SignUp.rejected, (state, action) => {
         state.signing_up = false
         state.success_sign_up = false
-        state.errors_sign_up = 'Signup failed!, Something went wrong.'
+        state.errors_sign_up =  action.payload
+        
     })
 
      /* SIGN-IN */
@@ -140,16 +176,13 @@ export const users = createSlice({
         state.signing_in = true
       })
       builder.addCase(SignIn.fulfilled, (state, action) => {
-          console.log('~~',action.payload);
           state.signing_in = false
-          state.errors_sign_in = undefined
           state.success_sign_in = true
           state.user = action.payload;
           state.token = action.payload.access_token
           localStorage.setItem('token', action.payload.access_token)
       })
       builder.addCase(SignIn.rejected, (state, action) => {
-          console.log('^^ error');
           state.token = null
           state.signing_in = false
           state.success_sign_in = false
