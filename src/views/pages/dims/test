@@ -27,6 +27,7 @@ const Test = () => {
      setValidated(true)
    }
    return (
+   <>
      <CForm
        className="row g-3 needs-validation"
        noValidate
@@ -113,6 +114,7 @@ const Test = () => {
          </CButton>
        </CCol>
      </CForm>
+     </>
    )
 }
 
