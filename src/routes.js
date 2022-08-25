@@ -23,6 +23,8 @@ const UserList = React.lazy(() => import('./views/pages/dims/user/UserTable'))
 const UserAddForm = React.lazy(() => import('./views/pages/dims/user/UserAdd'))
 const UserUpdateForm = React.lazy(() => import('./views/pages/dims/user/UserUpdate'))
 
+const Test = React.lazy(() => import('./views/pages/dims/test'))
+
 
 //Tables - FAS
 const PurchaseOrderList = React.lazy(() => import('./views/pages/dims/purchaseorder/PurchaseOrderTable'))
@@ -47,6 +49,7 @@ const routes = [
   { path: '/dims/purchase-order', name: 'Purchase Order List', element: PurchaseOrderList},
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
+  { path: '/test', name: 'Test', element: Test },
 ]
 
 export default routes
