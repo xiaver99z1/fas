@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "FAS Dashboard Template",
   "homepage": ".",
+  "proxy":"https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
   },
@@ -12,7 +13,6 @@
   },
   "license": "MIT",
   "author": "ConnectSys Team",
-  "proxy": "https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
   "scripts": {
     "build": "react-scripts build",
     "changelog": "auto-changelog --starting-version 4.4.0 --commit-limit false --hide-credit",
@@ -38,7 +38,6 @@
     "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
     "core-js": "^3.23.4",
-    "cors": "^2.8.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",

@@ -131,5 +131,7 @@ const postinggroupSlice = createSlice({
 
 export default postinggroupSlice.reducer;
 
-export const selectAllPostingGroup = (state) => state.postinggroup.postinggroups;
-export const selectPostingGroupType = (state, code) => state.postinggroup.postinggroups.find(post => post.posting_group_type === code);
+export const selectPostingGroups = (state) => state.postinggroup;
+export const selectPostingGroupType = (state, code) => {
+  state.postinggroup.postinggroups.filter((post) => post.posting_group_type === code)
+};

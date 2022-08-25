@@ -28,8 +28,7 @@ const UserUpdateForm = React.lazy(() => import('./views/pages/dims/user/UserUpda
 const PurchaseOrderList = React.lazy(() => import('./views/pages/dims/purchaseorder/PurchaseOrderTable'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/dashboard', exact: true, name: 'Dashboard', element: Dashboard },
   { path: '/customers', name: 'All Customers', element: CustomerList },
   { path: '/customer/add', name: 'Add New Customer', element: CustomerAddForm },
   { path: '/customer/:id', exact: true, name: 'Update Customer', element: CustomerUpdateForm },

@@ -14,6 +14,7 @@ import {
   CRow,
   CFormFeedback,
 } from '@coreui/react-pro'
+import AppToast from './../../../../components/AppToast'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { selectVendors, selectVendorId, updateVendor } from './../../../../store/reducers/vendorSlice';
@@ -33,18 +34,18 @@ const VendorUpdate = () => {
 
   //Get router params
   const {id} = useParams();
-  
   const { user } = useSelector(selectUser);
   const { status, error } = useSelector(selectVendors);
   const data = useSelector((state) => selectVendorId(state, Number(id)));
   
+  
+  /* Load Selection Options */
   const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
   const showCurrencies = useSelector(state => state.currency.currencies);
   const showCountries = useSelector(state => state.country.countries);
   const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
   const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
-  
-  /* Load Data */
+
   useEffect(() => {
     if(status === 'success') {
       dispatch(getCurrencies());
@@ -61,12 +62,12 @@ const VendorUpdate = () => {
 
   // Set Fields
   const [vendorId, setVendorId] = useState(id);
-  const [vendorName, setVendorName] = useState(data?.vendor_name);
-  const [vendorType, setVendorType] = useState(data?.vendor_type);
-  const [emailAddress, setEmail] = useState(data?.email);
+  const [vendor_name, setVendorName] = useState(data?.vendor_name);
+  const [vendor_type, setVendorType] = useState(data?.vendor_type);
+  const [email, setEmail] = useState(data?.email);
   const [vendorStatus, setVendorStatus] = useState(data?.status);
-  const [phoneNumber, setPhoneNumber] = useState(data?.phone_number);
-  const [mobileNumber, setMobileNumber] = useState(data?.mobile_number);
+  const [phone_number, setPhoneNumber] = useState(data?.phone_number);
+  const [mobile_number, setMobileNumber] = useState(data?.mobile_number);
   const [address1, setAddress1] = useState(data?.address1);
   const [address2, setAddress2] = useState(data?.address2);
   const [city, setCity] = useState(data?.city);
@@ -87,44 +88,14 @@ const VendorUpdate = () => {
   const [created_by, setCreatedBy] = useState(data?.created_by);
   const [updated_by, setUpdatedBy] = useState(user.first_name);
   const [date_created, setDateCreated] = useState(data?.date_created);
-
-  /*
-  const [vendorId, setVendorId] = useState(id);
-  const [vendorName, setVendorName] = useState('');
-  const [vendorType, setVendorType] = useState('');
-  const [emailAddress, setEmail] = useState('');
-  const [vendorStatus, setVendorStatus] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
-  const [province, setProvince] = useState('');
-  const [post_code, setPostCode] = useState('');
-  const [country_abbr, setCountry] = useState('');
-  const [payment_terms, setPaymentTerms] = useState('');
-  const [payment_mode, setPaymentMode] = useState('');
-  const [contact_person_first_name, setContactFirstName] = useState('');
-  const [contact_person_last_name, setContactLastName] = useState('');
-  const [bank_name, setBankName] = useState('');
-  const [bank_account_number, setBankAccountNumber] = useState('');
-  const [currency_code, setCurrencyCode] = useState('');
-  const [business_posting_group, setBusinessPostingGroup] = useState('');
-  const [vat_posting_group, setVatPostingGroup] = useState('');
-  const [vendor_posting_group, setVendorPostingGroup] = useState('');
-  const [website, setWebsite] = useState('');
-  const [created_by, setCreatedBy] = useState('');
-  const [updated_by, setUpdatedBy] = useState('');
-  const [date_created, setDateCreated] = useState('');
-  */
-
+  
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
 
-  const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle';
-
+  const canSave = [vendor_name, vendorStatus].every(Boolean) && requestStatus === 'idle';
+  
   //Submit Form
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -136,14 +107,13 @@ const VendorUpdate = () => {
       if (canSave) {
         try {
           setRequestStatus('pending');
-          console.log({canSave, vendorName})
           dispatch(updateVendor({
               vendor_id: vendorId, 
-              vendor_name: vendorName, 
-              vendor_type: vendorType, 
-              email: emailAddress, 
-              phone_number: phoneNumber,
-              mobile_number: mobileNumber,
+              vendor_name, 
+              vendor_type, 
+              email, 
+              phone_number,
+              mobile_number,
               address1,
               address2,
               city,
@@ -168,33 +138,32 @@ const VendorUpdate = () => {
               date_updated: new Date().toISOString(),
             })).unwrap()
     
-            setVendorId('')
-            setVendorName('')
-            setVendorType('')
-            setEmail('')
-            setPhoneNumber('')
-            setMobileNumber('')
-            setAddress1('')
-            setAddress2('')
-            setCity('')
-            setProvince('')
-            setPostCode('')
-            setCountry('')
-            setPaymentTerms('')
-            setPaymentMode('')
-            setContactFirstName('')
-            setContactLastName('')
-            setBankName('')
-            setBankAccountNumber('')
-            setCurrencyCode('')
-            setBusinessPostingGroup('')
+            setVendorId('');
+            setVendorName('');
+            setVendorType('');
+            setEmail('');
+            setPhoneNumber('');
+            setMobileNumber('');
+            setAddress1('');
+            setAddress2('');
+            setCity('');
+            setProvince('');
+            setPostCode('');
+            setCountry('');
+            setPaymentTerms('');
+            setPaymentMode('');
+            setContactFirstName('');
+            setContactLastName('');
+            setBankName('');
+            setBankAccountNumber('');
+            setCurrencyCode('');
+            setBusinessPostingGroup('');
             setVatPostingGroup('')
-            setVendorPostingGroup('')
-            setWebsite('')
-            setVendorStatus('')
+            setVendorPostingGroup('');
+            setWebsite('');
+            setVendorStatus('');
             
-            setUpdated(true)
-
+            setUpdated(true);
             navigate(`/vendor/${id}`);
           
         } catch (err) {
@@ -210,14 +179,19 @@ const VendorUpdate = () => {
   }
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    
+    if(data.status !== 'deleted') {
       //Just change status to deleted
-      dispatch((updateVendor({ vendor_id: id, status: 'deleted'})));
+      
+      if (window.confirm("Are you sure you want to delete this vendor "+ id + "?")) {
+        dispatch(updateVendor({vendor_id: id, status: 'deleted'}));
+        //window.location.reload(true);
+      }
     }
   };
 
   const handleBack = () => {
-    return navigate('/vendors');
+    navigate('/vendors');
   }
   return (
 
@@ -240,18 +214,20 @@ const VendorUpdate = () => {
                   type="text"
                   id="vendor_name"
                   feedbackValid="Looks good!"
-                  defaultValue={vendorName}
+                  defaultValue={vendor_name}
                   onChange={(e) => setVendorName(e.target.value)}
                   required
                 />
               </CCol>
               <CCol md={3}>
-                <CFormSelect 
+              <CFormSelect 
                   id="vendor_type" 
-                  label="Vendor Type" 
+                  label="Vendor Type"
+                  defaultValue={vendor_type} 
                   onChange={(e) => setVendorType(e.target.value)}
-                  defaultValue={vendorType}>
-                  <option>AS</option>
+                  >
+                  <option>Supplier</option>
+                  <option>Fulfillment</option>
                 </CFormSelect>
               </CCol>
               <CCol md={3}>
@@ -273,7 +249,7 @@ const VendorUpdate = () => {
                  label="Email" 
                  type="text"
                  id="email"
-                 defaultValue={emailAddress}
+                 defaultValue={email}
                  feedbackValid="Looks good!"
                  onChange={(e) => setEmail(e.target.value)}
                  required
@@ -286,7 +262,7 @@ const VendorUpdate = () => {
                  <CFormInput
                    type="text"
                    id="phone_number"
-                   defaultValue={phoneNumber}
+                   defaultValue={phone_number}
                    feedbackValid="Looks good!"
                    onChange={(e) => setPhoneNumber(e.target.value)}
                  />
@@ -299,7 +275,7 @@ const VendorUpdate = () => {
                  <CFormInput
                    type="text"
                    id="mobile_number"
-                   defaultValue={mobileNumber}
+                   defaultValue={mobile_number}
                    feedbackValid="Looks good!"
                    onChange={(e) => setMobileNumber(e.target.value)}
                  />

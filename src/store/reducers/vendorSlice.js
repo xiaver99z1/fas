@@ -61,7 +61,7 @@ export const deleteVendor = createAsyncThunk(
   } catch (err) {
       return err.message;
   }
-})
+});
 
 
 //Initial State
@@ -72,7 +72,7 @@ const initialState = {
 }
 
 export const vendorSlice = createSlice({
-  name: "product",
+  name: "vendor",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

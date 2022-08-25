@@ -1,5 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { axiosInstance } from 'src/store/middleware/directus'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+//import { axiosInstance } from 'src/store/middleware/directus'
+import api from '../../services/api';
+
 
 //Initial State
 const initialState = {
@@ -14,7 +16,7 @@ const initialState = {
 export const getCustomers = createAsyncThunk(
   'customer/getCustomers', 
   async () => {
-    return await axiosInstance.get('/items/customer/')
+    return await api.get('/items/customer/')
     .then((res) => res.data.data)
     .catch((error) => error.message)
 });
