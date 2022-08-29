@@ -18,6 +18,8 @@ const proxyConfig = {
 
 module.exports = function(app) {
   app.use(createProxyMiddleware("/users", proxyConfig));
+  app.use(createProxyMiddleware("/auth/login", proxyConfig));
+  app.use(createProxyMiddleware("/items/user_profile", proxyConfig));
   app.use(createProxyMiddleware("/items/vendor", proxyConfig));
   app.use(createProxyMiddleware("/items/company", proxyConfig));
   app.use(createProxyMiddleware("/items/vendor", proxyConfig));
