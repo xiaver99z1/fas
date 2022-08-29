@@ -22,7 +22,7 @@ export const createProduct = createAsyncThunk(
   async (initialPost) => {
   try {
       const response = await api.post(`/items/product/`, initialPost)
-      return response.data.data
+      return response.data.data;
   } catch (err) {
       console.error(err.response.data);
       console.error(err.response.status);

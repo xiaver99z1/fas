@@ -46,8 +46,8 @@ const ProductUpdate = () => {
   
   const logged = user ? user.first_name : 'user not logged';
 
+  /* Load Selection Options */
   const { pstgroupData } = useSelector(selectPostingGroups);
-  
 
   //Set Fields
   const [company_id, setCompanyId] = useState('1'); //options on company dim
@@ -449,7 +449,6 @@ const ProductUpdate = () => {
              <CCol md={3}>
               <CFormSelect
                 label="Inventory Posting Group"
-                type="text"
                 id="inventory_posting_group"
                 feedbackValid="Looks good!"
                 defaultValue={inventory_posting_group}
