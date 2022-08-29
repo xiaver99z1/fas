@@ -19,11 +19,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { selectVendors, selectVendorId, updateVendor } from './../../../../store/reducers/vendorSlice';
 import { selectUser } from './../../../../store/reducers/users';
-import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
-import { getCountries } from '../../../../store/reducers/references/countrySlice';
-import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
-import { getPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
+import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { selectCountries } from '../../../../store/reducers/references/countrySlice';
+import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { selectPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
+import { selectPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 
 const VendorUpdate = () => {
@@ -37,27 +37,15 @@ const VendorUpdate = () => {
   const { user } = useSelector(selectUser);
   const { status, error } = useSelector(selectVendors);
   const data = useSelector((state) => selectVendorId(state, Number(id)));
-  
+
+  const logged = user ? user.first_name : 'user not logged';
   
   /* Load Selection Options */
-  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
-  const showCurrencies = useSelector(state => state.currency.currencies);
-  const showCountries = useSelector(state => state.country.countries);
-  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
-  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
-
-  useEffect(() => {
-    if(status === 'success') {
-      dispatch(getCurrencies());
-      dispatch(getCountries());
-      dispatch(getPaymentTerms());
-      dispatch(getPostingGroups());
-      dispatch(getPaymentModes());
-    }
-    return (() => {
-      setUpdated(true);
-    });
-  },[dispatch, id]);
+  const { pstgroupData } = useSelector(selectPostingGroups);
+  const { currenciesData } = useSelector(selectCurrencies);
+  const { countriesData } = useSelector(selectCountries);
+  const { ptermsData } = useSelector(selectPaymentTerms);
+  const { pmodesData } = useSelector(selectPaymentModes);
 
 
   // Set Fields
@@ -86,7 +74,7 @@ const VendorUpdate = () => {
   const [vendor_posting_group, setVendorPostingGroup] = useState(data?.vendor_posting_group);
   const [website, setWebsite] = useState(data?.website);
   const [created_by, setCreatedBy] = useState(data?.created_by);
-  const [updated_by, setUpdatedBy] = useState(user.first_name);
+  const [updated_by, setUpdatedBy] = useState(logged);
   const [date_created, setDateCreated] = useState(data?.date_created);
   
   //Form validation 
@@ -344,7 +332,11 @@ const VendorUpdate = () => {
                   label="Country" 
                   onChange={(e) => setCountry(e.target.value)} 
                   defaultValue={country_abbr}
-                  options={showCountries && showCountries.map((post) => post.country_abbr)}
+                  options={
+                     countriesData.map(filteredName => (
+                        { 'label': filteredName.country_abbr, 'value': filteredName.country_abbr }
+                     ))
+                  }
                   required
                 />
               </CCol>
@@ -408,32 +400,44 @@ const VendorUpdate = () => {
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Currency Code"
                   id="currency_code"
                   name="currency_code"
                   onChange={(e) => setCurrencyCode(e.target.value)}
-                  label="Currency Code"
                   defaultValue={currency_code}
-                  options={showCurrencies && showCurrencies.map((post) => post.currency_code)}
+                  options={
+                     currenciesData.map(filteredName => (
+                        { 'label': filteredName.currency_code, 'value': filteredName.currency_code }
+                     ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Payment Terms"
                   id="payment_terms" 
                   name="Payment Terms" 
-                  onChange={(e) => setPaymentTerms(e.target.value)}
-                  label="Payment Terms"
                   defaultValue={payment_terms}
-                  options={showPaymentTerms && showPaymentTerms.map((post) => post.payment_terms)}
+                  onChange={(e) => setPaymentTerms(e.target.value)}
+                  options={
+                      ptermsData.map(filteredName => (
+                        { 'label': filteredName.payment_terms, 'value': filteredName.payment_terms }
+                      ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Payment Mode"
                   id="payment_mode" 
                   name="payment_mode"
-                  onChange={(e) => setPaymentMode(e.target.value)}
-                  label="Payment Mode"
                   defaultValue={payment_mode}
-                  options={showPaymentModes && showPaymentModes.map((post) => post.payment_mode)}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                  options={
+                      pmodesData.map(filteredName => (
+                        { 'label': filteredName.payment_mode, 'value': filteredName.payment_mode }
+                  ))
+                  }
                 />
               </CCol>
             </CRow>
@@ -446,7 +450,11 @@ const VendorUpdate = () => {
                   defaultValue={business_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setBusinessPostingGroup(e.target.value)}
-                  options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Gen Bus')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
@@ -457,10 +465,15 @@ const VendorUpdate = () => {
                   defaultValue={vat_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setVatPostingGroup(e.target.value)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Customer VAT Bus')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
-                <CFormInput
+                <CFormSelect
                   label="Vendor Posting Group" 
                   type="text"
                   id="vendor_posting_group"
@@ -468,6 +481,11 @@ const VendorUpdate = () => {
                   defaultValue={vendor_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setVendorPostingGroup(e.target.value)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Vendor')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
             </CRow>

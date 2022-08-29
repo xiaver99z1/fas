@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
 export const getCompanies = createAsyncThunk(
-  'vendor/getCompanies', 
+  'company/getCompanies', 
   async () => {
   try {
       const response = await api.get(`/items/company/`)
@@ -14,11 +14,12 @@ export const getCompanies = createAsyncThunk(
     console.error(err.response.data);
     console.error(err.response.status);
     console.error(err.response.headers);
+    return err.response.data;
   }
 });
 
 export const createCompany = createAsyncThunk(
-  'vendor/createCompany', 
+  'company/createCompany', 
   async (initialPost) => {
   try {
       const response = await api.post(`/items/company/`, initialPost)
@@ -32,14 +33,17 @@ export const createCompany = createAsyncThunk(
 });
 
 export const updateCompany = createAsyncThunk(
-  'vendor/updateCompany', 
+  'company/updateCompany', 
   async (initialPost) => {
   const { company_id } = initialPost;
   try {
       const response = await api.patch(`/items/company/${company_id}`, initialPost)
-      console.log('upProd: ' + response.data.data)
-      if (response?.status === 200) return initialPost;
-        return `${response?.status}: ${response?.statusText}`;
+      console.log('company data: ' + response.data.data);
+      console.log(response.status);
+      console.log(response.statusText);
+      return response.data.data;
+      //if (response?.status === 200) return initialPost;
+      //return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
       console.error("Error response:");
       console.error(err.response.data); 
@@ -51,7 +55,7 @@ export const updateCompany = createAsyncThunk(
 });
 
 export const deleteCompany = createAsyncThunk(
-  'vendor/deleteCompany', 
+  'company/deleteCompany', 
   async (initialPost) => {
   const { id } = initialPost;
   try {

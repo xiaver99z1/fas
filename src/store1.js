@@ -9,7 +9,7 @@ import fasreferenceSlice from "./store/reducers/references/fasrefereceSlice";
 import currencySlice from "./store/reducers/references/currencySlice";
 import countrySlice from "./store/reducers/references/countrySlice";
 import paymenttermSlice from "./store/reducers/references/paymenttermSlice";
-import postinggroupSlice from "./store/reducers/references/postinggroupSlice";
+import postinggroupSlice from "./store/reducers/references/pstgroupSlice";
 import paymentmodeSlice from "./store/reducers/references/paymentmodeSlice";
 import authSlice from "./store/reducers/authSlice";
 

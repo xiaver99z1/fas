@@ -9,7 +9,8 @@ const CompanyTable = () => {
 
   const navigate = useNavigate();
 
-  const { data } = useSelector(selectCompanies);
+  const { data, status, error } = useSelector(selectCompanies);
+  console.log({data, status, error})
 
   const [details, setDetails] = useState([]);
   const columns = [

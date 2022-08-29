@@ -43,19 +43,6 @@ export const createCustomer = createAsyncThunk(
   }
 );
 
-/*
-export const updateCompanyById = createAsyncThunk(
-  "customer/updateCompanyById", 
-  async ({id}, {payload}) => {
-    //Fetch all customers
-    return await axiosInstance
-      .put(`/items/customer/${id}`, {payload})
-      .then((res) => res.data.data)
-      .catch((error) => error.message)
-  }
-);
-*/
-
 const customerSlice = createSlice({
   name: 'customer',
   initialState,
@@ -104,6 +91,4 @@ const customerSlice = createSlice({
 
 export default customerSlice.reducer;
 
-export const selectAllCustomers = (state) => state.customer.data
-export const getCustomerStatus = (state) => state.customer.isSuccess
-export const getCustomerError = (state) => state.customer.message
+export const selectCustomers = (state) => state.customer;

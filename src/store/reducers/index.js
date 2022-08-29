@@ -15,7 +15,7 @@ import currencySlice from './references/currencySlice';
 import countrySlice from './references/countrySlice';
 import paymenttermSlice from './references/paymenttermSlice';
 import paymentmodeSlice from './references/paymentmodeSlice';
-import postinggroupSlice from './references/postinggroupSlice';
+import pstgroupSlice from './references/pstgroupSlice';
 
 
 const userDataPersistConfig = {
@@ -37,7 +37,7 @@ const rootReducer = combineReducers({
     country: countrySlice,
     paymentterm: paymenttermSlice,
     paymentmode: paymentmodeSlice,
-    postinggroup: postinggroupSlice,
+    pstgroup: pstgroupSlice,
 })
 
 export default rootReducer;

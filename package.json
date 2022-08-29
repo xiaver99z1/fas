@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "FAS Dashboard Template",
   "homepage": ".",
-  "proxy":"https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
   },
@@ -56,6 +55,7 @@
     "auto-changelog": "~2.4.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "http-proxy-middleware": "^2.0.6",
     "prettier": "2.7.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.53.0",

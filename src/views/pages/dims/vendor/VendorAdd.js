@@ -21,7 +21,7 @@ import { selectUser } from './../../../../store/reducers/users';
 import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
 import { getCountries } from '../../../../store/reducers/references/countrySlice';
 import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
+import { getPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
 import { getPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 

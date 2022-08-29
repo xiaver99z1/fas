@@ -20,7 +20,7 @@ import { getProducts } from './reducers/productSlice';
 import { getCurrencies } from './reducers/references/currencySlice';
 import { getCountries } from './reducers/references/countrySlice';
 import { getPaymentTerms } from './reducers/references/paymenttermSlice';
-import { getPostingGroups } from './reducers/references/postinggroupSlice';
+import { getPostingGroups } from './reducers/references/pstgroupSlice';
 import { getPaymentModes } from './reducers/references/paymentmodeSlice';
 
 

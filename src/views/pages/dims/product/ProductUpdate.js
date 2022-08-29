@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
 import { selectUser } from '../../../../store/reducers/users'
-import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
+import { getPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
 
 
 const ProductUpdate = () => {
