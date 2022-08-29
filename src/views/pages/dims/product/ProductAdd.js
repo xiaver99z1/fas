@@ -62,15 +62,15 @@ const ProductAdd = () => {
   const [nutrition_facts, setNutritionFacts] = useState('');
   const [unit_type, setUnitType] = useState('');
   const [qty_per_unit, setQtyPerUnit] = useState('');
-  const [eff_start_date, setEffStartDate] = useState('');
-  const [eff_end_date, setEffEndDate] = useState('');
+  const [eff_start_date, setEffStartDate] = useState(new Date().toISOString());
+  const [eff_end_date, setEffEndDate] = useState(new Date().toISOString());
   const [inventory_posting_group, setInventoryPostingGroup] = useState('');
   const [gen_posting_group, setGenPostingGroup] = useState('');
   const [input_vat_posting_group, setInputVatPostingGroup] = useState('');
   const [output_vat_posting_group, setOutputVatPostingGroup] = useState('');
   const [productStatus, setProductStatus] = useState('active');
-  const [date_created, setDateCreated] = useState('');
-  const [date_updated, setDateUpdated] = useState('');
+  const [date_created, setDateCreated] = useState(new Date().toISOString());
+  const [date_updated, setDateUpdated] = useState(new Date().toISOString());
   const [updated_by, setUpdatedBy] = useState(logged);
   const [created_by, setCreatedBy] = useState(logged);
   
@@ -78,9 +78,9 @@ const ProductAdd = () => {
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
-  const canSave = [company_id, product_name, upc, sku, unit_type, qty_per_unit, productStatus].every(Boolean) && requestStatus === 'idle';
+  const canSave = [company_id, eff_start_date, product_name, upc, sku, unit_type, qty_per_unit, productStatus].every(Boolean) && requestStatus === 'idle';
 
-  console.log({canSave, company_id, product_name, upc, sku, unit_type, qty_per_unit, eff_start_date, productStatus});
+  console.log({canSave, eff_start_date, company_id, product_name, upc, sku, unit_type, qty_per_unit, eff_start_date, productStatus});
 
   //Submit Form
   const handleSubmit = (event) => {
@@ -115,7 +115,7 @@ const ProductAdd = () => {
                 nutrition_facts,
                 unit_type,
                 qty_per_unit,
-                eff_start_date: new Date().toISOString(),
+                eff_start_date,
                 eff_end_date,
                 cs_product_id,
                 inventory_posting_group,
@@ -125,8 +125,8 @@ const ProductAdd = () => {
                 status: productStatus,
                 created_by,
                 updated_by,
-                date_created: new Date().toISOString(),
-                date_updated: new Date().toISOString(),
+                date_created,
+                date_updated
               })).unwrap()
   
               setProductName('');
@@ -261,7 +261,6 @@ const ProductAdd = () => {
                 type="text"
                 id="uom"
                 feedbackValid="Looks good!"
-                defaultValue={uom}
                 onChange={(e) => setUom(e.target.value)}
                 required
               />
@@ -297,7 +296,6 @@ const ProductAdd = () => {
                 type="text"
                 id="sku"
                 feedbackValid="Looks good!"
-                defaultValue={sku}
                 onChange={(e) => setSku(e.target.value)}
                 required
               />
@@ -398,7 +396,7 @@ const ProductAdd = () => {
 
            <CRow xs={{ gutterY: 4 }}>
             <CCol md={12} className="bg-light p-3">
-             <CHeaderText className="header-brand mb-0 h3">Oother Details</CHeaderText>
+             <CHeaderText className="header-brand mb-0 h3">Other Details</CHeaderText>
             </CCol>
             <CCol md={6}>
              <CFormTextarea
@@ -494,6 +492,7 @@ const ProductAdd = () => {
                id="eff_start_date"
                locale="en-US" 
                footer
+               date={eff_start_date}
                onChange={(e) => setEffStartDate(e.target.value)}
                required
              />
@@ -504,6 +503,7 @@ const ProductAdd = () => {
                id="eff_end_date"
                locale="en-US" 
                footer
+               date={eff_end_date}
                onChange={(e) => setEffEndDate(e.target.value)}
              />
             </CCol>

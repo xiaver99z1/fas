@@ -517,7 +517,7 @@ const ProductUpdate = () => {
                 id="eff_start_date"
                 locale="en-US" 
                 footer
-                defaultValue={eff_start_date}
+                date={eff_start_date}
                 onChange={(e) => setEffStartDate(e.target.value)}
               />
              </CCol>
@@ -527,7 +527,7 @@ const ProductUpdate = () => {
                 id="eff_end_date"
                 locale="en-US" 
                 footer
-                defaultValue={eff_end_date}
+                date={eff_end_date}
                 onChange={(e) => setEffEndDate(e.target.value)}
               />
              </CCol>
