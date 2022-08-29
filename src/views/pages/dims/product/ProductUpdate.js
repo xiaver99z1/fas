@@ -22,8 +22,13 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
-import { selectUser } from '../../../../store/reducers/users'
-import { getPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
+import { selectUser } from './../../../../store/reducers/users';
+import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { selectCountries } from '../../../../store/reducers/references/countrySlice';
+import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { selectPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
+import { selectPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
+
 
 
 const ProductUpdate = () => {
@@ -39,18 +44,10 @@ const ProductUpdate = () => {
   const { status, error } = useSelector(selectProducts);
   const data = useSelector((state) => selectProductId(state, Number(id)));
   
-  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
+  const logged = user ? user.first_name : 'user not logged';
+
+  const { pstgroupData } = useSelector(selectPostingGroups);
   
-  /* Load Data */
-  useEffect(() => {
-    if(status === 'success') {
-      dispatch(getPostingGroups());
-    }
-    return (() => {
-      setUpdated(true);
-    });
-    
-  },[dispatch, id]);
 
   //Set Fields
   const [company_id, setCompanyId] = useState('1'); //options on company dim
@@ -81,7 +78,7 @@ const ProductUpdate = () => {
   const [input_vat_posting_group, setInputVatPostingGroup] = useState(data?.input_vat_posting_group);
   const [output_vat_posting_group, setOutputVatPostingGroup] = useState(data?.output_vat_posting_group);
   const [productStatus, setProductStatus] = useState(data?.status);
-  const [updated_by, setUpdatedBy] = useState(user.first_name);
+  const [updated_by, setUpdatedBy] = useState(logged);
   
   //Form validation 
   const [validated, setValidated] = useState(false);
@@ -457,7 +454,11 @@ const ProductUpdate = () => {
                 feedbackValid="Looks good!"
                 defaultValue={inventory_posting_group}
                 onChange={(e) => setInventoryPostingGroup(e.target.value)}
-                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                options={
+                  pstgroupData.filter(name => name.posting_group_type.includes('Inventory')).map(filteredName => (
+                    { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                ))
+              }
               />
              </CCol>
              <CCol md={3}>
@@ -468,7 +469,11 @@ const ProductUpdate = () => {
                 feedbackValid="Looks good!"
                 defaultValue={gen_posting_group}
                 onChange={(e) => setGenPostingGroup(e.target.value)}
-                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                options={
+                    pstgroupData.filter(name => name.posting_group_type.includes('Gen Bus')).map(filteredName => (
+                      { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                  ))
+                }
               />
              </CCol>
              <CCol md={3}>
@@ -479,7 +484,11 @@ const ProductUpdate = () => {
                 defaultValue={input_vat_posting_group}
                 feedbackValid="Looks good!"
                 onChange={(e) => setInputVatPostingGroup(e.target.value)}
-                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                options={
+                    pstgroupData.filter(name => name.posting_group_type.includes('Vendor VAT Bus')).map(filteredName => (
+                      { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                  ))
+                }
               />
              </CCol>
              <CCol md={3}>
@@ -490,7 +499,11 @@ const ProductUpdate = () => {
                 defaultValue={output_vat_posting_group}
                 feedbackValid="Looks good!"
                 onChange={(e) => setOutputVatPostingGroup(e.target.value)}
-                options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                options={
+                  pstgroupData.filter(name => name.posting_group_type.includes('Customer VAT Bus')).map(filteredName => (
+                    { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                ))
+              }
               />
              </CCol>
             </CRow>

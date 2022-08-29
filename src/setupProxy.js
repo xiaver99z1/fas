@@ -2,7 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const proxyConfig = {
   "changeOrigin": true,
-  "secure": false,
+  "secure": true,
   "target": "https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
   "headers": {
       "host": "moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",

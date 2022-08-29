@@ -16,6 +16,12 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '../../../../store/reducers/productSlice';
 import { useNavigate } from 'react-router-dom'
+import { selectUser } from './../../../../store/reducers/users';
+import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { selectCountries } from '../../../../store/reducers/references/countrySlice';
+import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { selectPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
+import { selectPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 
 const ProductAdd = () => {
