@@ -38,7 +38,7 @@ export const updateCustomer = createAsyncThunk(
   const { customer_id } = initialPost;
   try {
       const response = await api.patch(`/items/customer/${customer_id}`, initialPost)
-      console.log('response data: ' + response.data.data);      
+      console.log('updated: ' + response.data.data);      
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
         //return response.data.data;

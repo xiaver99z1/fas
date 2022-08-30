@@ -44,7 +44,7 @@ const ProductUpdate = () => {
   const { status, error } = useSelector(selectProducts);
   const data = useSelector((state) => selectProductId(state, Number(id)));
   
-  const logged = user ? user.first_name : 'user not logged';
+  const logged = user ? user.first_name : 'anonymous';
 
   /* Load Selection Options */
   const { pstgroupData } = useSelector(selectPostingGroups);
@@ -79,13 +79,14 @@ const ProductUpdate = () => {
   const [output_vat_posting_group, setOutputVatPostingGroup] = useState(data?.output_vat_posting_group);
   const [productStatus, setProductStatus] = useState(data?.status);
   const [updated_by, setUpdatedBy] = useState(logged);
+  const [date_updated, setDateUpdated] = useState(new Date().toISOString());
   
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [dataRecord, setDataRecord] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
-  const canSave = [company_id, product_name, sku, productStatus].every(Boolean) && requestStatus === 'idle';
+  const canSave = [company_id, product_name].every(Boolean) && requestStatus === 'idle';
 
   //Submit Form
   const handleSubmit = (event) => {
@@ -98,7 +99,6 @@ const ProductUpdate = () => {
       if (canSave) {
         try {
           setRequestStatus('pending');
-          console.log({updated_by, product_name, upc, sku, size})
           dispatch(updateProduct({   
                 product_id: id, 
                 product_name,
@@ -130,7 +130,7 @@ const ProductUpdate = () => {
                 output_vat_posting_group,
                 status: productStatus,
                 updated_by,
-                date_updated: new Date().toISOString(),
+                date_updated,
               })).unwrap()
   
               setProductName('')
@@ -161,6 +161,8 @@ const ProductUpdate = () => {
               setInputVatPostingGroup('')
               setOutputVatPostingGroup('')
               setProductStatus('')
+              setDateUpdated('')
+              setUpdatedBy('')
               
               setUpdated(true)
               
@@ -178,9 +180,10 @@ const ProductUpdate = () => {
   }
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      //Just change status to deleted
-      dispatch((updateProduct({ product_id: id, status: 'deleted'})));
+    if (window.confirm("Are you sure you want to delete this product "+ id + "?")) {
+      dispatch(updateProduct({product_id: id, status: 'deleted'}));
+      navigate('/product/'+id);
+      window.location.reload(true);
     }
   };
 
@@ -286,6 +289,7 @@ const ProductUpdate = () => {
                  label="UPC" 
                  type="text"
                  id="upc"
+                 defaultValue={upc}
                  feedbackValid="Looks good!"
                  onChange={(e) => setUpc(e.target.value)}
                  required
@@ -296,6 +300,7 @@ const ProductUpdate = () => {
                  label="UPC Barcode" 
                  type="text"
                  id="upc_barcode"
+                 defaultValue={upc_barcode}
                  feedbackValid="Looks good!"
                  onChange={(e) => setUpcBarcode(e.target.value)}
                />
@@ -418,7 +423,7 @@ const ProductUpdate = () => {
 
             <CRow xs={{ gutterY: 4 }}>
              <CCol md={12} className="bg-light p-3">
-              <CHeaderText className="header-brand mb-0 h3">Oother Details</CHeaderText>
+              <CHeaderText className="header-brand mb-0 h3">Other Details</CHeaderText>
              </CCol>
              <CCol md={6}>
               <CFormTextarea
@@ -546,7 +551,7 @@ const ProductUpdate = () => {
                     <CButton 
                       color="danger"
                       type="button"
-                      onClick={handleDelete}
+                      onClick={() => handleDelete(id)}
                     >
                       Delete
                     </CButton>

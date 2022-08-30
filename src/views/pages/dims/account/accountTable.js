@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUsers } from '../../../../store/reducers/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { selectAccounts, updateAccount } from './../../../../store/reducers/accountSlice';
+import { selectUser } from './../../../../store/reducers/users';
 
 
-const UserTable = () => {
+const AccountTable = () => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.user.data)
-  useEffect(() => {
-    dispatch(getUsers())
-  }, [dispatch])
+  const navigate = useNavigate();
 
-  console.log(data);
+  const { data, status, error } = useSelector(selectAccounts);
+  const { user } = useSelector(selectUser);
+
+  const logged = user ? user.first_name : 'anonymous';
+
+  console.log({data});
 
   const [details, setDetails] = useState([])
   const columns = [
@@ -48,6 +52,14 @@ const UserTable = () => {
     }
     setDetails(newDetails)
   }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this account?")) {
+      //Just change status to deleted
+      dispatch((updateAccount({ id, status: 'deleted'})));
+      window.location.reload(true);
+    }
+  };
  
   return (
     <CRow>
@@ -129,4 +141,4 @@ const UserTable = () => {
   )
 }
 
-export default UserTable
+export default AccountTable

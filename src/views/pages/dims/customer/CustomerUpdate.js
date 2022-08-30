@@ -722,7 +722,7 @@ const CustomerUpdate = () => {
                  <CButton 
                    color="danger"
                    type="button"
-                   onClick={handleDelete}
+                   onClick={() => handleDelete(id)}
                  >
                    Delete
                  </CButton>

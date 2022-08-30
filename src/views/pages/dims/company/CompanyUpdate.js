@@ -180,7 +180,7 @@ const CompanyUpdate = () => {
             validated={validated}
             onSubmit={handleSubmit}
             >
-               <CRow xs={{ gutterY: 1 }}>
+               <CRow xs={{ gutterY: 3 }}>
                   <CCol md={6}>
                      <CFormInput
                         label="Company Name"
@@ -211,7 +211,6 @@ const CompanyUpdate = () => {
                      required>
                         <option>active</option>
                         <option>deleted</option>
-                        <option>pending</option>
                      </CFormSelect>
                   </CCol>
                </CRow>
@@ -259,6 +258,7 @@ const CompanyUpdate = () => {
                      </CInputGroup>
                   </CCol>
                </CRow>
+
                <CRow xs={{ gutterY: 3 }}>
                   <CCol md={6}>
                      <CFormInput 
@@ -343,41 +343,41 @@ const CompanyUpdate = () => {
                      />
                      <CFormFeedback valid></CFormFeedback>
                   </CCol>
-                  <CCol md={3}>
+               </CRow>
+
+               <CRow xs={{ gutterY: 4 }}> 
+                  <CCol md={12} className="bg-light p-3">
+                     <CHeaderText className="header-brand mb-0 h3">Terms</CHeaderText>
+                  </CCol>
+                  <CCol md={4}>
+                     <CFormInput 
+                        id="contact_first_name"
+                        label="Contact Person First name" 
+                        placeholder="First Name"
+                        type="text" 
+                        defaultValue={contact_person_first_name}
+                        onChange={(e) => setContactFirstName(e.target.value)}
+                        required
+                     />
+                  </CCol>
+                  <CCol md={4}>
+                     <CFormInput 
+                        id="contact_last_name"
+                        label="Contact Person Last name" 
+                        placeholder="Last Name"
+                        type="text" 
+                        defaultValue={contact_person_last_name} 
+                        onChange={(e) => setContactLastName(e.target.value)}
+                        required
+                     />
+                  </CCol>
+                  <CCol md={4}>
                      <CFormLabel htmlFor="tin">TIN</CFormLabel>
                      <CFormInput
                         type="text"
                         id="tax_identification_number"
                         defaultValue={tax_identification_number}
                      />
-                  </CCol>
-
-               </CRow>
-
-               <CRow xs={{ gutterY: 4 }}> 
-                  <CCol md={12}>
-                     <CInputGroup>
-                        <CInputGroupText>Contact Person</CInputGroupText>
-                        <CFormInput 
-                           id="contact_first_name"
-                           aria-label="First name" 
-                           placeholder="First Name"
-                           type="text" 
-                           defaultValue={contact_person_first_name}
-                           onChange={(e) => setContactFirstName(e.target.value)}
-                           required
-                        />
-                        <CFormInput 
-                           id="contact_last_name"
-                           aria-label="Last name" 
-                           placeholder="Last Name"
-                           type="text" 
-                           defaultValue={contact_person_last_name} 
-                           onChange={(e) => setContactLastName(e.target.value)}
-                           required
-                        />
-                     </CInputGroup>
-                     <CFormFeedback valid>Looks good!</CFormFeedback>
                   </CCol>
                </CRow>
                <CRow xs={{ gutterY: 2 }}> 
@@ -424,7 +424,10 @@ const CompanyUpdate = () => {
                      />
                   </CCol>
                </CRow>
-               <CRow xs={{ gutterY: 2 }}>
+               <CRow xs={{ gutterY: 4 }}>
+                  <CCol md={12} className="bg-light p-3">
+                     <CHeaderText className="header-brand mb-0 h3">Posting Group</CHeaderText>
+                  </CCol>
                   <CCol md={4}>
                      <CFormSelect
                         label="Business Posting Group" 

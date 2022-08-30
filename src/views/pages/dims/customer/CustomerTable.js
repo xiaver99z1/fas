@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { selectCustomers, updateCustomer } from './../../../../store/reducers/customerSlice';
 
-
-
 const CustomerTable = () => {
 
   const dispatch = useDispatch();
@@ -67,7 +65,6 @@ const CustomerTable = () => {
         <CCard className="mb-4">
           <CCardHeader>
             <strong>Customer</strong> <small>All Records</small>
-            
           </CCardHeader>
           <CCardBody>
             <CSmartTable

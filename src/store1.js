@@ -4,7 +4,7 @@ import customerSlice from "./store/reducers/customerSlice";
 import vendorSlice from "./store/reducers/vendorSlice";
 import productSlice from "./store/reducers/productSlice";
 import companySlice from "./store/reducers/companySlice";
-import userSlice from "./store/reducers/userSlice";
+import userSlice from "./store/reducers/accountSlice";
 import fasreferenceSlice from "./store/reducers/references/fasrefereceSlice";
 import currencySlice from "./store/reducers/references/currencySlice";
 import countrySlice from "./store/reducers/references/countrySlice";

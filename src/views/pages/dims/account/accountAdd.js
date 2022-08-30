@@ -6,74 +6,60 @@ import {
   CCardHeader,
   CCol,
   CForm,
+  CFormCheck,
   CFormInput,
+  CFormFeedback,
+  CFormLabel,
+  CFormSelect,
+  CFormTextarea,
+  CInputGroup,
+  CInputGroupText,
   CRow,
+  CHeader,
+  CHeaderText,
+  CDatePicker,
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser } from '../../../../store/reducers/userSlice';
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom';
+import { updateAccount, selectAccounts, selectAccountId } from './../../../../store/reducers/accountSlice';
+import { selectUser } from './../../../../store/reducers/users';
 
 const UserAdd = () => {
   
   //Get initial data
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isSuccess = useSelector((state) => state.user.isSuccess)
-  const userData = useSelector((state) => state.user.data)
-  const [addRequestStatus, setAddRequestStatus] = useState(isSuccess)
 
-  console.log({ addRequestStatus, userData })
+  //Get router params
+  const {id} = useParams();
+  
+  const { user } = useSelector(selectUser);
+  const { status, error } = useSelector(selectAccounts);
+  const data = useSelector((state) => selectAccountId(state, Number(id)));
+  
+  const logged = user ? user.first_name : 'anonymous';
 
-  //console.log({ isSuccess, customerData })
 
   //Set Fields
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState(''); //options on company dim
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [location, setLocation] = useState('');
-  const [title, setTitle] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [role, setRole] = useState('');
+  const [first_name, setFirstName] = useState(data?.first_name);
+  const [last_name, setLastName] = useState(data?.last_name);
+  const [email, setEmail] = useState(data?.email);
+  const [password, setPassword] = useState(data?.password);
+  const [location, setLocation] = useState(data?.location);
+  const [title, setTitle] = useState(data?.title);
+  const [avatar, setAvatar] = useState(data?.avatar);
+  const [role, setRole] = useState(data?.role);
 
-  //Form Validation 
-  const [validated, setValidated] = useState(false)
-  
-  const canSave = [first_name, last_name, email].every(Boolean) && addRequestStatus === true;
-  
-  const onSavePostClicked = () => {  
-    if (canSave) {
-      try {
-        setAddRequestStatus(true)
-        dispatch(createUser(
-          { 
-              first_name: first_name,
-              last_name: last_name,
-              email: email,
-              password: password,
-              location: location,
-              title: title,
-              avatar: avatar,
-              role: role
-          })).unwrap()
 
-          setFirstName('')
-          setLastName('')
-          setEmail('')
-          setPassword('')
-          setLocation('')
-          setTitle('')
-          setAvatar('')
-          setRole('')
-      
-      } catch (err) {
-        console.error('Failed to save the post', err)
-      } finally {
-        setAddRequestStatus(false)
-        
-      }
-    }
-  }
+  const [app_module, setAppModule] = useState(data?.role);
+  const [task_description, setTaskDescription] = useState(data?.role);
+
+  //Form validation 
+  const [validated, setValidated] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [dataRecord, setDataRecord] = useState(false);
+  const [requestStatus, setRequestStatus] = useState('idle');
+  const canSave = [first_name, email].every(Boolean) && requestStatus === 'idle';
 
   //Submit Form
   const handleSubmit = (event) => {
@@ -82,114 +68,171 @@ const UserAdd = () => {
       event.preventDefault();
       event.stopPropagation();
     }
+    const onSavePostClicked = () => {  
+      if (canSave) {
+        try {
+          setRequestStatus('pending');
+          dispatch(updateAccount({   
+                id,
+                first_name,
+                last_name,
+                email,
+                password,
+                location,
+                title,
+                avatar,
+                role
+              })).unwrap();
+  
+              
+              setFirstName('');
+              setLastName('');
+              setEmail('');
+              setPassword('');
+              setLocation('');
+              setTitle('');
+              setAvatar('');
+              setRole('');
+              
+              setUpdated(true)
+              
+              navigate(`/account/${id}`)
+  
+        } catch (err) {
+          console.error('Failed to save the post', err)
+        } finally {
+          setRequestStatus('idle');
+        }
+      }
+    }
     setValidated(true);
-    navigate(`/users`)
+    onSavePostClicked();
+  }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this account "+ id + "?")) {
+      dispatch(updateAccount({id, status: 'deleted'}));
+      navigate('/account/'+id);
+      window.location.reload(true);
+    }
+  };
+
+  const handleBack = () => {
+    return navigate('/accounts');
   }
 
   return (
     <CRow>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>Add New User</strong> <small></small>
-          </CCardHeader>
-          <CCardBody>
-            <CForm className="row g-3 needs-validation"
-              noValidate
-              validated={validated}
-              onSubmit={handleSubmit}
-            >
-              <CCol md={2}>
-                <CFormInput
-                  label="Title"
-                  type="text"
-                  id="title"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </CCol>
-              <CCol md={5}>
-                <CFormInput
-                  label="First Name"
-                  type="text"
-                  id="first_name"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </CCol>
-              <CCol md={5}>
-                <CFormInput
-                  label="Last Name"
-                  type="text"
-                  id="last_name"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </CCol>
-              <CCol md={6}>
-                <CFormInput
-                  label="Email"
-                  type="text"
-                  id="email"
-                  feedbackValid="Looks good!"
-                  placeholder="Enter a valid email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </CCol>
-              <CCol md={4}>
-                <CFormInput
-                  label="Password"
-                  type="password"
-                  id="password"
-                  feedbackValid="Looks good!"
-                  placeholder="Login password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </CCol>
-              <CCol md={6}>
-                <CFormInput
-                  label="Location"
-                  type="text"
-                  id="location"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </CCol>
-              
-              <CCol md={6}>
-                <CFormInput
-                  label="Avatar"
-                  type="text"
-                  id="avatar"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setAvatar(e.target.value)}
-                />
-              </CCol>
-              <CCol md={6}>
-                <CFormInput
-                  label="Role"
-                  type="text"
-                  id="role"
-                  feedbackValid="Looks good!"
-                  onChange={(e) => setRole(e.target.value)}
-                />
-              </CCol>
-              <CCol xs={12}></CCol>
+     <CCol xs={12}>
+       <CCard className="mb-4">
+         <CCardHeader>
+          <CHeaderText className="header-brand mb-0 h1">Account ID: {id}</CHeaderText>
+         </CCardHeader>
+         <CCardBody>
+           <CForm className="row g-3 needs-validation"
+             noValidate
+             validated={validated}
+             onSubmit={handleSubmit}
+           >
+            <CRow xs={{ gutterY: 2 }}>
+             <CCol md={4}>
+              <CFormInput
+                 label="First Name" 
+                 type="text"
+                 id="first_name"
+                 feedbackValid="Looks good!"
+                 defaultValue={first_name}
+                 onChange={(e) => setFirstName(e.target.value)}
+                 required
+               />
+             </CCol>
+             <CCol md={4}>
+              <CFormInput
+                 label="Last Name" 
+                 type="text"
+                 id="last_name"
+                 feedbackValid="Looks good!"
+                 defaultValue={first_name}
+                 onChange={(e) => setLastName(e.target.value)}
+                 required
+               />
+             </CCol>
+             <CCol md={4}>
+              <CFormInput
+                 label="Email" 
+                 type="text"
+                 id="email"
+                 feedbackValid="Looks good!"
+                 defaultValue={email}
+                 onChange={(e) => setEmail(e.target.value)}
+                 required
+               />
+             </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }}>
+             <CCol md={12} className="bg-light p-3">
+              <CHeaderText className="header-brand mb-0 h3">Other Details</CHeaderText>
+             </CCol>
+             <CCol md={4}>
+              <CFormInput
+                 label="Role" 
+                 type="text"
+                 id="role"
+                 feedbackValid="Looks good!"
+                 defaultValue={role}
+                 onChange={(e) => setRole(e.target.value)}
+                 required
+               />
+             </CCol>
+             <CCol md={4}>
+              <CFormInput
+                 label="App Module" 
+                 type="text"
+                 id="app_module"
+                 feedbackValid="Looks good!"
+                 defaultValue={role}
+                 onChange={(e) => setAppModule(e.target.value)}
+                 required
+               />
+             </CCol>
+             <CCol md={6}>
+              <CFormTextarea
+                  id="task"
+                  label="task"
+                  rows="5"
+                  text="Task description"
+                  onChange={(e) => setTaskDescription(e.target.value)}
+                  defaultValue={task_description}
+                ></CFormTextarea>
+             </CCol>
+            </CRow>
+
+            <CRow xs={{ gutterY: 4 }} className="justify-content-end">
               <CCol xs={12}>
-                <CButton 
-                  color="primary" 
-                  type="submit"
-                  onClick={onSavePostClicked}>
-                  Submit Form
-                </CButton>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <CButton 
+                      color="secondary" 
+                      type="button"
+                      onClick={handleBack}
+                    >
+                      Back
+                    </CButton>
+                    <CButton 
+                      color="info" 
+                      type="submit"
+                      disabled={!canSave}
+                    >
+                      Add Record
+                    </CButton>
+                </div>
               </CCol>
-            </CForm>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
+            </CRow>
+           </CForm>
+         </CCardBody>
+       </CCard>
+     </CCol>
+   </CRow>
   )
 }
 
