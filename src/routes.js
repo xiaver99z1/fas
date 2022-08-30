@@ -22,12 +22,13 @@ const CompanyUpdateForm = React.lazy(() => import('./views/pages/dims/company/Co
 const AccountList = React.lazy(() => import('./views/pages/dims/account/accountTable'))
 const AccountAddForm = React.lazy(() => import('./views/pages/dims/account/accountAdd'))
 const AccountUpdateForm = React.lazy(() => import('./views/pages/dims/account/accountUpdate'))
+const POList = React.lazy(() => import('./views/pages/dims/po/PoTable'))
+const POAddForm = React.lazy(() => import('./views/pages/dims/po/PoAdd'))
+const POUpdateForm = React.lazy(() => import('./views/pages/dims/po/PoUpdate'))
 
-const Test = React.lazy(() => import('./views/pages/dims/test'))
+const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 
 
-//Tables - FAS
-const PurchaseOrderList = React.lazy(() => import('./views/pages/dims/purchaseorder/PurchaseOrderTable'))
 
 const routes = [
   { path: '/dashboard', exact: true, name: 'Dashboard', element: Dashboard },
@@ -40,13 +41,15 @@ const routes = [
   { path: '/products', name: 'All Products', element: ProductList },
   { path: '/product/add', name: 'Add New Product', element: ProductAddForm },
   { path: '/product/:id', exact: true, name: 'Update Product', element: ProductUpdateForm },
+  { path: '/po', name: 'All Purchase Order', element: POList },
+  { path: '/po/add', name: 'Add New PO', element: POAddForm },
+  { path: '/  po/:id', exact: true, name: 'Update PO', element: POUpdateForm },
   { path: '/companies', name: 'All Companies', element: CompanyList },
   { path: '/company/add', name: 'Add New Company', element: CompanyAddForm },
   { path: '/company/:id', exact: true, name: 'Update Company', element: CompanyUpdateForm },
   { path: '/accounts', name: 'All Accounts', element: AccountList },
   { path: '/account/add', name: 'Add New Account', element: AccountAddForm },
   { path: '/account/:id', exact: true, name: 'Update Account', element: AccountUpdateForm },
-  { path: '/dims/purchase-order', name: 'Purchase Order List', element: PurchaseOrderList},
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
 ]

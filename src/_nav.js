@@ -106,19 +106,19 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Accounts',
-    to: '/apps/invoicing',
-    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
+    name: 'Purchase Orders',
+    to: '/po',
+    icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'All Accounts',
-        to: '/accounts',
+        name: 'All POs',
+        to: '/po',
       },
       {
         component: CNavItem,
-        name: 'Add New Account',
-        to: '/account/add',
+        name: 'Add New PO',
+        to: '/po/add',
       },
     ]
   },
@@ -165,6 +165,24 @@ const _nav = [
       },
     ],
   },
+  /*{
+    component: CNavGroup,
+    name: 'Accounts',
+    to: '/apps/invoicing',
+    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'All Accounts',
+        to: '/accounts',
+      },
+      {
+        component: CNavItem,
+        name: 'Add New Account',
+        to: '/account/add',
+      },
+    ]
+  },*/
 ]
 
 export default _nav

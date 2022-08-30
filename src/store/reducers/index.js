@@ -9,7 +9,8 @@ import companySlice from './companySlice';
 import customerSlice from './customerSlice';
 import vendorSlice from './vendorSlice';
 import productSlice from './productSlice';
-import accountSlice from './accountSlice';
+import poSlice from './poSlice';
+//import accountSlice from './accountSlice';
 import fasreferenceSlice from './references/fasrefereceSlice';
 import currencySlice from './references/currencySlice';
 import countrySlice from './references/countrySlice';
@@ -31,7 +32,7 @@ const rootReducer = combineReducers({
     customer: customerSlice,
     vendor: vendorSlice,
     product: productSlice,
-    account: accountSlice,
+    po: poSlice,
     fasreference: fasreferenceSlice,
     currency: currencySlice,
     country: countrySlice,
