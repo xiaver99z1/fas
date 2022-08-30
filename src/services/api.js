@@ -1,28 +1,24 @@
 /* eslint-disable symbol-description */
 import axios from 'axios';
-import { REACT_APP_DIRECTUS_URL, REACT_APP_DIRECTUS_TOKEN } from '../config';
+import { REACT_APP_DIRECTUS_URL, REACT_APP_DIRECTUS_TOKEN, REACT_APP_DEV_URL } from '../config';
 
 const singleton = Symbol();
 const singletonEnforcer = Symbol();
 
 
-class ApiService {
+class ApiService {  
     constructor(enforcer) {
         if (enforcer !== singletonEnforcer) {
             throw new Error('Cannot construct singleton');
         }
         
         this.localStorage = axios.create({
-            baseURL: REACT_APP_DIRECTUS_URL,
+            //baseURL: REACT_APP_DIRECTUS_URL,
             headers: {
-                //Accept: 'application/json',
-                //Authorization: `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
-                'Authorization': `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
-                'Content-Type' : 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${REACT_APP_DIRECTUS_TOKEN}`,
                 'Access-Control-Allow-Origin' : '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Allow-Credentials' : 'true'
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH'
             },
             withCredentials: true,
             params: {},

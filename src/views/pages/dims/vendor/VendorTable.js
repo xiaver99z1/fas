@@ -11,11 +11,14 @@ const VendorTable = () => {
   const navigate = useNavigate();
   
   const { data, status, error } = useSelector(selectVendors);
-
   
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this vendor?")) {
-      dispatch(updateVendor({vendor_id: id, status: 'deleted'}));
+    //console.log(data?.vendor_name);
+    if(data.status !== 'deleted') {
+      if (window.confirm("Are you sure you want to delete this vendor "+ id + "?")) {
+        dispatch(updateVendor({vendor_id: id, status: 'deleted'}));
+        window.location.reload(true);
+      }
     }
   };
 

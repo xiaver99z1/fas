@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../services/api';
+import api from '../../services/api';
 
-export const getCurrencies = createAsyncThunk(
-  'currency/getCurrencies', 
+export const getPo = createAsyncThunk(
+  'po/getPo', 
   async () => {
   try {
-      const response = await api.get(`/items/currency/`)
+      const response = await api.get(`/items/po_header/`)
       return response.data.data;
   } catch (err) {
     if (!err.response) {
@@ -17,11 +17,11 @@ export const getCurrencies = createAsyncThunk(
   }
 });
 
-export const createCurrency = createAsyncThunk(
-  'currency/createCurrency', 
+export const createPo = createAsyncThunk(
+  'po/createPo', 
   async (initialPost) => {
   try {
-      const response = await api.post(`/items/currency/`, initialPost)
+      const response = await api.post(`/items/po_header/`, initialPost)
       return response.data.data
   } catch (err) {
       console.error(err.response.data);
@@ -31,13 +31,13 @@ export const createCurrency = createAsyncThunk(
   }
 });
 
-export const updateCurrency = createAsyncThunk(
-  'currency/updateCurrency', 
+export const updatePo = createAsyncThunk(
+  'po/updatePo', 
   async (initialPost) => {
-  const { currency_id } = initialPost;
+  const { po_header_id } = initialPost;
   try {
-      const response = await api.patch(`/items/currency/${currency_id}`, initialPost)
-      console.log('update vendor: ' + response.data.data)
+      const response = await api.patch(`/items/po_header/${po_header_id}`, initialPost)
+      console.log('update po: ' + response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -50,12 +50,12 @@ export const updateCurrency = createAsyncThunk(
   }
 });
 
-export const deleteCurrency = createAsyncThunk(
-  'currency/deleteCurrency', 
+export const deletePo = createAsyncThunk(
+  'po/deletePo', 
   async (initialPost) => {
   const { id } = initialPost;
   try {
-      const response = await api.delete(`/items/currency/${id}`)
+      const response = await api.delete(`/items/po_header/${id}`)
       if (response?.status === 200) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -66,87 +66,87 @@ export const deleteCurrency = createAsyncThunk(
 
 //Initial State
 const initialState = {
-  currenciesData: [],
+  data: [],
   status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
-export const currencySlice = createSlice({
-  name: "currency",
+export const poSlice = createSlice({
+  name: "po",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     /* GET */
-    builder.addCase(getCurrencies.pending, (state) => {
+    builder.addCase(getPo.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(getCurrencies.fulfilled, (state, action) => {
+    builder.addCase(getPo.fulfilled, (state, action) => {
         state.status = 'success';
-        state.currenciesData = action.payload;
+        state.data = action.payload;
     });
-    builder.addCase(getCurrencies.rejected, (state, action) => {
+    builder.addCase(getPo.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload
     });
 
     /* CREATE */
-    builder.addCase(createCurrency.pending, (state) => {
+    builder.addCase(createPo.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(createCurrency.fulfilled, (state, action) => {
+    builder.addCase(createPo.fulfilled, (state, action) => {
       state.status = 'success';
-      state.currenciesData = action.payload;
+      state.data = action.payload;
     });
-    builder.addCase(createCurrency.rejected, (state, action) => {
+    builder.addCase(createPo.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
 
     /* UPDATE */
-    builder.addCase(updateCurrency.pending, (state) => {
+    builder.addCase(updatePo.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(updateCurrency.fulfilled, (state, action) => {
+    builder.addCase(updatePo.fulfilled, (state, action) => {
         state.status = 'success';
-        if (!action.payload?.currency_id) {
+        if (!action.payload?.po_number) {
           console.log('Update could not complete');
           console.log(action.payload);
           return;
         }
         const { id } = action.payload;
         action.payload.date_updated = new Date().toISOString();
-        const currencies = state.data.filter(post => post.currency_id !== id);
-        state.currenciesData = [...currencies, action.payload];
+        const pos = state.data.filter(post => post.po_header_id !== id);
+        state.data = [...pos, action.payload];
     });
-    builder.addCase(updateCurrency.rejected, (state, action) => {
+    builder.addCase(updatePo.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
 
     /* DELETE */
-    builder.addCase(deleteCurrency.pending, (state) => {
+    builder.addCase(deletePo.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(deleteCurrency.fulfilled, (state, action) => {
+    builder.addCase(deletePo.fulfilled, (state, action) => {
       state.status = 'success';
-      if (!action.payload?.currency_id) {
+      if (!action.payload?.po_header_id) {
         console.log('Delete could not complete')
         console.log(action.payload);
         return;
       }
       const { id } = action.payload;
-      const currencies = state.posts.filter(post => post.currency_id !== id);
-      state.currenciesData = currencies;
+      const pos = state.posts.filter(post => post.po_header_id !== id);
+      state.data = pos;
     });
-    builder.addCase(deleteCurrency.rejected, (state, action) => {
+    builder.addCase(deletePo.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
   },
 });
 
+export const selectPos = (state) => state.po;
+export const selectPoId = (state, id) => state.po.data.find(post => post.po_number === id);
 
-export const selectCurrencies = (state) => state.currency;
-export const selectCurrencyId = (state, id) => state.currency.currenciesData.find(post => post.currency_id === id);
 
-export default currencySlice.reducer;
+export default poSlice.reducer;

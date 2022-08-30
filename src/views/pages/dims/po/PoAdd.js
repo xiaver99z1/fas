@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { createProduct, selectProducts } from '../../../../store/reducers/productSlice';
-import { selectUser } from './../../../../store/reducers/users';
+import { selectUser } from '../../../../store/reducers/users';
 import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
 import { selectCountries } from '../../../../store/reducers/references/countrySlice';
 import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';

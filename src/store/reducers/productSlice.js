@@ -22,7 +22,7 @@ export const createProduct = createAsyncThunk(
   async (initialPost) => {
   try {
       const response = await api.post(`/items/product/`, initialPost)
-      return response.data.data
+      return response.data.data;
   } catch (err) {
       console.error(err.response.data);
       console.error(err.response.status);
@@ -37,7 +37,7 @@ export const updateProduct = createAsyncThunk(
   const { product_id } = initialPost;
   try {
       const response = await api.patch(`/items/product/${product_id}`, initialPost)
-      console.log('upProd: ' + response.data.data)
+      console.log('updated: ' + response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {

@@ -14,15 +14,16 @@ import {
   CRow,
   CFormFeedback,
 } from '@coreui/react-pro'
+import AppToast from './../../../../components/AppToast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { selectVendors, selectVendorId, updateVendor } from './../../../../store/reducers/vendorSlice';
 import { selectUser } from './../../../../store/reducers/users';
-import { getCurrencies } from '../../../../store/reducers/references/currencySlice';
-import { getCountries } from '../../../../store/reducers/references/countrySlice';
-import { getPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
-import { getPostingGroups } from '../../../../store/reducers/references/postinggroupSlice';
-import { getPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
+import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
+import { selectCountries } from '../../../../store/reducers/references/countrySlice';
+import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';
+import { selectPostingGroups } from '../../../../store/reducers/references/pstgroupSlice';
+import { selectPaymentModes } from '../../../../store/reducers/references/paymentmodeSlice';
 
 
 const VendorUpdate = () => {
@@ -33,40 +34,28 @@ const VendorUpdate = () => {
 
   //Get router params
   const {id} = useParams();
-  
   const { user } = useSelector(selectUser);
   const { status, error } = useSelector(selectVendors);
   const data = useSelector((state) => selectVendorId(state, Number(id)));
+
+  const logged = user ? user.first_name : 'user not logged';
   
-  const showPostingGroups = useSelector(state => state.postinggroup.postinggroups);
-  const showCurrencies = useSelector(state => state.currency.currencies);
-  const showCountries = useSelector(state => state.country.countries);
-  const showPaymentTerms = useSelector(state => state.paymentterm.paymentterms);
-  const showPaymentModes = useSelector(state => state.paymentmode.paymentmodes);
-  
-  /* Load Data */
-  useEffect(() => {
-    if(status === 'success') {
-      dispatch(getCurrencies());
-      dispatch(getCountries());
-      dispatch(getPaymentTerms());
-      dispatch(getPostingGroups());
-      dispatch(getPaymentModes());
-    }
-    return (() => {
-      setUpdated(true);
-    });
-  },[dispatch, id]);
+  /* Load Selection Options */
+  const { pstgroupData } = useSelector(selectPostingGroups);
+  const { currenciesData } = useSelector(selectCurrencies);
+  const { countriesData } = useSelector(selectCountries);
+  const { ptermsData } = useSelector(selectPaymentTerms);
+  const { pmodesData } = useSelector(selectPaymentModes);
 
 
   // Set Fields
   const [vendorId, setVendorId] = useState(id);
-  const [vendorName, setVendorName] = useState(data?.vendor_name);
-  const [vendorType, setVendorType] = useState(data?.vendor_type);
-  const [emailAddress, setEmail] = useState(data?.email);
+  const [vendor_name, setVendorName] = useState(data?.vendor_name);
+  const [vendor_type, setVendorType] = useState(data?.vendor_type);
+  const [email, setEmail] = useState(data?.email);
   const [vendorStatus, setVendorStatus] = useState(data?.status);
-  const [phoneNumber, setPhoneNumber] = useState(data?.phone_number);
-  const [mobileNumber, setMobileNumber] = useState(data?.mobile_number);
+  const [phone_number, setPhoneNumber] = useState(data?.phone_number);
+  const [mobile_number, setMobileNumber] = useState(data?.mobile_number);
   const [address1, setAddress1] = useState(data?.address1);
   const [address2, setAddress2] = useState(data?.address2);
   const [city, setCity] = useState(data?.city);
@@ -85,46 +74,16 @@ const VendorUpdate = () => {
   const [vendor_posting_group, setVendorPostingGroup] = useState(data?.vendor_posting_group);
   const [website, setWebsite] = useState(data?.website);
   const [created_by, setCreatedBy] = useState(data?.created_by);
-  const [updated_by, setUpdatedBy] = useState(user.first_name);
+  const [updated_by, setUpdatedBy] = useState(logged);
   const [date_created, setDateCreated] = useState(data?.date_created);
-
-  /*
-  const [vendorId, setVendorId] = useState(id);
-  const [vendorName, setVendorName] = useState('');
-  const [vendorType, setVendorType] = useState('');
-  const [emailAddress, setEmail] = useState('');
-  const [vendorStatus, setVendorStatus] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
-  const [province, setProvince] = useState('');
-  const [post_code, setPostCode] = useState('');
-  const [country_abbr, setCountry] = useState('');
-  const [payment_terms, setPaymentTerms] = useState('');
-  const [payment_mode, setPaymentMode] = useState('');
-  const [contact_person_first_name, setContactFirstName] = useState('');
-  const [contact_person_last_name, setContactLastName] = useState('');
-  const [bank_name, setBankName] = useState('');
-  const [bank_account_number, setBankAccountNumber] = useState('');
-  const [currency_code, setCurrencyCode] = useState('');
-  const [business_posting_group, setBusinessPostingGroup] = useState('');
-  const [vat_posting_group, setVatPostingGroup] = useState('');
-  const [vendor_posting_group, setVendorPostingGroup] = useState('');
-  const [website, setWebsite] = useState('');
-  const [created_by, setCreatedBy] = useState('');
-  const [updated_by, setUpdatedBy] = useState('');
-  const [date_created, setDateCreated] = useState('');
-  */
-
+  
   //Form validation 
   const [validated, setValidated] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [requestStatus, setRequestStatus] = useState('idle');
 
-  const canSave = [vendorName, vendorStatus].every(Boolean) && requestStatus === 'idle';
-
+  const canSave = [vendor_name, vendorStatus].every(Boolean) && requestStatus === 'idle';
+  
   //Submit Form
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -136,14 +95,13 @@ const VendorUpdate = () => {
       if (canSave) {
         try {
           setRequestStatus('pending');
-          console.log({canSave, vendorName})
           dispatch(updateVendor({
               vendor_id: vendorId, 
-              vendor_name: vendorName, 
-              vendor_type: vendorType, 
-              email: emailAddress, 
-              phone_number: phoneNumber,
-              mobile_number: mobileNumber,
+              vendor_name, 
+              vendor_type, 
+              email, 
+              phone_number,
+              mobile_number,
               address1,
               address2,
               city,
@@ -166,35 +124,34 @@ const VendorUpdate = () => {
               updated_by,
               date_created,
               date_updated: new Date().toISOString(),
-            })).unwrap()
+            })).unwrap();
     
-            setVendorId('')
-            setVendorName('')
-            setVendorType('')
-            setEmail('')
-            setPhoneNumber('')
-            setMobileNumber('')
-            setAddress1('')
-            setAddress2('')
-            setCity('')
-            setProvince('')
-            setPostCode('')
-            setCountry('')
-            setPaymentTerms('')
-            setPaymentMode('')
-            setContactFirstName('')
-            setContactLastName('')
-            setBankName('')
-            setBankAccountNumber('')
-            setCurrencyCode('')
-            setBusinessPostingGroup('')
+            setVendorId('');
+            setVendorName('');
+            setVendorType('');
+            setEmail('');
+            setPhoneNumber('');
+            setMobileNumber('');
+            setAddress1('');
+            setAddress2('');
+            setCity('');
+            setProvince('');
+            setPostCode('');
+            setCountry('');
+            setPaymentTerms('');
+            setPaymentMode('');
+            setContactFirstName('');
+            setContactLastName('');
+            setBankName('');
+            setBankAccountNumber('');
+            setCurrencyCode('');
+            setBusinessPostingGroup('');
             setVatPostingGroup('')
-            setVendorPostingGroup('')
-            setWebsite('')
-            setVendorStatus('')
+            setVendorPostingGroup('');
+            setWebsite('');
+            setVendorStatus('');
             
-            setUpdated(true)
-
+            setUpdated(true);
             navigate(`/vendor/${id}`);
           
         } catch (err) {
@@ -210,14 +167,19 @@ const VendorUpdate = () => {
   }
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    
+    if(data.status !== 'deleted') {
       //Just change status to deleted
-      dispatch((updateVendor({ vendor_id: id, status: 'deleted'})));
+      
+      if (window.confirm("Are you sure you want to delete this vendor "+ id + "?")) {
+        dispatch(updateVendor({vendor_id: id, status: 'deleted'}));
+        //window.location.reload(true);
+      }
     }
   };
 
   const handleBack = () => {
-    return navigate('/vendors');
+    navigate('/vendors');
   }
   return (
 
@@ -240,18 +202,20 @@ const VendorUpdate = () => {
                   type="text"
                   id="vendor_name"
                   feedbackValid="Looks good!"
-                  defaultValue={vendorName}
+                  defaultValue={vendor_name}
                   onChange={(e) => setVendorName(e.target.value)}
                   required
                 />
               </CCol>
               <CCol md={3}>
-                <CFormSelect 
+              <CFormSelect 
                   id="vendor_type" 
-                  label="Vendor Type" 
+                  label="Vendor Type"
+                  defaultValue={vendor_type} 
                   onChange={(e) => setVendorType(e.target.value)}
-                  defaultValue={vendorType}>
-                  <option>AS</option>
+                  >
+                  <option>Supplier</option>
+                  <option>Fulfillment</option>
                 </CFormSelect>
               </CCol>
               <CCol md={3}>
@@ -273,7 +237,7 @@ const VendorUpdate = () => {
                  label="Email" 
                  type="text"
                  id="email"
-                 defaultValue={emailAddress}
+                 defaultValue={email}
                  feedbackValid="Looks good!"
                  onChange={(e) => setEmail(e.target.value)}
                  required
@@ -286,7 +250,7 @@ const VendorUpdate = () => {
                  <CFormInput
                    type="text"
                    id="phone_number"
-                   defaultValue={phoneNumber}
+                   defaultValue={phone_number}
                    feedbackValid="Looks good!"
                    onChange={(e) => setPhoneNumber(e.target.value)}
                  />
@@ -299,7 +263,7 @@ const VendorUpdate = () => {
                  <CFormInput
                    type="text"
                    id="mobile_number"
-                   defaultValue={mobileNumber}
+                   defaultValue={mobile_number}
                    feedbackValid="Looks good!"
                    onChange={(e) => setMobileNumber(e.target.value)}
                  />
@@ -345,6 +309,7 @@ const VendorUpdate = () => {
                   label="City" 
                   type="text"
                   id="city"
+                  defaultValue={city}
                   feedbackValid="Looks good!"
                   onChange={(e) => setCity(e.target.value)}
                   required
@@ -368,7 +333,11 @@ const VendorUpdate = () => {
                   label="Country" 
                   onChange={(e) => setCountry(e.target.value)} 
                   defaultValue={country_abbr}
-                  options={showCountries && showCountries.map((post) => post.country_abbr)}
+                  options={
+                     countriesData.map(filteredName => (
+                        { 'label': filteredName.country_abbr, 'value': filteredName.country_abbr }
+                     ))
+                  }
                   required
                 />
               </CCol>
@@ -376,7 +345,7 @@ const VendorUpdate = () => {
                 <CFormInput 
                   label="Post Code" 
                   type="text"
-                  id={post_code}
+                  id="post_code"
                   defaultValue={post_code}
                   feedbackInvalid="Please provide a valid post code."
                   feedbackValid="Looks good!"
@@ -394,7 +363,7 @@ const VendorUpdate = () => {
                     type="text" 
                     placeholder="First Name" 
                     defaultValue={contact_person_first_name}
-                    onClick={(e)=>setContactFirstName(e.target.value)} 
+                    onChange={(e)=>setContactFirstName(e.target.value)} 
                     required
                   />
                   <CFormInput 
@@ -402,7 +371,7 @@ const VendorUpdate = () => {
                     type="text" 
                     placeholder="Last Name" 
                     defaultValue={contact_person_last_name}
-                    onClick={(e)=>setContactLastName(e.target.value)} 
+                    onChange={(e)=>setContactLastName(e.target.value)} 
                     required
                   />
                 </CInputGroup>
@@ -432,32 +401,44 @@ const VendorUpdate = () => {
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Currency Code"
                   id="currency_code"
                   name="currency_code"
                   onChange={(e) => setCurrencyCode(e.target.value)}
-                  label="Currency Code"
                   defaultValue={currency_code}
-                  options={showCurrencies && showCurrencies.map((post) => post.currency_code)}
+                  options={
+                     currenciesData.map(filteredName => (
+                        { 'label': filteredName.currency_code, 'value': filteredName.currency_code }
+                     ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Payment Terms"
                   id="payment_terms" 
                   name="Payment Terms" 
-                  onChange={(e) => setPaymentTerms(e.target.value)}
-                  label="Payment Terms"
                   defaultValue={payment_terms}
-                  options={showPaymentTerms && showPaymentTerms.map((post) => post.payment_terms)}
+                  onChange={(e) => setPaymentTerms(e.target.value)}
+                  options={
+                      ptermsData.map(filteredName => (
+                        { 'label': filteredName.payment_terms, 'value': filteredName.payment_terms }
+                      ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
                 <CFormSelect 
+                  label="Payment Mode"
                   id="payment_mode" 
                   name="payment_mode"
-                  onChange={(e) => setPaymentMode(e.target.value)}
-                  label="Payment Mode"
                   defaultValue={payment_mode}
-                  options={showPaymentModes && showPaymentModes.map((post) => post.payment_mode)}
+                  onChange={(e) => setPaymentMode(e.target.value)}
+                  options={
+                      pmodesData.map(filteredName => (
+                        { 'label': filteredName.payment_mode, 'value': filteredName.payment_mode }
+                  ))
+                  }
                 />
               </CCol>
             </CRow>
@@ -470,7 +451,11 @@ const VendorUpdate = () => {
                   defaultValue={business_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setBusinessPostingGroup(e.target.value)}
-                  options={showPostingGroups && showPostingGroups.map((post) => post.posting_group_type)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Gen Bus')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
@@ -481,10 +466,15 @@ const VendorUpdate = () => {
                   defaultValue={vat_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setVatPostingGroup(e.target.value)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Customer VAT Bus')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
               <CCol md={4}>
-                <CFormInput
+                <CFormSelect
                   label="Vendor Posting Group" 
                   type="text"
                   id="vendor_posting_group"
@@ -492,6 +482,11 @@ const VendorUpdate = () => {
                   defaultValue={vendor_posting_group}
                   feedbackValid="Looks good!"
                   onChange={(e) => setVendorPostingGroup(e.target.value)}
+                  options={
+                      pstgroupData.filter(name => name.posting_group_type.includes('Vendor')).map(filteredName => (
+                        { 'label': filteredName.posting_group_name, 'value': filteredName.posting_group_name }
+                    ))
+                  }
                 />
               </CCol>
             </CRow>

@@ -37,7 +37,7 @@ export const updateVendor = createAsyncThunk(
   const { vendor_id } = initialPost;
   try {
       const response = await api.patch(`/items/vendor/${vendor_id}`, initialPost)
-      console.log('upProd: ' + response.data.data)
+      console.log('update vendor: ' + response.data.data)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -61,7 +61,7 @@ export const deleteVendor = createAsyncThunk(
   } catch (err) {
       return err.message;
   }
-})
+});
 
 
 //Initial State
@@ -72,7 +72,7 @@ const initialState = {
 }
 
 export const vendorSlice = createSlice({
-  name: "product",
+  name: "vendor",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -115,8 +115,8 @@ export const vendorSlice = createSlice({
         }
         const { id } = action.payload;
         action.payload.date_updated = new Date().toISOString();
-        const products = state.data.filter(post => post.vendor_id !== id);
-        state.data = [...products, action.payload];
+        const vendors = state.data.filter(post => post.vendor_id !== id);
+        state.data = [...vendors, action.payload];
     });
     builder.addCase(updateVendor.rejected, (state, action) => {
       state.status = 'failed';
@@ -135,8 +135,8 @@ export const vendorSlice = createSlice({
         return;
       }
       const { id } = action.payload;
-      const products = state.posts.filter(post => post.vendor_id !== id);
-      state.data = products;
+      const vendors = state.posts.filter(post => post.vendor_id !== id);
+      state.data = vendors;
     });
     builder.addCase(deleteVendor.rejected, (state, action) => {
       state.status = 'failed';

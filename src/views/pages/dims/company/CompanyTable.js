@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
-import { useSelector, useDispatch } from 'react-redux';
-import { getCompanies, selectAllCompanies } from 'src/store/reducers/companySlice';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { selectCompanies } from './../../../../store/reducers/companySlice';
 
 
 const CompanyTable = () => {
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.company.data)
-  
-  const listComp = useSelector(selectAllCompanies)
 
-  console.log({listComp})
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getCompanies())
-  },[])
+  const { data, status, error } = useSelector(selectCompanies);
+  console.log({data, status, error})
 
-  const [details, setDetails] = useState([])
+  const [details, setDetails] = useState([]);
   const columns = [
     { key: 'company_name', _style: { width: '20%' }},
     { key: 'email', sorter: false },
@@ -105,12 +101,14 @@ const CompanyTable = () => {
                     <CCardBody>
                       <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
                       <p className="text-muted">Last Updated: {item.date_updated}</p>
-                      <CButton size="sm" color="info" key={item.company_id} href={`/company/${item.company_id}`}>
-                        View / Update
-                      </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" href={`/company/delete/${item.company_id}`}>
-                        Delete
-                      </CButton>
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.company_id}`)} disabled>
+                          Delete
+                        </CButton>
+                        <CButton size="sm" color="info" onClick={() => navigate(`/company/${item.company_id}`)}>
+                          View / Update
+                        </CButton>
+                      </div>
                     </CCardBody>
                   </CCollapse>
                 )

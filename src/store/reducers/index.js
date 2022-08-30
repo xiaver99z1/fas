@@ -9,13 +9,14 @@ import companySlice from './companySlice';
 import customerSlice from './customerSlice';
 import vendorSlice from './vendorSlice';
 import productSlice from './productSlice';
-import userSlice from './userSlice';
+import poSlice from './poSlice';
+//import accountSlice from './accountSlice';
 import fasreferenceSlice from './references/fasrefereceSlice';
 import currencySlice from './references/currencySlice';
 import countrySlice from './references/countrySlice';
 import paymenttermSlice from './references/paymenttermSlice';
 import paymentmodeSlice from './references/paymentmodeSlice';
-import postinggroupSlice from './references/postinggroupSlice';
+import pstgroupSlice from './references/pstgroupSlice';
 
 
 const userDataPersistConfig = {
@@ -31,13 +32,13 @@ const rootReducer = combineReducers({
     customer: customerSlice,
     vendor: vendorSlice,
     product: productSlice,
-    profile: userSlice,
+    po: poSlice,
     fasreference: fasreferenceSlice,
     currency: currencySlice,
     country: countrySlice,
     paymentterm: paymenttermSlice,
     paymentmode: paymentmodeSlice,
-    postinggroup: postinggroupSlice,
+    pstgroup: pstgroupSlice,
 })
 
 export default rootReducer;

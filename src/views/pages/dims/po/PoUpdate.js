@@ -21,8 +21,8 @@ import {
 } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateProduct, selectProducts, selectProductId } from './../../../../store/reducers/productSlice';
-import { selectUser } from './../../../../store/reducers/users';
+import { updateProduct, selectProducts, selectProductId } from '../../../../store/reducers/productSlice';
+import { selectUser } from '../../../../store/reducers/users';
 import { selectCurrencies } from '../../../../store/reducers/references/currencySlice';
 import { selectCountries } from '../../../../store/reducers/references/countrySlice';
 import { selectPaymentTerms } from '../../../../store/reducers/references/paymenttermSlice';

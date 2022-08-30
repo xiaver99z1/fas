@@ -1,109 +1,154 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import { axiosInstance } from 'src/store/middleware/directus';
-
-
-//Initial State
-const initialState = {
-  data: [],
-  isSuccess: false,
-  isLoading: false,
-  message: null,
-  isUpdate: false,
-  id: null,
-}
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../services/api';
 
 export const getCompanies = createAsyncThunk(
   'company/getCompanies', 
   async () => {
-    return await axiosInstance.get('/items/company/')
-    .then((res) => res.data.data)
-    .catch((error) => error.message)
+  try {
+      const response = await api.get(`/items/company/`)
+      return response.data.data;
+  } catch (err) {
+    if (!err.response) {
+      throw err
+    }
+    console.error(err.response.data);
+    console.error(err.response.status);
+    console.error(err.response.headers);
+    return err.response.data;
+  }
 });
 
-
-export const getCompanyById = createAsyncThunk(
-  "company/getCompanyById", 
-  async ({id}) => {
-    //Fetch company by ID
-    return await axiosInstance
-      .get(`/items/company/${id}`)
-      .then((res) => res.data.data)
-      .catch((error) => error.message)
-  }
-);
-
 export const createCompany = createAsyncThunk(
-  "company/createCompany", 
-  async (payload) => {
-    return await axiosInstance
-      .post(`items/company/`, payload)
-      .then((res)=>res.data.data)
-      .catch((error)=>console.log( error.response.request._response))
+  'company/createCompany', 
+  async (initialPost) => {
+  try {
+      const response = await api.post(`/items/company/`, initialPost)
+      return response.data.data
+  } catch (err) {
+      console.error(err.response.data);
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      return err.response.data;
   }
-);
+});
 
-/*
-export const updateCompanyById = createAsyncThunk(
-  "company/updateCompanyById", 
-  async ({id}, {payload}) => {
-    //Fetch all customers
-    return await axiosInstance
-      .put(`/items/company/${id}`, {payload})
-      .then((res) => res.data.data)
-      .catch((error) => error.message)
+export const updateCompany = createAsyncThunk(
+  'company/updateCompany', 
+  async (initialPost) => {
+  const { company_id } = initialPost;
+  try {
+      const response = await api.patch(`/items/company/${company_id}`, initialPost)
+      //console.log('company data: ' + response.data.data);
+      
+      if (response?.status === 200) return initialPost;
+        //return `${response?.status}: ${response?.statusText}`;
+        return response.data.data;
+  } catch (err) {
+      console.error("Error response:");
+      console.error(err.response.data); 
+      console.error(err.response.status);
+      console.error(err.response.headers);
+      return err.response.data;
+      //return initialPost; // only for testing Redux!
   }
-);
-*/
+});
+
+export const deleteCompany = createAsyncThunk(
+  'company/deleteCompany', 
+  async (initialPost) => {
+  const { id } = initialPost;
+  try {
+      const response = await api.delete(`/items/company/${id}`)
+      if (response?.status === 200) return initialPost;
+      return `${response?.status}: ${response?.statusText}`;
+  } catch (err) {
+      return err.message;
+  }
+});
+
+//Initial State
+const initialState = {
+  data: [],
+  status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
+  error: null,
+}
 
 const companySlice = createSlice({
   name: 'company',
   initialState,
   reducers: {},
-  extraReducers: {
-    [getCompanies.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [getCompanies.fulfilled]: (state, { payload } ) => {
-      state.isLoading = true;
-      state.data = payload;
-      state.isSuccess = true;
-    },
-    [getCompanies.rejected]: (state, { payload }) => {
-      state.isLoading = false;
-      state.message = payload;
-      state.isSuccess = false;
-    },
-    [getCompanyById.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [getCompanyById.fulfilled]: (state, { payload } ) => {
-      state.isLoading = true;
-      state.data = payload;
-      state.isSuccess = true;
-    },
-    [getCompanyById.rejected]: (state, { payload }) => {
-      state.isLoading = false;
-      state.message = payload;
-      state.isSuccess = false;
-    },
-    [createCompany.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [createCompany.fulfilled]: (state, { payload } ) => {
-      state.data = [payload];
-      state.isSuccess = true;
-    },
-    [createCompany.rejected]: (state, { payload } ) => {
-      state.isLoading = false;
-      state.message = payload;
-      state.isSuccess = false;
-    },
-  }
-})
+  extraReducers: (builder) => {
+    /* GET */
+    builder.addCase(getCompanies.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(getCompanies.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.data = action.payload;
+    });
+    builder.addCase(getCompanies.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload
+    });
 
-export const { addCompany, updateCompany, postUpdated } = companySlice.actions
+    /* CREATE */
+    builder.addCase(createCompany.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(createCompany.fulfilled, (state, action) => {
+      state.status = 'success';
+      state.data = action.payload;
+    });
+    builder.addCase(createCompany.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    });
+
+    /* UPDATE */
+    builder.addCase(updateCompany.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(updateCompany.fulfilled, (state, action) => {
+        state.status = 'success';
+        if (!action.payload?.company_id) {
+          console.log('Update could not complete');
+          console.log(action.payload);
+          return;
+        }
+        const { id } = action.payload;
+        action.payload.date_updated = new Date().toISOString();
+        const companies = state.data.filter(post => post.company_id !== id);
+        state.data = [...companies, action.payload];
+    });
+    builder.addCase(updateCompany.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    });
+
+    /* DELETE */
+    builder.addCase(deleteCompany.pending, (state) => {
+      state.status = 'loading';
+    });
+    builder.addCase(deleteCompany.fulfilled, (state, action) => {
+      state.status = 'success';
+      if (!action.payload?.company_id) {
+        console.log('Delete could not complete')
+        console.log(action.payload);
+        return;
+      }
+      const { id } = action.payload;
+      const companies = state.posts.filter(post => post.company_id !== id);
+      state.data = companies;
+    });
+    builder.addCase(deleteCompany.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    });
+  },
+});
+
+
+export const selectCompanies = (state) => state.company;
+export const selectCompanyId = (state, id) => state.company.data.find((post) => post.company_id === id);
+
 export default companySlice.reducer;
-
-export const selectAllCompanies = (state) => state.company.data
-export const getCompanyStatus = (state) => state.company.isSuccess
-export const getCompanyError = (state) => state.company.message

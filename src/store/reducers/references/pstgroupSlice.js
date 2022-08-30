@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../../services/api';
 
-export const getCurrencies = createAsyncThunk(
-  'currency/getCurrencies', 
+export const getPostingGroups = createAsyncThunk(
+  'pstgroup/getPostingGroup', 
   async () => {
   try {
-      const response = await api.get(`/items/currency/`)
+      const response = await api.get(`/items/posting_group/`)
       return response.data.data;
   } catch (err) {
     if (!err.response) {
@@ -17,11 +17,11 @@ export const getCurrencies = createAsyncThunk(
   }
 });
 
-export const createCurrency = createAsyncThunk(
-  'currency/createCurrency', 
+export const createPostingGroup = createAsyncThunk(
+  'pstgroup/createPostingGroup', 
   async (initialPost) => {
   try {
-      const response = await api.post(`/items/currency/`, initialPost)
+      const response = await api.post(`/items/posting_group/`, initialPost)
       return response.data.data
   } catch (err) {
       console.error(err.response.data);
@@ -31,13 +31,12 @@ export const createCurrency = createAsyncThunk(
   }
 });
 
-export const updateCurrency = createAsyncThunk(
-  'currency/updateCurrency', 
+export const updatePostingGroup = createAsyncThunk(
+  'pstgroup/updatePostingGroup', 
   async (initialPost) => {
-  const { currency_id } = initialPost;
+  const { payment_mode } = initialPost;
   try {
-      const response = await api.patch(`/items/currency/${currency_id}`, initialPost)
-      console.log('update vendor: ' + response.data.data)
+      const response = await api.patch(`/items/posting_group/${payment_mode}`, initialPost)
       if (response?.status === 200) return initialPost;
         return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -50,12 +49,12 @@ export const updateCurrency = createAsyncThunk(
   }
 });
 
-export const deleteCurrency = createAsyncThunk(
-  'currency/deleteCurrency', 
+export const deletePostingGroup = createAsyncThunk(
+  'pstgroup/deletePostingGroup', 
   async (initialPost) => {
   const { id } = initialPost;
   try {
-      const response = await api.delete(`/items/currency/${id}`)
+      const response = await api.delete(`/items/posting_group/${id}`)
       if (response?.status === 200) return initialPost;
       return `${response?.status}: ${response?.statusText}`;
   } catch (err) {
@@ -66,79 +65,79 @@ export const deleteCurrency = createAsyncThunk(
 
 //Initial State
 const initialState = {
-  currenciesData: [],
+  pstgroupData: [],
   status: 'idle', //'idle' | 'loading' | 'success' | 'failed'
   error: null,
 }
 
-export const currencySlice = createSlice({
-  name: "currency",
+export const pstgroupSlice = createSlice({
+  name: "pstgroup",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     /* GET */
-    builder.addCase(getCurrencies.pending, (state) => {
+    builder.addCase(getPostingGroups.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(getCurrencies.fulfilled, (state, action) => {
+    builder.addCase(getPostingGroups.fulfilled, (state, action) => {
         state.status = 'success';
-        state.currenciesData = action.payload;
+        state.pstgroupData = action.payload;
     });
-    builder.addCase(getCurrencies.rejected, (state, action) => {
+    builder.addCase(getPostingGroups.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload
     });
 
     /* CREATE */
-    builder.addCase(createCurrency.pending, (state) => {
+    builder.addCase(createPostingGroup.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(createCurrency.fulfilled, (state, action) => {
+    builder.addCase(createPostingGroup.fulfilled, (state, action) => {
       state.status = 'success';
-      state.currenciesData = action.payload;
+      state.pstgroupData = action.payload;
     });
-    builder.addCase(createCurrency.rejected, (state, action) => {
+    builder.addCase(createPostingGroup.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
 
     /* UPDATE */
-    builder.addCase(updateCurrency.pending, (state) => {
+    builder.addCase(updatePostingGroup.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(updateCurrency.fulfilled, (state, action) => {
+    builder.addCase(updatePostingGroup.fulfilled, (state, action) => {
         state.status = 'success';
-        if (!action.payload?.currency_id) {
+        if (!action.payload?.posting_group_type) {
           console.log('Update could not complete');
           console.log(action.payload);
           return;
         }
         const { id } = action.payload;
         action.payload.date_updated = new Date().toISOString();
-        const currencies = state.data.filter(post => post.currency_id !== id);
-        state.currenciesData = [...currencies, action.payload];
+        const pstgroups = state.data.filter(post => post.posting_group_type !== id);
+        state.pstgroupData = [...pstgroups, action.payload];
     });
-    builder.addCase(updateCurrency.rejected, (state, action) => {
+    builder.addCase(updatePostingGroup.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
 
     /* DELETE */
-    builder.addCase(deleteCurrency.pending, (state) => {
+    builder.addCase(deletePostingGroup.pending, (state) => {
       state.status = 'loading';
     });
-    builder.addCase(deleteCurrency.fulfilled, (state, action) => {
+    builder.addCase(deletePostingGroup.fulfilled, (state, action) => {
       state.status = 'success';
-      if (!action.payload?.currency_id) {
+      if (!action.payload?.posting_group_type) {
         console.log('Delete could not complete')
         console.log(action.payload);
         return;
       }
       const { id } = action.payload;
-      const currencies = state.posts.filter(post => post.currency_id !== id);
-      state.currenciesData = currencies;
+      const pstgroups = state.posts.filter(post => post.posting_group_type !== id);
+      state.pstgroupData = pstgroups;
     });
-    builder.addCase(deleteCurrency.rejected, (state, action) => {
+    builder.addCase(deletePostingGroup.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
     });
@@ -146,7 +145,10 @@ export const currencySlice = createSlice({
 });
 
 
-export const selectCurrencies = (state) => state.currency;
-export const selectCurrencyId = (state, id) => state.currency.currenciesData.find(post => post.currency_id === id);
+export const selectPostingGroups = (state) => state.pstgroup;
+export const selectPostingGroupName = (state, id) => 
+  {state.pstgroup.pstgroupData.filter(name => name.posting_group_type.includes(id)).map(filteredName => (
+    filteredName.posting_group_name
+  ))}
 
-export default currencySlice.reducer;
+export default pstgroupSlice.reducer;

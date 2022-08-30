@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import { selectCustomers, updateCustomer } from './../../../../store/reducers/customerSlice';
+import { selectPos, updatePo } from './../../../../store/reducers/poSlice';
 
-const CustomerTable = () => {
+
+const PoTable = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, status, error } = useSelector(selectCustomers);
+  const { data, status, error } = useSelector(selectPos);
+
+  console.log(data)
 
   const [details, setDetails] = useState([])
   const columns = [
-    { key: 'customer_name', _style: { width: '20%' }},
-    { key: 'email', sorter: false },
-    { key: 'phone_number', sorter: false },
-    { key: 'date_updated', sorter: false },
-    { key: 'status', _style: { width: '20%' }},
-    {
-      key: 'show_details',
-      label: 'Action',
-      _style: { width: '1%' }
-    },
+    { key: 'po_date', _style: { width: '20%' }},
+    { key: 'po_number', sorter: false },
+    { key: 'vendor_id', sorter: false },
+    { key: 'dr_status', _style: { width: '20%' }},
+    { key: 'show_details', label: 'Action', _style: { width: '1%' }},
   ]
 
   const getBadge = (status) => {
@@ -54,17 +52,18 @@ const CustomerTable = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       //Just change status to deleted
-      dispatch((updateCustomer({ customer_id: id, status: 'deleted'})));
+      dispatch((updatePo({ po_header_id: id, status: 'deleted'})));
       window.location.reload(true);
     }
   };
-
+ 
   return (
     <CRow>
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Customer</strong> <small>All Records</small>
+            <strong>Products</strong> <small>All Records</small>
+            
           </CCardHeader>
           <CCardBody>
             <CSmartTable
@@ -77,7 +76,7 @@ const CustomerTable = () => {
             footer
             items={data}
             itemsPerPageSelect
-            itemsPerPage={10}
+            itemsPerPage={20}
             pagination
             scopedColumns={{
               status: (item) => (
@@ -94,25 +93,25 @@ const CustomerTable = () => {
                       shape="square"
                       size="sm"
                       onClick={() => {
-                        toggleDetails(item.customer_id)
+                        toggleDetails(item.po_header_id)
                       }}
                     >
-                      {details.includes(item.customer_id) ? 'Hide' : 'Show'}
+                      {details.includes(item.po_header_id) ? 'Hide' : 'Show'}
                     </CButton>
                   </td>
                 )
               },
               details: (item) => {
                 return (
-                  <CCollapse visible={details.includes(item.customer_id)}>
+                  <CCollapse visible={details.includes(item.po_header_id)}>
                     <CCardBody>
-                      <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
-                      <p className="text-muted">Last Updated: {item.date_updated}</p>
+                      <h5>{item.product_name}</h5>
+                      <p className="text-muted">Date Updated: {item.date_updated}</p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.customer_id}`)}>
+                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.po_header_id}`)}>
                           Delete
                         </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/customer/${item.customer_id}`)}>
+                        <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.po_header_id}`)}>
                           View / Update
                         </CButton>
                       </div>
@@ -122,7 +121,7 @@ const CustomerTable = () => {
               },
             }}
             selectable
-            sorterValue={{ column: 'customer_name', state: 'asc' }}
+            sorterValue={{ column: 'product_name', state: 'asc' }}
             tableFilter
             tableHeadProps={{
               color: 'danger',
@@ -140,4 +139,4 @@ const CustomerTable = () => {
   )
 }
 
-export default CustomerTable
+export default PoTable

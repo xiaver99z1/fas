@@ -49,7 +49,7 @@ function AppHeaderDropdown (props) {
         <CDropdownHeader className="bg-light dark:bg-white dark:bg-opacity-10 fw-semibold py-2">
           Settings
         </CDropdownHeader>
-        <CDropdownItem href="#">
+        <CDropdownItem href="/company/1">
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
