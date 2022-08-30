@@ -51,6 +51,7 @@ const ProductTable = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       //Just change status to deleted
       dispatch((updateProduct({ product_id: id, status: 'deleted'})));
+      window.location.reload(true);
     }
   };
  

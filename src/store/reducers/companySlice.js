@@ -38,12 +38,11 @@ export const updateCompany = createAsyncThunk(
   const { company_id } = initialPost;
   try {
       const response = await api.patch(`/items/company/${company_id}`, initialPost)
-      console.log('company data: ' + response.data.data);
-      console.log(response.status);
-      console.log(response.statusText);
-      return response.data.data;
-      //if (response?.status === 200) return initialPost;
-      //return `${response?.status}: ${response?.statusText}`;
+      //console.log('company data: ' + response.data.data);
+      
+      if (response?.status === 200) return initialPost;
+        //return `${response?.status}: ${response?.statusText}`;
+        return response.data.data;
   } catch (err) {
       console.error("Error response:");
       console.error(err.response.data); 

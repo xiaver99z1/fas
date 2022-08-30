@@ -14,7 +14,7 @@ import {
   CRow,
   CFormFeedback,
 } from '@coreui/react-pro'
-import AppToast from './../../../../components/AppToast'
+import AppToast from './../../../../components/AppToast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { selectVendors, selectVendorId, updateVendor } from './../../../../store/reducers/vendorSlice';
@@ -124,7 +124,7 @@ const VendorUpdate = () => {
               updated_by,
               date_created,
               date_updated: new Date().toISOString(),
-            })).unwrap()
+            })).unwrap();
     
             setVendorId('');
             setVendorName('');
@@ -309,6 +309,7 @@ const VendorUpdate = () => {
                   label="City" 
                   type="text"
                   id="city"
+                  defaultValue={city}
                   feedbackValid="Looks good!"
                   onChange={(e) => setCity(e.target.value)}
                   required
@@ -344,7 +345,7 @@ const VendorUpdate = () => {
                 <CFormInput 
                   label="Post Code" 
                   type="text"
-                  id={post_code}
+                  id="post_code"
                   defaultValue={post_code}
                   feedbackInvalid="Please provide a valid post code."
                   feedbackValid="Looks good!"
@@ -362,7 +363,7 @@ const VendorUpdate = () => {
                     type="text" 
                     placeholder="First Name" 
                     defaultValue={contact_person_first_name}
-                    onClick={(e)=>setContactFirstName(e.target.value)} 
+                    onChange={(e)=>setContactFirstName(e.target.value)} 
                     required
                   />
                   <CFormInput 
@@ -370,7 +371,7 @@ const VendorUpdate = () => {
                     type="text" 
                     placeholder="Last Name" 
                     defaultValue={contact_person_last_name}
-                    onClick={(e)=>setContactLastName(e.target.value)} 
+                    onChange={(e)=>setContactLastName(e.target.value)} 
                     required
                   />
                 </CInputGroup>

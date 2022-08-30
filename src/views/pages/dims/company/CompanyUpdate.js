@@ -39,7 +39,7 @@ const CompanyUpdate = () => {
    const { status, error } = useSelector(selectCompanies);
    const data = useSelector((state) => selectCompanyId(state, Number(id)));
 
-   const logged = user ? user.first_name : 'user not logged';
+   const logged = user ? user.first_name : 'anonymous';
 
    /* Load Selection Options */
    const { pstgroupData } = useSelector(selectPostingGroups);
@@ -71,7 +71,7 @@ const CompanyUpdate = () => {
    const [payment_terms, setPaymentTerms] = useState(data?.payment_terms);
    const [payment_mode, setPaymentMode] = useState(data?.payment_mode);
    const [companyStatus, setCompanyStatus] = useState(data?.companyStatus);
-   const [created_by, setCreatedBy] = useState(data?.created_by);
+   const [created_by, setCreatedBy] = useState(logged);
    const [updated_by, setUpdatedBy] = useState(logged);
    const [date_created, setDateCreated] = useState(data?.date_created);
 
@@ -80,9 +80,9 @@ const CompanyUpdate = () => {
    const [updated, setUpdated] = useState(false);
    const [requestStatus, setRequestStatus] = useState('idle');
 
-   const canSave = [company_name, contact_person_first_name, contact_person_last_name].every(Boolean) && requestStatus === 'idle';
+   const canSave = [company_name, address1, city, post_code, tax_identification_number, contact_person_first_name, contact_person_last_name].every(Boolean) && requestStatus === 'idle';
 
-   console.log({data, canSave, logged});
+   console.log({canSave, logged, company_name, address1, city, post_code, tax_identification_number, contact_person_first_name, contact_person_last_name});
    
    //Submit Form
    const handleSubmit = (event) => {
@@ -118,7 +118,6 @@ const CompanyUpdate = () => {
                contact_person_last_name,
                payment_terms,
                payment_mode,
-               companyStatus,
                status: companyStatus,
                created_by,
                updated_by,
@@ -164,17 +163,6 @@ const CompanyUpdate = () => {
       onSavePostClicked();
    }
 
-   const handleDelete = (id) => {
-      if(data.status !== 'deleted') {
-         //Just change status to deleted
-         
-         if (window.confirm("Are you sure you want to delete this company "+ id + "?")) {
-         dispatch(updateCompany({company_id: id, status: 'deleted'}));
-         //window.location.reload(true);
-         }
-      }
-   };
-
    const handleBack = () => {
       navigate('/companies');
    }
@@ -210,6 +198,7 @@ const CompanyUpdate = () => {
                         type="text"
                         id="company_short_name"
                         defaultValue={company_short_name}
+                        onChange={(e) => setCompanyShortName(e.target.value)} 
                         feedbackValid="Looks good!"
                      />
                   </CCol>
@@ -297,6 +286,7 @@ const CompanyUpdate = () => {
                         label="City" 
                         type="text"
                         id="city"
+                        defaultValue={city}
                         feedbackValid="Looks good!"
                         onChange={(e) => setCity(e.target.value)}
                         required
@@ -365,7 +355,7 @@ const CompanyUpdate = () => {
                </CRow>
 
                <CRow xs={{ gutterY: 4 }}> 
-                  <CCol md={8}>
+                  <CCol md={12}>
                      <CInputGroup>
                         <CInputGroupText>Contact Person</CInputGroupText>
                         <CFormInput 

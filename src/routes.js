@@ -19,9 +19,9 @@ const ProductUpdateForm = React.lazy(() => import('./views/pages/dims/product/Pr
 const CompanyList = React.lazy(() => import('./views/pages/dims/company/CompanyTable'))
 const CompanyAddForm = React.lazy(() => import('./views/pages/dims/company/CompanyAdd'))
 const CompanyUpdateForm = React.lazy(() => import('./views/pages/dims/company/CompanyUpdate'))
-const UserList = React.lazy(() => import('./views/pages/dims/user/UserTable'))
-const UserAddForm = React.lazy(() => import('./views/pages/dims/user/UserAdd'))
-const UserUpdateForm = React.lazy(() => import('./views/pages/dims/user/UserUpdate'))
+const AccountList = React.lazy(() => import('./views/pages/dims/account/accountTable'))
+const AccountAddForm = React.lazy(() => import('./views/pages/dims/account/accountAdd'))
+const AccountUpdateForm = React.lazy(() => import('./views/pages/dims/account/accountUpdate'))
 
 const Test = React.lazy(() => import('./views/pages/dims/test'))
 
@@ -43,13 +43,12 @@ const routes = [
   { path: '/companies', name: 'All Companies', element: CompanyList },
   { path: '/company/add', name: 'Add New Company', element: CompanyAddForm },
   { path: '/company/:id', exact: true, name: 'Update Company', element: CompanyUpdateForm },
-  { path: '/users', name: 'All Users', element: UserList },
-  { path: '/user/add', name: 'Add New User', element: UserAddForm },
-  { path: '/user/:userid', exact: true, name: 'Update User', element: UserUpdateForm },
+  { path: '/accounts', name: 'All Accounts', element: AccountList },
+  { path: '/account/add', name: 'Add New Account', element: AccountAddForm },
+  { path: '/account/:id', exact: true, name: 'Update Account', element: AccountUpdateForm },
   { path: '/dims/purchase-order', name: 'Purchase Order List', element: PurchaseOrderList},
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
-  { path: '/test', name: 'Test', element: Test },
 ]
 
 export default routes

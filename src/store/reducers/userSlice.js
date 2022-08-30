@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import { axiosInstance } from 'src/store/middleware/directus';
+import api from '../../services/api';
 
 
 //Initial State
@@ -15,7 +15,7 @@ const initialState = {
 export const getUsers = createAsyncThunk(
   'user/getUsers', 
   async () => {
-    return await axiosInstance.get('/users/')
+    return await api.get('/users')
     .then((res) => res.data.data)
     .catch((error)=>console.log(error.response.request._response))
 });

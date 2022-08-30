@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCustomers } from 'src/store/reducers/customerSlice';
+import { useNavigate } from 'react-router-dom';
+import { selectCustomers, updateCustomer } from './../../../../store/reducers/customerSlice';
+
 
 
 const CustomerTable = () => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.customer.data)
-  useEffect(() => {
-    dispatch(getCustomers())
-  }, [])
+  const navigate = useNavigate();
 
-  console.log(data);
+  const { data, status, error } = useSelector(selectCustomers);
 
   const [details, setDetails] = useState([])
   const columns = [
     { key: 'customer_name', _style: { width: '20%' }},
     { key: 'email', sorter: false },
     { key: 'phone_number', sorter: false },
+    { key: 'date_updated', sorter: false },
     { key: 'status', _style: { width: '20%' }},
     {
       key: 'show_details',
@@ -52,7 +52,15 @@ const CustomerTable = () => {
     }
     setDetails(newDetails)
   }
- 
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      //Just change status to deleted
+      dispatch((updateCustomer({ customer_id: id, status: 'deleted'})));
+      window.location.reload(true);
+    }
+  };
+
   return (
     <CRow>
       <CCol xs={12}>
@@ -103,12 +111,14 @@ const CustomerTable = () => {
                     <CCardBody>
                       <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
                       <p className="text-muted">Last Updated: {item.date_updated}</p>
-                      <CButton size="sm" color="info" href={`/customer/${item.customer_id}`}>
-                        View / Update
-                      </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" href={`/customer/delete/${item.customer_id}`}>
-                        Delete
-                      </CButton>
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.customer_id}`)}>
+                          Delete
+                        </CButton>
+                        <CButton size="sm" color="info" onClick={() => navigate(`/customer/${item.customer_id}`)}>
+                          View / Update
+                        </CButton>
+                      </div>
                     </CCardBody>
                   </CCollapse>
                 )

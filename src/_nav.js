@@ -29,28 +29,16 @@ const _nav = [
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Company Profile',
+    icon: <CIcon icon={cilMap} customClassName="nav-icon" />,
+    to: '/company/1',
     badge: {
       color: 'info-gradient',
       text: 'NEW',
     },
-  },
-  {
-    component: CNavGroup,
-    name: 'Company',
-    icon: <CIcon icon={cilMap} customClassName="nav-icon" />,
-    to: '/dashboard',
-    items: [
-      {
-        component: CNavItem,
-        name: 'All Companies',
-        to: '/companies',
-      },
-      {
-        component: CNavItem,
-        name: 'Add New Company',
-        to: '/company/add',
-      },
-    ]
   },
   {
     component: CNavGroup,
@@ -118,19 +106,19 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Users',
+    name: 'Accounts',
     to: '/apps/invoicing',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'All Users',
-        to: '/users',
+        name: 'All Accounts',
+        to: '/accounts',
       },
       {
         component: CNavItem,
-        name: 'Add New User',
-        to: '/user/add',
+        name: 'Add New Account',
+        to: '/account/add',
       },
     ]
   },

@@ -3,14 +3,14 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const proxyConfig = {
   "changeOrigin": true,
   "secure": true,
-  "target": "https://moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
+  "target": `${process.env.REACT_APP_DIRECTUS_URL}`,
   "headers": {
       "host": "moandbear-cms-dev.5i9kftpno7oc0.ap-southeast-1.cs.amazonlightsail.com",
       "origin": "*",
       "method": "*"
   },
   "onProxyReq": function(proxyReq, req, res) {
-      proxyReq.setHeader('Authorization', `Bearer @spiderman03`)
+      proxyReq.setHeader('Authorization', `Bearer ${process.env.REACT_APP_DIRECTUS_TOKEN}`)
   },
   "ws": true, // enable websocket proxy
   "logger": console,
