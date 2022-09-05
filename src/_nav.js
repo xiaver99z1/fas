@@ -56,11 +56,6 @@ const _nav = [
         name: 'Add New Customer',
         to: '/customer/add',
       },
-      {
-        component: CNavItem,
-        name: 'Purchase Order',
-        to: '/dims/purchase-order',
-      },
     ]
   },
   {
@@ -106,6 +101,24 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'Vendor Price',
+    to: '/vendorprice',
+    icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'All Vendor Price',
+        to: '/vendorprice',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Vendor Price',
+        to: '/vendorprice/add',
+      },
+    ]
+  },
+  {
+    component: CNavGroup,
     name: 'Purchase Orders',
     to: '/po',
     icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
@@ -125,12 +138,6 @@ const _nav = [
   {
     component: CNavTitle,
     name: 'Transactions',
-  },
-  {
-    component: CNavItem,
-    name: 'Purchase Order',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-    to: '/dims/purchase-order',
   },
   {
     component: CNavItem,

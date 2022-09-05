@@ -111,10 +111,10 @@ const AccountTable = () => {
                     <CCardBody>
                       <h5>ID: {item.id} </h5>
                       <p className="text-muted">Last Access: {item.last_access}</p>
-                      <CButton size="sm" color="info" href={`/user/${item.id}`}>
+                      <CButton size="sm" color="light" href={`/user/${item.id}`}>
                         View / Update
                       </CButton>
-                      <CButton size="sm" color="danger" className="ml-1" href={`/user/delete/${item.id}`}>
+                      <CButton size="sm" color="dark" className="ml-1" href={`/user/delete/${item.id}`}>
                         Delete
                       </CButton>
                     </CCardBody>
@@ -131,6 +131,7 @@ const AccountTable = () => {
             tableProps={{
               striped: true,
               hover: true,
+              responsive: true,
             }}
           />
           </CCardBody>

@@ -109,10 +109,10 @@ const CustomerTable = () => {
                       <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
                       <p className="text-muted">Last Updated: {item.date_updated}</p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.customer_id}`)}>
+                        <CButton size="sm" color="light" className="ml-1" onClick={() => handleDelete(`${item.customer_id}`)}>
                           Delete
                         </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/customer/${item.customer_id}`)}>
+                        <CButton size="sm" color="dark" onClick={() => navigate(`/customer/${item.customer_id}`)}>
                           View / Update
                         </CButton>
                       </div>

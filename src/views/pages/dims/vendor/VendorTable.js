@@ -107,10 +107,10 @@ const VendorTable = () => {
                       <h5>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h5>
                       <p className="text-muted">Date Updated: {item.date_updated}</p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.vendor_id}`)}>
+                        <CButton size="sm" color="light" className="ml-1" onClick={() => handleDelete(`${item.vendor_id}`)}>
                           Delete
                         </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/vendor/${item.vendor_id}`)}>
+                        <CButton size="sm" color="dark" onClick={() => navigate(`/vendor/${item.vendor_id}`)}>
                           View / Update
                         </CButton>
                       </div>
@@ -128,6 +128,7 @@ const VendorTable = () => {
             tableProps={{
               striped: true,
               hover: true,
+              responsive: true,
             }}
           />
           </CCardBody>

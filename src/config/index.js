@@ -1,5 +1,5 @@
 export const SKIP_PREFLIGHT_CHECK = process.env.SKIP_PREFLIGHT_CHECK || true
-export const REACT_APP_DIRECTUS_URL = process.env.REACT_APP_DIRECTUS_URL || `https://localhost:3000`
+export const REACT_APP_DIRECTUS_URL = process.env.REACT_APP_DIRECTUS_URL || `https://localhost:8080`
 export const REACT_APP_DIRECTUS_TOKEN = process.env.REACT_APP_DIRECTUS_TOKEN || `@spiderman03`
 export const NODE_ENV = process.env.NODE_ENV || `development`
 export const LOCAL_AUTH_TOKEN_KEY = process.env.LOCAL_AUTH_TOKEN_KEY || `tokenKey`

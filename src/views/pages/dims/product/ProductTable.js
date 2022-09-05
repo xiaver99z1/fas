@@ -106,10 +106,10 @@ const ProductTable = () => {
                       <h5>{item.product_name}</h5>
                       <p className="text-muted">Date Updated: {item.date_updated}</p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.product_id}`)}>
+                        <CButton size="sm" color="light" className="ml-1" onClick={() => handleDelete(`${item.product_id}`)}>
                           Delete
                         </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.product_id}`)}>
+                        <CButton size="sm" color="dark" onClick={() => navigate(`/product/${item.product_id}`)}>
                           View / Update
                         </CButton>
                       </div>
@@ -127,6 +127,7 @@ const ProductTable = () => {
             tableProps={{
               striped: true,
               hover: true,
+              responsive: true,
             }}
           />
           </CCardBody>

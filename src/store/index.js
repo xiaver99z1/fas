@@ -13,10 +13,11 @@ import {
 } from 'redux-persist';
 import authMiddleware from './middleware/authMiddleware';
 
-import { getAccounts, getProfiles } from './reducers/accountSlice';
+import { getProfiles } from './reducers/accountSlice';
 import { getCompanies } from './reducers/companySlice';
 import { getCustomers } from './reducers/customerSlice';
 import { getVendors } from './reducers/vendorSlice';
+import { getVendorPrices } from './reducers/vendorpriceSlice';
 import { getProducts } from './reducers/productSlice';
 import { getCurrencies } from './reducers/references/currencySlice';
 import { getCountries } from './reducers/references/countrySlice';
@@ -45,8 +46,8 @@ store.dispatch(getCompanies());
 store.dispatch(getCustomers());
 store.dispatch(getVendors());
 store.dispatch(getProducts());
-//store.dispatch(getAccounts());
 store.dispatch(getProfiles());
+store.dispatch(getVendorPrices());
 
 /* REFERENCES */
 store.dispatch(getCurrencies());

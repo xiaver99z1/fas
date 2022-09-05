@@ -102,10 +102,10 @@ const CompanyTable = () => {
                       <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
                       <p className="text-muted">Last Updated: {item.date_updated}</p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.company_id}`)} disabled>
+                        <CButton size="sm" color="light" className="ml-1" onClick={() => handleDelete(`${item.company_id}`)} disabled>
                           Delete
                         </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/company/${item.company_id}`)}>
+                        <CButton size="sm" color="dark" onClick={() => navigate(`/company/${item.company_id}`)}>
                           View / Update
                         </CButton>
                       </div>
@@ -123,6 +123,7 @@ const CompanyTable = () => {
             tableProps={{
               striped: true,
               hover: true,
+              responsive: true,
             }}
           />
           </CCardBody>

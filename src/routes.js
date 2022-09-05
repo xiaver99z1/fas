@@ -25,6 +25,9 @@ const AccountUpdateForm = React.lazy(() => import('./views/pages/dims/account/ac
 const POList = React.lazy(() => import('./views/pages/dims/po/PoTable'))
 const POAddForm = React.lazy(() => import('./views/pages/dims/po/PoAdd'))
 const POUpdateForm = React.lazy(() => import('./views/pages/dims/po/PoUpdate'))
+const VendorPriceList = React.lazy(() => import('./views/pages/dims/vendorprice/VendorPriceTable'))
+const VendorPriceAddForm = React.lazy(() => import('./views/pages/dims/vendorprice/VendorPriceAdd'))
+const VendorPriceUpdateForm = React.lazy(() => import('./views/pages/dims/vendorprice/VendorPriceUpdate'))
 
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 
@@ -38,12 +41,15 @@ const routes = [
   { path: '/vendors', name: 'All Vendors', element: VendorList },
   { path: '/vendor/add', name: 'Add New Vendor', element: VendorAddForm },
   { path: '/vendor/:id', name: 'Update Vendor', element: VendorUpdateForm },
+  { path: '/vendorprice', name: 'All Vendor Price', element: VendorPriceList },
+  { path: '/vendorprice/add', name: 'Add New Vendor Price', element: VendorPriceAddForm },
+  { path: '/vendorprice/:id', name: 'Update Vendor Price', element: VendorPriceUpdateForm },
   { path: '/products', name: 'All Products', element: ProductList },
   { path: '/product/add', name: 'Add New Product', element: ProductAddForm },
   { path: '/product/:id', exact: true, name: 'Update Product', element: ProductUpdateForm },
   { path: '/po', name: 'All Purchase Order', element: POList },
   { path: '/po/add', name: 'Add New PO', element: POAddForm },
-  { path: '/  po/:id', exact: true, name: 'Update PO', element: POUpdateForm },
+  { path: '/po/:id', exact: true, name: 'Update PO', element: POUpdateForm },
   { path: '/companies', name: 'All Companies', element: CompanyList },
   { path: '/company/add', name: 'Add New Company', element: CompanyAddForm },
   { path: '/company/:id', exact: true, name: 'Update Company', element: CompanyUpdateForm },
