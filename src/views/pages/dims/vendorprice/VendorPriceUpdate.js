@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -39,9 +39,6 @@ const VendorPriceUpdate = () => {
   const productData = useSelector((state) => state.product.data);
   const vendorData = useSelector((state) => state.vendor.data);
   const { currenciesData } = useSelector(selectCurrencies);
-
-
-  console.log({productData, vendorData, prices})
 
 
   // Set Fields
@@ -159,6 +156,17 @@ const VendorPriceUpdate = () => {
     navigate('/vendorprice');
   };
 
+  
+  const vendorIdValue = useRef(prices?.vendor_id);
+
+  useEffect(() => {
+    
+    vendorData.find((post => post.vendor_id === vendorIdValue.current))
+  }, [vendor_name]);
+
+
+  //console.log({vid});
+
   return (
 
    <CRow>
@@ -205,10 +213,9 @@ const VendorPriceUpdate = () => {
               <CCol md={2}>
                 <CFormInput 
                   label="Vendor ID"
-                  ref="vendor_id" 
+                  id="vendor_id" 
                   name="vendor_id" 
-                  defaultValue={vendor_id}
-                  disabled
+                  defaultValue={vendorIdValue}
                 />
               </CCol>
               <CCol md={6}>
@@ -240,7 +247,7 @@ const VendorPriceUpdate = () => {
               <CCol md={2}>
                 <CFormInput 
                   label="Product ID"
-                  ref="product_id" 
+                  id="product_id" 
                   name="product_id" 
                   defaultValue={product_id}
                   disabled
