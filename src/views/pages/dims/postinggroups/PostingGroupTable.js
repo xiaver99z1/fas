@@ -1,28 +1,30 @@
-import React, { useState } from 'react';
-import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { selectCompanies } from './../../../../store/reducers/companySlice';
+import { selectAccounts, updateAccount } from './../../../../store/reducers/accountSlice';
+import { selectUser } from './../../../../store/reducers/users';
 
 
-const CompanyTable = () => {
+const PostingGroupTable = () => {
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, status, error } = useSelector(selectCompanies);
-  console.log({data, status, error})
+  const { data, status, error } = useSelector(selectAccounts);
+  const { user } = useSelector(selectUser);
 
-  const [details, setDetails] = useState([]);
+  const logged = user ? user.first_name : 'anonymous';
+
+  console.log({data});
+
+  const [details, setDetails] = useState([])
   const columns = [
-    { key: 'company_name', _style: { width: '20%' }},
+    { key: 'first_name', _style: { width: '20%' }},
+    { key: 'last_name', sorter: false },
     { key: 'email', sorter: false },
-    { key: 'phone_number', sorter: false },
-    { key: 'status', _style: { width: '20%' }},
-    {
-      key: 'show_details',
-      label: 'Action',
-      _style: { width: '1%' }
-    },
+    { key: 'status', _style: { width: '20%' }, sorter: true, filter: true },
+    { key: 'show_details', label: 'Action', _style: { width: '1%' }, sorter: false, filter: false }
   ]
 
   const getBadge = (status) => {
@@ -50,13 +52,21 @@ const CompanyTable = () => {
     }
     setDetails(newDetails)
   }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this account?")) {
+      //Just change status to deleted
+      dispatch((updateAccount({ id, status: 'deleted'})));
+      window.location.reload(true);
+    }
+  };
  
   return (
     <CRow>
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Customer</strong> <small>All Records</small>
+            <strong>Users</strong> <small>All Records</small>
             
           </CCardHeader>
           <CCardBody>
@@ -87,35 +97,33 @@ const CompanyTable = () => {
                       shape="square"
                       size="sm"
                       onClick={() => {
-                        toggleDetails(item.company_id)
+                        toggleDetails(item.id)
                       }}
                     >
-                      {details.includes(item.company_id) ? 'Hide' : 'Show'}
+                      {details.includes(item.id) ? 'Hide' : 'Show'}
                     </CButton>
                   </td>
                 )
               },
               details: (item) => {
                 return (
-                  <CCollapse visible={details.includes(item.company_id)}>
+                  <CCollapse visible={details.includes(item.id)}>
                     <CCardBody>
-                      <h6>Contact Person: {item.contact_person_first_name} {item.contact_person_last_name}</h6>
-                      <p className="text-muted">Last Updated: {item.date_updated}</p>
-                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="light" className="ml-1" onClick={() => handleDelete(`${item.company_id}`)} disabled>
-                          Delete
-                        </CButton>
-                        <CButton size="sm" color="dark" onClick={() => navigate(`/company/${item.company_id}`)}>
-                          View / Update
-                        </CButton>
-                      </div>
+                      <h5>ID: {item.id} </h5>
+                      <p className="text-muted">Last Access: {item.last_access}</p>
+                      <CButton size="sm" color="light" href={`/user/${item.id}`}>
+                        View / Update
+                      </CButton>
+                      <CButton size="sm" color="dark" className="ml-1" href={`/user/delete/${item.id}`}>
+                        Delete
+                      </CButton>
                     </CCardBody>
                   </CCollapse>
                 )
               },
             }}
             selectable
-            sorterValue={{ column: 'company_name', state: 'asc' }}
+            sorterValue={{ column: 'first_name', state: 'asc' }}
             tableFilter
             tableHeadProps={{
               color: 'danger',
@@ -134,4 +142,4 @@ const CompanyTable = () => {
   )
 }
 
-export default CompanyTable
+export default PostingGroupTable

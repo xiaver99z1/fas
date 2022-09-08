@@ -8,6 +8,7 @@ import changeState from './../coreuistate/changeState';
 import companySlice from './companySlice';
 import customerSlice from './customerSlice';
 import vendorSlice from './vendorSlice';
+import vendorpriceSlice from './vendorpriceSlice';
 import productSlice from './productSlice';
 import poSlice from './poSlice';
 //import accountSlice from './accountSlice';
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     company: companySlice,
     customer: customerSlice,
     vendor: vendorSlice,
+    vendorprice: vendorpriceSlice,
     product: productSlice,
     po: poSlice,
     fasreference: fasreferenceSlice,
