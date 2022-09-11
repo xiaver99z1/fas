@@ -1,0 +1,41 @@
+@font-face {
+    font-family: linearicons;
+    src:
+    url('./assets/icons/fonts/linearicons.eot'),
+    url('./assets/icons/fonts/linearicons.eot') format('embedded-opentype'),
+    url('./assets/icons/fonts/linearicons.ttf') format('truetype'),
+    url('./assets/icons/fonts/linearicons.woff') format('woff'),
+    url('./assets/icons/fonts/linearicons.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+[class^='lnr-'],
+[class*='lnr-'] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: linearicons !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  /*line-height: 1;*/
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.lnr-eye::before {
+    content: '\e6a5';
+}
+
+.lnr-pencil::before {
+    content: '\e60d';
+}
+
+.lnr-trash::before {
+    content: '\e680';
+}
+  
+  
