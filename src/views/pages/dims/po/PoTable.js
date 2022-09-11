@@ -1,26 +1,46 @@
-import React, { useState } from 'react'
-import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse } from '@coreui/react-pro'
+import React, { useState, useEffect } from 'react'
+import { CSmartTable, CCard, CCardBody, CCardHeader, CCol, CRow, CBadge, CButton, CCollapse, CPopover } from '@coreui/react-pro'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import { selectPos, updatePo } from './../../../../store/reducers/poSlice';
-
+import { selectPos, getPo, updatePo, deletePo } from './../../../../store/reducers/poSlice';
+import { selectPoDetail, deletePoDetail, getPoDetail } from './../../../../store/reducers/poDetailSlice';
+import { selectVendors } from './../../../../store/reducers/vendorSlice';
 
 const PoTable = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { data:vendors } = useSelector(selectVendors);
+  const { data:poHeader, status } = useSelector(selectPos);
+  const { data:poDetail } = useSelector(selectPoDetail);
+  
 
-  const { data, status, error } = useSelector(selectPos);
-
-  console.log(data)
+  const data = poHeader.map(resMap=> {
+    const { vendor_id:v_id_map, ...rest } = resMap;
+    const data = vendors ? vendors.find(res=>res.vendor_id === v_id_map) : [].find(res=>res.vendor_id === v_id_map)
+   
+    const cus = {
+      vendor_id:data?.vendor_id || '',
+      vendor_name:data?.vendor_name || '',
+      ...rest 
+    }
+    return cus
+  })
 
   const [details, setDetails] = useState([])
+  const [deletingPO, setDeletingPO] = useState(false)
+  const [popper, setPopper] = useState(false)
+
+  useEffect(()=>{
+    dispatch(getPo({}))
+  },[dispatch, poDetail])
+
   const columns = [
-    { key: 'po_date', _style: { width: '20%' }},
+    { label: 'Header ID', key: 'po_header_id', _style: { width: '12%' }},
     { key: 'po_number', sorter: false },
-    { key: 'vendor_id', sorter: false },
-    { key: 'dr_status', _style: { width: '20%' }},
-    { key: 'show_details', label: 'Action', _style: { width: '1%' }},
+    { key: 'vendor_name', sorter: false },
+    { key: 'po_date', _style: { width: '20%' }},
+    { key: 'show_details', label: 'Action', sorter: false, _style: { width: '15%' }},
   ]
 
   const getBadge = (status) => {
@@ -56,15 +76,100 @@ const PoTable = () => {
       window.location.reload(true);
     }
   };
- 
+
+  const renderDeletePopperOver = (id) => {
+    return (
+      <CRow>
+        <CCol style={{width:'300px'}}>
+            <CRow xs={{ gutterY: 2 }}>
+              <CCol md={12}  style={{marginBottom:'10px'}}>
+                {deletingPO ? 'Deleting PO...' : 
+                  poDetail.length === 0 ? (
+                    <>
+                    <CRow >
+                      <CCol md={24} style={{padding:'0 10px 0 10px'}}>Are you sure you do you want to delete this PO Header record?</CCol>
+                    </CRow>
+                    </>
+                  )
+                  : (
+                  <>
+                  <CRow >
+                    <CCol md={24} style={{padding:'0 10px 0 10px'}}>Deleting <b style={{color:'red'}}>PO number {id},</b> will also delete the PO Details assigned, are</CCol>
+               
+                    <CCol md={24} style={{padding:'0 10px 0 10px'}}>you sure do you want to proceed this operation?</CCol>
+                  </CRow>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+            <CRow xs={{ gutterY: 2 }}>
+              <CCol md={12}>
+                {!deletingPO && (
+                <div style={{float:'right'}}>
+                  <CButton  onClick={() => handleSubmitPopper(id)}  size="sm" color="danger" style={{marginLeft:'5px'}} >
+                    Yes
+                  </CButton>
+                  <CButton onClick={() => handleClosePopper()}  size="sm" color="info" style={{marginLeft:'5px'}}>
+                      No
+                  </CButton>
+                </div>
+                )}
+              </CCol>
+            </CRow>
+        </CCol>
+      </CRow>
+    )
+  }
+
+  const handleSubmitPopper = (id) => {
+    const payload = {
+      id,
+    }
+    dispatch(deletePo(payload)).then(()=>{
+        if(poDetail.length > 0){
+          poDetail.map(({ po_detail_id })=>{
+              const params = {
+                id:po_detail_id,
+              }
+              dispatch(deletePoDetail(params))
+          })
+        }
+        dispatch(getPo({}))
+        setPopper(0)
+    })
+
+  }
+
+  const handleClosePopper = () => {
+    setPopper(0)
+  }
+
+  const handleOpenTriggerPopper = (id) => {
+    handleClickDeletePOHeader(id)
+    setPopper(id)
+  }
+  
+  const handleClickDeletePOHeader = (id) => {
+    const params = {
+      po_header_id: id
+    }
+    dispatch(getPoDetail(params))
+    console.log('test');
+  }
+
   return (
     <CRow>
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
             <strong>Products</strong> <small>All Records</small>
-            
           </CCardHeader>
+          <CCol md={12} className="p-1">
+              <CButton size="sm" style={{marginRight:'5px',float:'right',marginTop:'-40px'}} 
+               color="success" onClick={() => navigate(`/po/add`)}>
+                Add PO
+              </CButton>
+          </CCol>
           <CCardBody>
             <CSmartTable
             activePage={1}
@@ -85,43 +190,31 @@ const PoTable = () => {
                 </td>
               ),
               show_details: (item) => {
+
                 return (
                   <td className="py-2">
-                    <CButton
-                      color="primary"
-                      variant="outline"
-                      shape="square"
-                      size="sm"
-                      onClick={() => {
-                        toggleDetails(item.po_header_id)
-                      }}
-                    >
-                      {details.includes(item.po_header_id) ? 'Hide' : 'Show'}
-                    </CButton>
+                    <div style={{marginTop:'5px'}}>
+                        <CButton size="sm" color="primary" style={{marginLeft:'5px'}} onClick={() => navigate(`/po/${item.po_header_id}`)}>
+                          Update
+                        </CButton>
+                        <CPopover
+                          visible={item.po_header_id === popper}
+                          content={renderDeletePopperOver(item.po_header_id)}
+                          onShow={() => handleOpenTriggerPopper(item.po_header_id)}
+                          placement="top"
+                          offset={[-70,8]}
+                        >
+                          <CButton size="sm" color="danger" style={{marginLeft:'5px'}}>
+                              Delete
+                          </CButton>
+                        </CPopover>
+                    </div>
                   </td>
-                )
-              },
-              details: (item) => {
-                return (
-                  <CCollapse visible={details.includes(item.po_header_id)}>
-                    <CCardBody>
-                      <h5>{item.product_name}</h5>
-                      <p className="text-muted">Date Updated: {item.date_updated}</p>
-                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <CButton size="sm" color="danger" className="ml-1" onClick={() => handleDelete(`${item.po_header_id}`)}>
-                          Delete
-                        </CButton>
-                        <CButton size="sm" color="info" onClick={() => navigate(`/product/${item.po_header_id}`)}>
-                          View / Update
-                        </CButton>
-                      </div>
-                    </CCardBody>
-                  </CCollapse>
                 )
               },
             }}
             selectable
-            sorterValue={{ column: 'product_name', state: 'asc' }}
+            sorterValue={{ column: 'po_header_id', state: 'desc' }}
             tableFilter
             tableHeadProps={{
               color: 'danger',

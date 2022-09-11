@@ -24,6 +24,8 @@ import { getCountries } from './reducers/references/countrySlice';
 import { getPaymentTerms } from './reducers/references/paymenttermSlice';
 import { getPostingGroups } from './reducers/references/pstgroupSlice';
 import { getPaymentModes } from './reducers/references/paymentmodeSlice';
+import { getPo } from './reducers/poSlice';
+import { getPoDetail } from './reducers/poDetailSlice';
 
 
 const store = configureStore({
@@ -48,6 +50,8 @@ store.dispatch(getVendors());
 store.dispatch(getProducts());
 store.dispatch(getProfiles());
 store.dispatch(getVendorPrices());
+// store.dispatch(getPoDetail())
+store.dispatch(getPo({}))
 
 /* REFERENCES */
 store.dispatch(getCurrencies());

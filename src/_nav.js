@@ -125,13 +125,8 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'All POs',
+        name: 'POs',
         to: '/po',
-      },
-      {
-        component: CNavItem,
-        name: 'Add New PO',
-        to: '/po/add',
       },
     ]
   },

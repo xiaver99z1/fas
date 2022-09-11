@@ -23,7 +23,7 @@ const AccountList = React.lazy(() => import('./views/pages/dims/account/accountT
 const AccountAddForm = React.lazy(() => import('./views/pages/dims/account/accountAdd'))
 const AccountUpdateForm = React.lazy(() => import('./views/pages/dims/account/accountUpdate'))
 const POList = React.lazy(() => import('./views/pages/dims/po/PoTable'))
-const POAddForm = React.lazy(() => import('./views/pages/dims/po/PoAdd'))
+const PoPage = React.lazy(() => import('./views/pages/dims/po/PoPage/PoPage'))
 const POUpdateForm = React.lazy(() => import('./views/pages/dims/po/PoUpdate'))
 const VendorPriceList = React.lazy(() => import('./views/pages/dims/vendorprice/VendorPriceTable'))
 const VendorPriceAddForm = React.lazy(() => import('./views/pages/dims/vendorprice/VendorPriceAdd'))
@@ -48,8 +48,8 @@ const routes = [
   { path: '/product/add', name: 'Add New Product', element: ProductAddForm },
   { path: '/product/:id', exact: true, name: 'Update Product', element: ProductUpdateForm },
   { path: '/po', name: 'All Purchase Order', element: POList },
-  { path: '/po/add', name: 'Add New PO', element: POAddForm },
-  { path: '/po/:id', exact: true, name: 'Update PO', element: POUpdateForm },
+  { path: '/po/add', name: 'Add New PO', element: PoPage },
+  { path: '/po/:id', exact: true, name: 'Update PO', element: PoPage },
   { path: '/companies', name: 'All Companies', element: CompanyList },
   { path: '/company/add', name: 'Add New Company', element: CompanyAddForm },
   { path: '/company/:id', exact: true, name: 'Update Company', element: CompanyUpdateForm },

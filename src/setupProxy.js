@@ -30,4 +30,6 @@ module.exports = function(app) {
   app.use(createProxyMiddleware("/items/payment_mode", proxyConfig));
   app.use(createProxyMiddleware("/items/payment_terms", proxyConfig));
   app.use(createProxyMiddleware("/items/posting_group", proxyConfig));
+  app.use(createProxyMiddleware("/items/po_header", proxyConfig));
+  app.use(createProxyMiddleware("/items/po_detail", proxyConfig));
 };

@@ -11,6 +11,7 @@ import vendorSlice from './vendorSlice';
 import vendorpriceSlice from './vendorpriceSlice';
 import productSlice from './productSlice';
 import poSlice from './poSlice';
+import poDetailSlice from './poDetailSlice';
 //import accountSlice from './accountSlice';
 import fasreferenceSlice from './references/fasrefereceSlice';
 import currencySlice from './references/currencySlice';
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
     paymentterm: paymenttermSlice,
     paymentmode: paymentmodeSlice,
     pstgroup: pstgroupSlice,
+    podetail:poDetailSlice
 })
 
 export default rootReducer;

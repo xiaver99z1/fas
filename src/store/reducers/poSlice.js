@@ -3,9 +3,15 @@ import api from '../../services/api';
 
 export const getPo = createAsyncThunk(
   'po/getPo', 
-  async () => {
+  async (initialPost) => {
+    const { po_header_id } = initialPost
   try {
-      const response = await api.get(`/items/po_header/`)
+    let response;
+    if(po_header_id){
+        response = await api.get(`/items/po_header?filter[po_header_id][_eq]=`+po_header_id)
+    }else{
+        response = await api.get(`/items/po_header/`)
+    }
       return response.data.data;
   } catch (err) {
     if (!err.response) {
@@ -21,7 +27,7 @@ export const createPo = createAsyncThunk(
   'po/createPo', 
   async (initialPost) => {
   try {
-      const response = await api.post(`/items/po_header/`, initialPost)
+      const response = await api.post(`/items/po_header`, initialPost)
       return response.data.data
   } catch (err) {
       console.error(err.response.data);
@@ -63,6 +69,13 @@ export const deletePo = createAsyncThunk(
   }
 });
 
+export const clearPo = createAsyncThunk(
+  'po/clearPo', 
+  async (initialPost) => {
+    return true
+});
+
+
 
 //Initial State
 const initialState = {
@@ -76,16 +89,17 @@ export const poSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(clearPo.fulfilled, (state, action) => {
+      state.status = 'idle'
+      state.error = null
+  });
     /* GET */
     builder.addCase(getPo.pending, (state) => {
-      state.status = 'loading';
     });
     builder.addCase(getPo.fulfilled, (state, action) => {
-        state.status = 'success';
         state.data = action.payload;
     });
     builder.addCase(getPo.rejected, (state, action) => {
-      state.status = 'failed';
       state.error = action.payload
     });
 
@@ -95,7 +109,7 @@ export const poSlice = createSlice({
     });
     builder.addCase(createPo.fulfilled, (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      // state.data = action.payload;
     });
     builder.addCase(createPo.rejected, (state, action) => {
       state.status = 'failed';
@@ -146,7 +160,7 @@ export const poSlice = createSlice({
 });
 
 export const selectPos = (state) => state.po;
-export const selectPoId = (state, id) => state.po.data.find(post => post.po_number === id);
+export const selectPoId = (state, id) => state.po.data.find(post => post.po_header_id === id);
 
 
 export default poSlice.reducer;
